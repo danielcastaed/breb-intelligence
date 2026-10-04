@@ -32,6 +32,7 @@ jobs:
           BREB_DICE_URL: ${{ secrets.BREB_DICE_URL }}
         run: python scripts/fetch_banrep.py ${{ inputs.backfill && '--backfill' || '' }}
       - name: Publicar cambios
+        if: always()
         run: |
           if [ -n "$(git status --porcelain data)" ]; then
             git config user.name "github-actions[bot]"

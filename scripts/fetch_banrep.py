@@ -176,7 +176,16 @@ def update_dice(page, url):
     path = DATA / "breb_dice_historico.csv"
     rows = read_csv(path) if path.exists() else []
     open_report(page, url)
-    fecha, llaves, medios, clientes, por_cliente = parse_dice(page)
+    try:  # el encabezado aparece antes que las cifras: espera a que las tres primeras estén pintadas
+        page.wait_for_function(
+            """() => { const L = document.body.innerText.split('\\n').map(s => s.trim()).filter(Boolean);
+                      const i = L.indexOf('Total de llaves registradas');
+                      return i >= 0 && L.slice(i + 1, i + 14).filter(s => /^[\\d.]+$/.test(s)).length >= 3; }""",
+            timeout=60_000)
+        fecha, llaves, medios, clientes, por_cliente = parse_dice(page)
+    except Exception:
+        diagnose(page)
+        raise
     if fecha.isoformat() in {r["fecha"] for r in rows}:
         return None
     rows.append(dict(fecha=fecha.isoformat(), llaves=llaves, medios_de_pago=medios, clientes=clientes,
@@ -203,16 +212,19 @@ def main():
         browser = p.chromium.launch()
         page = browser.new_context(viewport={"width": 1456, "height": 900}, locale="es-CO",
                                   user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36").new_page()
+        fallo = None
         try:
             print("MOL, cortes agregados:", update_mol(page, mol, args.backfill))
             if dice:
                 print("DICE, corte agregado:", update_dice(page, dice))
-        except Exception:
+        except Exception as e:
             page.screenshot(path=str(debug / "error.png"), full_page=True)
             (debug / "error.txt").write_text(page.inner_text("body"), encoding="utf-8")
-            raise
+            fallo = e
         finally:
             browser.close()
+    if fallo:  # lo ya escrito en data/ se publica igual (ver workflow); el job queda en rojo
+        raise fallo
 
 
 if __name__ == "__main__":
