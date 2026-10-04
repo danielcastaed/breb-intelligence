@@ -42,9 +42,21 @@ def corte_text(d):
     return f"Fecha de corte: {d.day} de {MESES[d.month - 1]} de {d.year}"
 
 
+def diagnose(page):
+    """Imprime en el log qué está viendo el navegador (sin la query string, que lleva la clave del reporte)."""
+    u = page.url.split("?")[0]
+    print(f"[diagnóstico] url={u} título={page.title()!r}")
+    texto = " | ".join(s.strip() for s in page.inner_text("body").split("\n") if s.strip())
+    print("[diagnóstico] texto:", texto[:1500])
+
+
 def open_report(page, url):
-    page.goto(url, wait_until="networkidle", timeout=120_000)
-    page.wait_for_function("document.body.innerText.includes('Fecha de corte')", timeout=120_000)
+    page.goto(url, wait_until="domcontentloaded", timeout=120_000)
+    try:
+        page.wait_for_function("document.body.innerText.includes('Fecha de corte')", timeout=120_000)
+    except Exception:
+        diagnose(page)
+        raise
 
 
 def available_range(page):
@@ -189,7 +201,8 @@ def main():
     debug.mkdir(exist_ok=True)
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = browser.new_context(viewport={"width": 1456, "height": 900}, locale="es-CO").new_page()
+        page = browser.new_context(viewport={"width": 1456, "height": 900}, locale="es-CO",
+                                  user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36").new_page()
         try:
             print("MOL, cortes agregados:", update_mol(page, mol, args.backfill))
             if dice:
