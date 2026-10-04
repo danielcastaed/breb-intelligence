@@ -11,7 +11,7 @@
   --bg:#111318; --s1:#17191f; --s2:#1d1f27; --s3:#23262f;
   --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
   --text:#dde0e8; --text2:#9399ad; --text3:#6a7088;
-  --green:#22c77a; --blue:#4f8ef7; --amber:#e8a830;
+  --green:#22c77a; --blue:#4f8ef7; --amber:#e8a830; --violet:#a078dc;
   --grid:rgba(255,255,255,.06);
   --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',ui-monospace,monospace;
   color-scheme:dark;
@@ -20,7 +20,7 @@
   --bg:#f4f5f7; --s1:#ffffff; --s2:#f0f1f4; --s3:#e6e8ed;
   --border:rgba(0,0,0,.09); --border2:rgba(0,0,0,.16);
   --text:#111318; --text2:#4a5068; --text3:#6f768c;
-  --green:#14935a; --blue:#2d6fe0; --amber:#a96a0a;
+  --green:#14935a; --blue:#2d6fe0; --amber:#a96a0a; --violet:#7a52c4;
   --grid:rgba(0,0,0,.07);
   color-scheme:light;
 }
@@ -30,7 +30,7 @@ header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-betwe
 .brand{font-weight:600;letter-spacing:-.01em}
 .brand span{color:var(--text3);font-weight:400}
 .hdr-right{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:11px;color:var(--text3)}
-.btn{background:var(--s2);border:1px solid var(--border2);color:var(--text2);border-radius:16px;padding:3px 12px;font:inherit;font-family:var(--font);font-size:12px;cursor:pointer}
+.btn{background:var(--s2);border:1px solid var(--border2);color:var(--text2);border-radius:16px;padding:3px 12px;font-family:var(--font);font-size:12px;cursor:pointer}
 .btn:hover{background:var(--s3)}
 main{max-width:1180px;margin:0 auto;padding:20px 24px 40px}
 .notice{background:var(--s1);border:1px solid var(--border2);border-left:3px solid var(--amber);border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--text2);margin-bottom:18px}
@@ -46,10 +46,13 @@ main{max-width:1180px;margin:0 auto;padding:20px 24px 40px}
 .sec span{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);white-space:nowrap}
 .sec i{flex:1;height:1px;background:var(--border)}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.card{padding:14px 16px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+.card{padding:14px 16px;min-width:0}
 .card h3{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px}
-.card p{font-size:11.5px;color:var(--text3);margin-top:10px;padding-top:9px;border-top:1px solid var(--border)}
+.card p.fn{font-size:11.5px;color:var(--text3);margin-top:10px;padding-top:9px;border-top:1px solid var(--border)}
 .chart{position:relative;height:230px}
+.chart.tall{height:260px}
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:880px;font-size:12.5px}
 th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--border2);white-space:nowrap}
@@ -64,10 +67,14 @@ a:hover{text-decoration:underline}
 .src{color:var(--text3);font-size:11.5px}
 ul.notes{margin:0;padding-left:18px;font-size:12.5px;color:var(--text2)}
 ul.notes li{margin-bottom:6px}
+ul.facts{list-style:none;margin:0;padding:0}
+ul.facts li{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+ul.facts li:last-child{border-bottom:none}
+ul.facts .s{display:block;font-size:11px;color:var(--text3);margin-top:2px}
 footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
 #err{display:none;background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.4);color:#e05555;border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px;margin-bottom:14px}
-@media (max-width:900px){.kpis,.g3{grid-template-columns:1fr 1fr}}
-@media (max-width:560px){.kpis,.g3{grid-template-columns:1fr}header,main,footer{padding-left:16px;padding-right:16px}}
+@media (max-width:900px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr 1fr}.g21 .card:first-child{grid-column:1/-1}}
+@media (max-width:560px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr}header,main,footer{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
@@ -83,7 +90,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   <div id="err"></div>
 
   <div class="notice">
-    <b>Cómo leer estas cifras.</b> BanRep publica los indicadores de Bre-B solo en dashboards interactivos, sin descarga de datos; esta serie se arma con <b>hitos fechados</b> de documentos y comunicados oficiales (y notas de prensa que los citan). No es una serie mensual: cada punto trae su fuente y su estado de verificación en la tabla de abajo. Lo marcado <span class="tag d">derivado</span> se calculó aquí, no lo publicó BanRep.
+    <b>Cómo leer estas cifras.</b> BanRep publica los indicadores de Bre-B en dashboards interactivos sin descarga de datos, así que esta serie se arma con <b>documentos y comunicados fechados</b>: el documento técnico de BanRep (feb 2026), de donde salen las series mensuales y diarias hasta enero, y cortes posteriores de prensa que cita a BanRep. Cada dato trae fuente y verificación. <span class="tag d">derivado</span> = calculado aquí, no publicado. <span class="tag d">digitalizado</span> = leído de un gráfico oficial y validado contra sus totales.
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -93,18 +100,69 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     <div class="card">
       <h3>Transacciones acumuladas (millones)</h3>
       <div class="chart"><canvas id="c-txn"></canvas></div>
-      <p>Desde el lanzamiento (6-oct-2025). Punto lleno = corte con fecha exacta; hueco = fecha aproximada.</p>
+      <p class="fn">Desde el lanzamiento (6-oct-2025). Punto lleno = corte con fecha exacta; hueco = fecha aproximada.</p>
+    </div>
+    <div class="card">
+      <h3>Valor acumulado (billones COP)</h3>
+      <div class="chart"><canvas id="c-val"></canvas></div>
+      <p class="fn">Cortes de BanRep o de prensa que lo cita. Mayo y junio son <span class="tag d">derivados</span> (transacciones × ticket promedio publicado).</p>
     </div>
     <div class="card">
       <h3>Ritmo diario implícito (M txn/día)</h3>
       <div class="chart"><canvas id="c-rate"></canvas></div>
-      <p><span class="tag d">derivado</span> Δ transacciones ÷ días, solo entre cortes con fecha exacta (los de prensa con fecha aproximada distorsionan el ritmo).</p>
+      <p class="fn"><span class="tag d">derivado</span> Δ transacciones ÷ días, solo entre cortes con fecha exacta (los de prensa con fecha aproximada distorsionan el ritmo).</p>
+    </div>
+  </div>
+
+  <div class="sec"><span>Volumen operacional</span><i></i></div>
+  <div class="g21">
+    <div class="card">
+      <h3>Operaciones diarias liquidadas en el MOL (millones) · 6-oct-2025 a 31-ene-2026</h3>
+      <div class="chart tall"><canvas id="c-daily"></canvas></div>
+      <p class="fn"><span class="tag d">digitalizado</span> del Gráfico 7 del documento técnico de BanRep. Validación contra cifras oficiales: suma 369,6 M (oficial 370,4 M); octubre 64,2 M (64,4 M); promedio de diciembre 3,67 M (3,6 M); pico del 24-dic 4,86 M (4,8 M). Error estimado ≈ 1–2%.</p>
     </div>
     <div class="card">
-      <h3>Llaves registradas y usuarios (millones)</h3>
-      <div class="chart"><canvas id="c-keys"></canvas></div>
-      <p>Una persona puede tener varias llaves (celular, documento, correo…): ≈ 3 llaves por usuario.</p>
+      <h3>Transacciones por mes (millones)</h3>
+      <div class="chart tall"><canvas id="c-month"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Suma de la serie diaria; coincide con las barras del Gráfico 5 de BanRep (≈ 89, 114 y 103 M). *Octubre cuenta desde el 6.</p>
     </div>
+  </div>
+
+  <div class="sec"><span>Adopción</span><i></i></div>
+  <div class="g3">
+    <div class="card">
+      <h3 id="ent-title">Entidades participantes</h3>
+      <div class="chart"><canvas id="c-ent"></canvas></div>
+      <p class="fn" id="ent-fn"></p>
+    </div>
+    <div class="card">
+      <h3>Origen de las operaciones</h3>
+      <div class="chart"><canvas id="c-origen"></canvas></div>
+      <p class="fn" id="origen-fn"></p>
+    </div>
+    <div class="card">
+      <h3>Montos y tipo de operación</h3>
+      <ul class="facts" id="montos"></ul>
+    </div>
+  </div>
+
+  <div class="sec"><span>Directorio de llaves — DICE</span><i></i></div>
+  <div class="g2">
+    <div class="card">
+      <h3>Llaves registradas y usuarios (millones)</h3>
+      <div class="chart tall"><canvas id="c-keys"></canvas></div>
+      <p class="fn">Jul-2025 a ene-2026: etiquetas del Gráfico 6 de BanRep (oficial). Desde abril: prensa que cita a BanRep (huecos = fecha aproximada). El salto de septiembre es el registro masivo de llaves alfanuméricas previo al lanzamiento.</p>
+    </div>
+    <div class="card">
+      <h3>Personas naturales vs jurídicas (%)</h3>
+      <div class="chart tall"><canvas id="c-naj"></canvas></div>
+      <p class="fn" id="naj-fn"></p>
+    </div>
+  </div>
+
+  <div class="sec"><span>Contexto</span><i></i></div>
+  <div class="card">
+    <ul class="facts" id="contexto"></ul>
   </div>
 
   <div class="sec"><span>Hitos y fuentes</span><i></i></div>
@@ -126,7 +184,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   </div>
 </main>
 
-<footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/breb_hitos.csv</code>; para agregar un corte basta añadir una fila.</footer>
+<footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/</code>: hitos, serie diaria del MOL, llaves del DICE y contexto, cada uno con su fuente.</footer>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -135,6 +193,7 @@ const nf = (n, d = 1) => Number(n).toLocaleString('es-CO', { maximumFractionDigi
 const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const fmtDate = s => { const d = new Date(s + 'T00:00:00'); return d.getDate() + '-' + MES[d.getMonth()] + '-' + d.getFullYear(); };
 const days = s => Math.round((new Date(s + 'T00:00:00') - LAUNCH) / 864e5);
+const iso = off => new Date(LAUNCH.getTime() + off * 864e5).toISOString().slice(0, 10);
 
 function parseCSV(txt) {
   const rows = []; let row = [], cell = '', q = false;
@@ -150,53 +209,113 @@ function parseCSV(txt) {
   const h = rows[0];
   return rows.slice(1).filter(r => r.length === h.length).map(r => Object.fromEntries(h.map((k, i) => [k, r[i].trim()])));
 }
-
+const load = async (p, json) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error('No se pudo cargar ' + p + ' (' + r.status + ')'); return json ? r.json() : parseCSV(await r.text()); };
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-let charts = [], DATA = [];
+let charts = [], DATA = [], DAILY = [], DICE = [], CTX = {};
 
 function line(label, pts, color, fill) {
   return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
-           borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color };
+           borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color, pointBorderColor: color, pointBorderWidth: 2 };
 }
+const hollow = (ds, flags, color) => { ds.pointBackgroundColor = flags.map(f => f ? 'transparent' : color); return ds; };
 
 function draw() {
   charts.forEach(c => c.destroy()); charts = [];
-  const green = css('--green'), blue = css('--blue'), amber = css('--amber'), grid = css('--grid'), tick = css('--text3');
+  const green = css('--green'), blue = css('--blue'), amber = css('--amber'), violet = css('--violet'), grid = css('--grid'), tick = css('--text3');
   Chart.defaults.color = tick; Chart.defaults.font.family = "'DM Sans',system-ui"; Chart.defaults.font.size = 11;
-  const xAxis = { type: 'linear', min: 0, grid: { color: grid }, border: { display: false },
-    ticks: { color: tick, maxTicksLimit: 7, callback: v => { const d = new Date(LAUNCH.getTime() + v * 864e5); return MES[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2); } } };
-  const yAxis = (cb) => ({ beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: cb } });
-  const tipTitle = items => fmtDate(new Date(LAUNCH.getTime() + items[0].parsed.x * 864e5).toISOString().slice(0, 10));
+  const xAxis = (min = 0) => ({ type: 'linear', min, grid: { color: grid }, border: { display: false },
+    ticks: { color: tick, maxTicksLimit: 7, callback: v => { const d = new Date(LAUNCH.getTime() + v * 864e5); return MES[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2); } } });
+  const yAxis = cb => ({ beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: cb } });
+  const tipTitle = items => fmtDate(iso(items[0].parsed.x));
   const base = (extra = {}) => ({ responsive: true, maintainAspectRatio: false, ...extra });
+  const noLegend = { legend: { display: false } };
 
+  // 1. Transacciones acumuladas
   const withTxn = DATA.filter(d => d.txn !== null);
-  const txnDs = line('Txn acumuladas (M)', withTxn.map(d => ({ x: d.day, y: d.txn })), green, true);
-  txnDs.pointBackgroundColor = withTxn.map(d => d.fechaAprox ? 'transparent' : green);
-  txnDs.pointBorderColor = green; txnDs.pointBorderWidth = 2;
   charts.push(new Chart($('c-txn'), { type: 'line',
-    data: { datasets: [txnDs] },
-    options: base({ plugins: { legend: { display: false }, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M txn' } } },
-      scales: { x: xAxis, y: yAxis(v => nf(v, 0)) } }) }));
+    data: { datasets: [hollow(line('Txn acumuladas (M)', withTxn.map(d => ({ x: d.day, y: d.txn })), green, true), withTxn.map(d => d.fechaAprox), green)] },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M txn' } } },
+      scales: { x: xAxis(), y: yAxis(v => nf(v, 0)) } }) }));
 
-  const exact = withTxn.filter(d => !d.fechaAprox);
-  const rate = [];
+  // 2. Valor acumulado
+  const withVal = DATA.filter(d => d.valor !== null);
+  charts.push(new Chart($('c-val'), { type: 'line',
+    data: { datasets: [hollow(line('Valor acumulado (B COP)', withVal.map(d => ({ x: d.day, y: d.valor, r: d })), blue, true), withVal.map(d => d.fechaAprox), blue)] },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => '$' + nf(c.parsed.y, 1) + ' billones' + (c.raw.r.valorDerivado ? ' (derivado)' : '') } } },
+      scales: { x: xAxis(), y: yAxis(v => nf(v, 0)) } }) }));
+
+  // 3. Ritmo implícito entre cortes con fecha exacta
+  const exact = withTxn.filter(d => !d.fechaAprox), rate = [];
   for (let i = 1; i < exact.length; i++) {
     const a = exact[i-1], b = exact[i];
     rate.push({ lbl: [(a.txn === 0 ? '6-oct' : fmtDate(a.fecha).slice(0, -5)) + ' →', fmtDate(b.fecha).slice(0, -5)], v: (b.txn - a.txn) / (b.day - a.day) });
   }
   charts.push(new Chart($('c-rate'), { type: 'bar',
     data: { labels: rate.map(r => r.lbl), datasets: [{ data: rate.map(r => +r.v.toFixed(2)), backgroundColor: green + 'aa', borderColor: green, borderWidth: 1, borderRadius: 4 }] },
-    options: base({ plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => nf(c.parsed.y, 2) + ' M txn/día' } } },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => nf(c.parsed.y, 2) + ' M txn/día' } } },
       scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: false, font: { size: 10 } } }, y: yAxis(v => nf(v, 1)) } }) }));
 
-  const keys = DATA.filter(d => d.llaves !== null), users = DATA.filter(d => d.usuarios !== null);
+  // 4. Operaciones diarias (Gráfico 7, digitalizado)
+  charts.push(new Chart($('c-daily'), { type: 'bar',
+    data: { labels: DAILY.map(d => d.fecha), datasets: [{ data: DAILY.map(d => d.v), backgroundColor: green + 'aa', borderWidth: 0, borderRadius: 1, barPercentage: .9, categoryPercentage: 1 }] },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: it => fmtDate(DAILY[it[0].dataIndex].fecha), label: c => nf(c.parsed.y, 2) + ' M operaciones' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: true, maxTicksLimit: 8, callback: function (v) { return fmtDate(DAILY[v].fecha).slice(0, -5); } } }, y: yAxis(v => nf(v, 0)) } }) }));
+
+  // 5. Transacciones por mes (suma de la serie diaria)
+  const months = {}; DAILY.forEach(d => { const k = d.fecha.slice(0, 7); months[k] = (months[k] || 0) + d.v; });
+  const mk = Object.keys(months);
+  charts.push(new Chart($('c-month'), { type: 'bar',
+    data: { labels: mk.map(k => MES[+k.slice(5) - 1] + ' ' + k.slice(2, 4) + (k === '2025-10' ? '*' : '')), datasets: [{ data: mk.map(k => +months[k].toFixed(1)), backgroundColor: green + 'aa', borderColor: green, borderWidth: 1, borderRadius: 4 }] },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => nf(c.parsed.y, 1) + ' M txn' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick } }, y: yAxis(v => nf(v, 0)) } }) }));
+
+  // 6. Entidades participantes
+  const E = CTX.entidades;
+  charts.push(new Chart($('c-ent'), { type: 'bar',
+    data: { labels: E.desglose.map(d => d[0]), datasets: [{ data: E.desglose.map(d => d[1]), backgroundColor: blue + 'aa', borderColor: blue, borderWidth: 1, borderRadius: 3 }] },
+    options: base({ indexAxis: 'y', plugins: { ...noLegend, tooltip: { callbacks: { label: c => c.parsed.x + ' entidades' } } },
+      scales: { x: { grid: { color: grid }, border: { display: false }, ticks: { color: tick } }, y: { grid: { display: false }, ticks: { color: tick, font: { size: 10 } } } } }) }));
+
+  // 7. Origen de las operaciones
+  const O = CTX.origen;
+  charts.push(new Chart($('c-origen'), { type: 'doughnut',
+    data: { labels: O.partes.map(p => p[0]), datasets: [{ data: O.partes.map(p => p[1]), backgroundColor: [green + 'cc', blue + 'cc'], borderColor: css('--s1'), borderWidth: 2 }] },
+    options: base({ plugins: { legend: { display: true, position: 'bottom', labels: { color: tick, boxWidth: 10, padding: 10, font: { size: 10.5 } } },
+      tooltip: { callbacks: { label: c => c.label + ': ' + c.parsed + '%' } } } }) }));
+
+  // 8. Llaves DICE (oficial mensual + cortes posteriores) y usuarios
+  const keysOff = DICE.map(d => ({ x: days(d.fecha), y: d.llaves, a: false }));
+  const keysPress = DATA.filter(d => d.llaves !== null && d.fecha > '2026-01-31').map(d => ({ x: d.day, y: d.llaves, a: d.fechaAprox }));
+  const keysAll = [...keysOff, ...keysPress];
+  const users = DATA.filter(d => d.usuarios !== null);
   charts.push(new Chart($('c-keys'), { type: 'line',
     data: { datasets: [
-      line('Llaves (M)', keys.map(d => ({ x: d.day, y: d.llaves })), blue, false),
-      line('Usuarios (M)', users.map(d => ({ x: d.day, y: d.usuarios })), amber, false)] },
+      hollow(line('Llaves (M)', keysAll, blue, false), keysAll.map(p => p.a), blue),
+      hollow(line('Usuarios (M)', users.map(d => ({ x: d.day, y: d.usuarios })), amber, false), users.map(d => d.fechaAprox), amber)] },
     options: base({ plugins: { legend: { display: true, labels: { color: tick, boxWidth: 10, padding: 10 } },
       tooltip: { callbacks: { title: tipTitle, label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + ' M' } } },
-      scales: { x: xAxis, y: yAxis(v => nf(v, 0)) } }) }));
+      scales: { x: xAxis(Math.min(...keysAll.map(p => p.x)) - 5), y: yAxis(v => nf(v, 0)) } }) }));
+
+  // 9. Naturales vs jurídicas
+  const N = CTX.naturales_juridicas;
+  charts.push(new Chart($('c-naj'), { type: 'bar',
+    data: { labels: N.map(n => n.periodo), datasets: [
+      { label: 'Personas naturales', data: N.map(n => n.naturales), backgroundColor: green + 'bb' },
+      { label: 'Personas jurídicas', data: N.map(n => n.juridicas), backgroundColor: violet + 'bb' }] },
+    options: base({ indexAxis: 'y', plugins: { legend: { display: true, labels: { color: tick, boxWidth: 10, padding: 10 } },
+      tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.x, 1) + '%' } } },
+      scales: { x: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } }, y: { stacked: true, grid: { display: false }, ticks: { color: tick } } } }) }));
+}
+
+function static_() {
+  const E = CTX.entidades, O = CTX.origen, N = CTX.naturales_juridicas;
+  $('ent-title').textContent = 'Entidades participantes · ' + E.total + ' (' + E.corte.toLowerCase() + ')';
+  $('ent-fn').innerHTML = `<span class="tag o">${E.tipo}</span> <a href="${E.url}" target="_blank" rel="noopener">${E.fuente}</a>. Participan vía cinco sistemas de pagos inmediatos (SPBVI) que interoperan.`;
+  $('origen-fn').innerHTML = `${O.corte}. <span class="tag o">${O.tipo}</span> <a href="${O.url}" target="_blank" rel="noopener">${O.fuente}</a>.`;
+  $('naj-fn').innerHTML = 'Bases distintas: abril es sobre usuarios (' + N[0].fuente + '); agosto es sobre llaves (' + N[1].fuente + '). No son estrictamente comparables.';
+  const li = f => `<li>${f.texto}<span class="s">${f.corte ? f.corte + ' · ' : ''}<a href="${f.url}" target="_blank" rel="noopener">${f.fuente}</a><span class="tag ${f.tipo === 'oficial' ? 'o' : ''}">${f.tipo}</span></span></li>`;
+  $('montos').innerHTML = CTX.montos.map(li).join('');
+  $('contexto').innerHTML = CTX.contexto.map(li).join('');
 }
 
 function kpis() {
@@ -227,29 +346,32 @@ function table() {
     <td><a href="${d.url}" target="_blank" rel="noopener">${d.fuente}</a><span class="tag ${d.tipo === 'oficial' ? 'o' : ''}">${d.tipo}</span></td>
     <td class="src">${d.verificacion}<div>${d.nota}</div></td></tr>`).join('');
   $('notes').innerHTML = [
-    'El ritmo diario implícito pasa de 2,5 M txn/día en octubre a 3,3 M (nov–ene) y 4,9 M (feb–jun). Los picos diarios (4,8 M el 24-dic; 5,2 M el 31-ene; hasta 5,8 M en marzo) no se grafican porque son máximos, no promedios.',
-    'Los ritmos entre cortes de prensa oscilan más de lo razonable (≈ 4 a 5,6 M txn/día entre marzo y junio): la prensa no siempre publica la fecha exacta de corte. Por eso el gráfico de ritmo usa solo cortes con fecha exacta, y la tabla conserva todos los demás con su fecha aproximada marcada.',
-    'Valor y transacciones son consistentes entre sí: transacciones acumuladas × ticket promedio reproduce el valor publicado en cada corte que trae ambos (ene, abr, y los derivados de may y jun).',
-    'Cotejo: octubre y enero se verificaron en el documento técnico de BanRep (PDF); el resto viene de prensa que cita a BanRep (diciembre: Bloomberg Línea; marzo: MobileTime; abril: El Universal y Forbes; mayo: Infobae; junio: La República y El Nuevo Siglo; agosto: ColombiaPrensa), porque el sitio de BanRep pide captcha. En agosto, el total de llaves (111,8 M) es la suma de los componentes publicados; un “108 M” citado en la misma nota corresponde al corte de junio.',
-    'Pendiente: cotejar con el comunicado/indicador primario de BanRep (MOL y DICE) y completar julio–septiembre cuando haya fuente fechada.',
+    'El ritmo diario implícito pasa de 2,5 M txn/día en octubre a 3,3 M (nov–ene) y 4,9 M (feb–jun). Los picos diarios (4,8 M el 24-dic; 5,2 M el 31-ene; hasta 5,8 M en marzo) son máximos, no promedios.',
+    'Los ritmos entre cortes de prensa oscilan más de lo razonable (≈ 4 a 5,6 M txn/día entre marzo y junio): la prensa no siempre publica la fecha exacta de corte. Por eso el gráfico de ritmo usa solo cortes con fecha exacta.',
+    'Valor y transacciones son consistentes entre sí: transacciones acumuladas × ticket promedio reproduce el valor publicado en cada corte que trae ambos.',
+    'Bre-B no creó el volumen de la nada: opera sobre redes de transferencias inmediatas que ya existían (promedio mensual de jul–oct 2025 cercano a 108 M según el Gráfico 5 de BanRep) y las interopera. Cualquier comparación “antes vs después” debe hacerse con ese cuidado.',
+    'Octubre y enero se verificaron en el documento técnico de BanRep (PDF). Diciembre, marzo, abril, mayo, junio y agosto vienen de prensa que cita a BanRep, porque el sitio de BanRep pide captcha para sus dashboards. En agosto, las llaves (111,8 M) son la suma de los componentes publicados; el “108 M” de la misma nota es el corte de junio.',
+    'Pendiente: cotejar con los indicadores primarios de BanRep (MOL y DICE), completar julio–septiembre y agregar la distribución de llaves por tipo y medio de pago asociado (solo está en el dashboard DICE de BanRep).',
   ].map(t => `<li>${t}</li>`).join('');
 }
 
 async function init() {
   try {
-    const r = await fetch('data/breb_hitos.csv', { cache: 'no-cache' });
-    if (!r.ok) throw new Error('No se pudo cargar data/breb_hitos.csv (' + r.status + ')');
+    const [h, daily, dice, ctx] = await Promise.all([load('data/breb_hitos.csv'), load('data/breb_diario_mol.csv'), load('data/breb_llaves_dice.csv'), load('data/breb_contexto.json', true)]);
     const num = s => (s === '' ? null : parseFloat(s));
-    DATA = parseCSV(await r.text()).map(r => ({
+    DATA = h.map(r => ({
       fecha: r.fecha, periodo: r.periodo, day: days(r.fecha),
       txn: num(r.txn_acumuladas_millones), valor: num(r.valor_acumulado_billones_cop), valorDerivado: r.valor_derivado === 'true',
       ticket: num(r.ticket_promedio_cop), llaves: num(r.llaves_millones), usuarios: num(r.usuarios_millones),
       fechaAprox: r.fecha_aprox === 'true', tipo: r.tipo, verificacion: r.verificacion, fuente: r.fuente, url: r.url, nota: r.nota,
     })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    DAILY = daily.map(r => ({ fecha: r.fecha, v: parseFloat(r.operaciones_millones) }));
+    DICE = dice.map(r => ({ fecha: r.fecha, llaves: parseFloat(r.llaves_millones) }));
+    CTX = ctx;
     if (DATA.length < 2) throw new Error('Datos insuficientes');
     const lastRow = DATA[DATA.length - 1];
     $('asof').textContent = 'Último corte: ' + fmtDate(lastRow.fecha) + (lastRow.fechaAprox ? ' (aprox.)' : '');
-    kpis(); table(); draw();
+    kpis(); table(); static_(); draw();
   } catch (e) {
     $('err').style.display = 'block'; $('err').textContent = 'Error: ' + e.message;
     $('asof').textContent = 'error';
