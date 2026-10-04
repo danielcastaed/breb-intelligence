@@ -16,7 +16,7 @@
     23
    ],
    [
-    "Compañías de financiamiento",
+    "Cías. de financiamiento",
     6
    ],
    [
@@ -36,7 +36,7 @@
   "corte": "6-oct-2025 a 31-ene-2026",
   "partes": [
    [
-    "Depósitos de bajo monto (en su mayoría billeteras electrónicas)",
+    "Depósitos de bajo monto (billeteras)",
     50
    ],
    [
@@ -48,49 +48,6 @@
   "url": "https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf",
   "tipo": "oficial"
  },
- "naturales_juridicas": [
-  {
-   "periodo": "Abr 2026",
-   "naturales": 96.1,
-   "juridicas": 3.9,
-   "base": "usuarios",
-   "fuente": "La República (análisis ANIF, 23-abr-2026)",
-   "url": "https://www.larepublica.co/analisis/anif-3478852/seis-meses-de-bre-b-una-transformacion-acelerada-4377195",
-   "tipo": "prensa"
-  },
-  {
-   "periodo": "Ago 2026",
-   "naturales": 95.2,
-   "juridicas": 4.8,
-   "base": "llaves (106,5 M naturales; 5,3 M jurídicas)",
-   "fuente": "ColombiaPrensa citando BanRep (DICE)",
-   "url": "https://colombiaprensa.com.co/bre-b-cumple-un-ano-pero-hoy-pocas-empresas-lo-usan-cobre-primer-actor-certificado-del-sistema-apuesta-por-cerrar-esa-brecha/",
-   "tipo": "prensa"
-  }
- ],
- "montos": [
-  {
-   "texto": "39,3% de las operaciones, entre $10.000 y $50.000",
-   "corte": "≈ 6 meses (abr 2026)",
-   "fuente": "BanRep vía El Universal y Forbes Colombia",
-   "url": "https://www.eluniversal.com.co/economica/2026/04/13/estas-son-las-transacciones-de-bre-b-en-seis-meses-y-el-monto-promedio/",
-   "tipo": "prensa"
-  },
-  {
-   "texto": "Casi 60% de las transferencias, por menos de $50.000",
-   "corte": "dic 2025",
-   "fuente": "Bloomberg Línea citando a BanRep",
-   "url": "https://www.bloomberglinea.com/latinoamerica/colombia/bre-b-ya-suma-200-millones-de-transacciones-por-cop34-billones-esto-dice-el-banco-de-la-republica/",
-   "tipo": "prensa"
-  },
-  {
-   "texto": "Persona a persona: más de 80% de las operaciones; persona a negocio: cerca de 10%",
-   "corte": "abr 2026",
-   "fuente": "La República (análisis ANIF)",
-   "url": "https://www.larepublica.co/analisis/anif-3478852/seis-meses-de-bre-b-una-transformacion-acelerada-4377195",
-   "tipo": "prensa"
-  }
- ],
  "contexto": [
   {
    "texto": "En 2024, las transferencias cuenta a cuenta (inmediatas y diferidas) promediaron 16,2 millones de transacciones diarias: 3,6 veces las hechas con tarjetas.",
@@ -116,5 +73,11 @@
    "url": "https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf",
    "tipo": "oficial"
   }
- ]
+ ],
+ "p2p": {
+  "texto": "Persona a persona: más de 80% de las operaciones; persona a negocio: cerca de 10% (abril 2026).",
+  "fuente": "La República (análisis ANIF, 23-abr-2026)",
+  "url": "https://www.larepublica.co/analisis/anif-3478852/seis-meses-de-bre-b-una-transformacion-acelerada-4377195",
+  "tipo": "prensa"
+ }
 }

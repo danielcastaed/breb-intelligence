@@ -1,8 +1,12 @@
-fecha,periodo,llaves_millones,fuente,url
-2025-07-31,Jul 2025,20.0,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2025-08-31,Ago 2025,29.4,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2025-09-30,Sep 2025,78.1,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2025-10-31,Oct 2025,91.6,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2025-11-30,Nov 2025,94.5,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2025-12-31,Dic 2025,96.8,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
-2026-01-31,Ene 2026,99.0,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6 (etiquetas del gráfico; cifras al 31-ene-2026)",https://www.banrep.gov.co/sites/default/files/publicaciones/archivos/documento-tecnico-bre-b-febrero-2026.pdf
+fecha,llaves_millones,fuente,nota
+2025-07-31,20.0,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2025-08-31,29.4,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2025-09-30,78.1,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2025-10-31,91.6,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2025-11-30,94.5,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2025-12-31,96.8,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2026-01-31,99.0,"BanRep — Documento técnico Bre-B (feb 2026), Gráfico 6",Etiqueta del gráfico; cifras al 31-ene-2026
+2026-03-31,103.1,Reporte DICE de BanRep (Power BI público: indicadores-dice),Etiqueta del gráfico de tendencia; mes asignado por su posición en el eje
+2026-05-31,107.0,Reporte DICE de BanRep (Power BI público: indicadores-dice),Etiqueta del gráfico de tendencia; mes asignado por su posición en el eje
+2026-07-31,111.2,Reporte DICE de BanRep (Power BI público: indicadores-dice),Etiqueta del gráfico de tendencia; mes asignado por su posición en el eje
+2026-10-03,116.234546,Reporte DICE de BanRep (Power BI público: indicadores-dice),"Total de llaves registradas, corte 3-oct-2026"

@@ -1,0 +1,78 @@
+{
+ "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
+ "corte": "2026-10-03",
+ "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
+ "totales": {
+  "llaves": 116234546,
+  "medios_de_pago": 73788386,
+  "clientes": 36099840,
+  "llaves_por_medio": 1.6,
+  "llaves_por_cliente": 3.2,
+  "medios_por_cliente": 2.0
+ },
+ "tipos_de_llave": [
+  [
+   "Alfanumérica",
+   64.0,
+   55.0
+  ],
+  [
+   "Celular",
+   22.5,
+   19.3
+  ],
+  [
+   "Documento de identidad",
+   15.1,
+   13.0
+  ],
+  [
+   "Correo electrónico",
+   10.2,
+   8.8
+  ],
+  [
+   "Código de comercio",
+   4.5,
+   3.8
+  ]
+ ],
+ "medios_de_pago": [
+  [
+   "Cuenta de ahorros",
+   39.7,
+   53.8
+  ],
+  [
+   "Depósito de bajo monto",
+   33.2,
+   45.0
+  ],
+  [
+   "Otros (cuenta corriente, depósito ordinario, bajo monto inclusivo)",
+   0.9,
+   1.2
+  ]
+ ],
+ "medios_de_pago_nota": "Las dos primeras categorías son etiquetas del reporte; 'Otros' es el residuo hasta el total (73,8 M), derivado aquí.",
+ "clientes": {
+  "naturales": [
+   32.2,
+   89.3
+  ],
+  "juridicas": [
+   3.9,
+   10.7
+  ]
+ },
+ "llaves_por_tipo_de_cliente": {
+  "naturales": [
+   110.0,
+   94.6
+  ],
+  "juridicas": [
+   6.2,
+   5.4
+  ]
+ }
+}

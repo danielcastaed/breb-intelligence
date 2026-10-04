@@ -1,0 +1,16 @@
+{
+ "fuente": "Reporte MOL de BanRep — Indicadores por tecnología de acceso",
+ "corte": "2026-10-03",
+ "desde": "2026-01-19",
+ "nota": "BanRep publica este desglose desde el 19-ene-2026. El reporte rotula el valor como 'millones de pesos', pero txn × ticket demuestra que las cifras (30.901 y 179.590) están en miles de millones; se guardan en pesos.",
+ "qr": {
+  "txn": 542141859,
+  "ticket_cop": 56998,
+  "valor_cop_aprox": 30901000000000
+ },
+ "llave": {
+  "txn": 915109051,
+  "ticket_cop": 196250,
+  "valor_cop_aprox": 179590000000000
+ }
+}

@@ -1,0 +1,51 @@
+name: Actualizar datos de BanRep
+
+on:
+  schedule:
+    - cron: "0 12 2 * *"   # día 2 de cada mes, 7:00 a. m. en Colombia (cierra el mes anterior)
+  workflow_dispatch:
+    inputs:
+      backfill:
+        description: "Revisar todos los cierres de mes desde el lanzamiento"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar Playwright
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+      - name: Leer los reportes públicos de BanRep
+        env:
+          BREB_MOL_URL: ${{ secrets.BREB_MOL_URL }}
+          BREB_DICE_URL: ${{ secrets.BREB_DICE_URL }}
+        run: python scripts/fetch_banrep.py ${{ inputs.backfill && '--backfill' || '' }}
+      - name: Publicar cambios
+        run: |
+          if [ -n "$(git status --porcelain data)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data
+            git commit -m "data: actualiza cortes de BanRep ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "Sin cambios en los datos."
+          fi
+      - name: Guardar evidencia si falló
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-banrep
+          path: debug/
+          if-no-files-found: ignore

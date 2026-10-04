@@ -1,0 +1,20 @@
+fecha,tipo,txn_acumuladas,valor_acumulado_cop,ticket_promedio_cop,fuente,nota
+2025-10-05,inicio,0,0,,Reporte MOL de BanRep (Power BI público: indicadores-mol),Corte en cero previo al arranque; operación plena desde el 6-oct-2025
+2025-10-31,mensual,64381758,9381020859666,145709,Reporte MOL de BanRep (Power BI público: indicadores-mol),"Coincide con el documento técnico de BanRep (64,4 M operaciones en octubre)"
+2025-11-30,mensual,153467860,23017704260138,149984,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2025-12-14,referencia,199604982,30882766247484,154719,Reporte MOL de BanRep (Power BI público: indicadores-mol),Corte de la nota de Bloomberg Línea (23-dic): '200 millones de transacciones'
+2025-12-31,mensual,267608707,42878751477308,160229,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-01-31,mensual,370406617,59063702680130,159456,Reporte MOL de BanRep (Power BI público: indicadores-mol),"Coincide con el documento técnico de BanRep: 370,4 M; $59 billones; $159.456"
+2026-02-28,mensual,480176327,76234403390669,158763,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-03-05,referencia,503445818,80265833325371,159433,Reporte MOL de BanRep (Power BI público: indicadores-mol),"Corte de MobileTime: 'más de 503 millones' en 150 días, valor 'cercano a 80 billones'"
+2026-03-31,mensual,617621847,97232658334354,157431,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-04-12,referencia,670209493,105027579383824,156709,Reporte MOL de BanRep (Power BI público: indicadores-mol),Corte del comunicado de 6 meses de BanRep: 670 M; 'supera 105 billones'; ticket $156.711
+2026-04-30,mensual,759397758,118336801580056,155830,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-05-04,referencia,782218571,121834526050500,155755,Reporte MOL de BanRep (Power BI público: indicadores-mol),Corte de Infobae (6-may): 782.218.571 transacciones; ticket $155.755 (idéntico)
+2026-05-31,mensual,930424521,143191770903232,153899,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-06-24,referencia,1070018615,163185399160133,152507,Reporte MOL de BanRep (Power BI público: indicadores-mol),Corte de La República / El Nuevo Siglo: 1.070 M; ticket $152.509
+2026-06-30,mensual,1108464368,169388337020062,152814,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-07-31,mensual,1306401150,198254138145801,151756,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-08-31,mensual,1521328356,227247311556055,149374,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-09-30,mensual,1751263581,257473804769240,147022,Reporte MOL de BanRep (Power BI público: indicadores-mol),
+2026-10-03,ultimo,1780392143,261818735247320,147057,Reporte MOL de BanRep (Power BI público: indicadores-mol),Último corte disponible al momento de la captura (3-oct-2026)
