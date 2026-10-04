@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bre-B Intelligence · Colombia</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg:#111318; --s1:#17191f; --s2:#1d1f27; --s3:#23262f;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+  --text:#dde0e8; --text2:#9399ad; --text3:#6a7088;
+  --green:#22c77a; --blue:#4f8ef7; --amber:#e8a830;
+  --grid:rgba(255,255,255,.06);
+  --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+:root[data-theme="light"] {
+  --bg:#f4f5f7; --s1:#ffffff; --s2:#f0f1f4; --s3:#e6e8ed;
+  --border:rgba(0,0,0,.09); --border2:rgba(0,0,0,.16);
+  --text:#111318; --text2:#4a5068; --text3:#6f768c;
+  --green:#14935a; --blue:#2d6fe0; --amber:#a96a0a;
+  --grid:rgba(0,0,0,.07);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.55}
+header{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 24px;background:var(--bg);border-bottom:1px solid var(--border)}
+.brand{font-weight:600;letter-spacing:-.01em}
+.brand span{color:var(--text3);font-weight:400}
+.hdr-right{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:11px;color:var(--text3)}
+.btn{background:var(--s2);border:1px solid var(--border2);color:var(--text2);border-radius:16px;padding:3px 12px;font:inherit;font-family:var(--font);font-size:12px;cursor:pointer}
+.btn:hover{background:var(--s3)}
+main{max-width:1180px;margin:0 auto;padding:20px 24px 40px}
+.notice{background:var(--s1);border:1px solid var(--border2);border-left:3px solid var(--amber);border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--text2);margin-bottom:18px}
+.notice b{color:var(--text)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:8px}
+.kpi,.card{background:var(--s1);border:1px solid var(--border);border-radius:8px}
+.kpi{padding:12px 14px}
+.kpi-l{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:5px}
+.kpi-v{font-family:var(--mono);font-size:20px;font-weight:500;letter-spacing:-.02em;line-height:1.15}
+.kpi-v em{font-style:normal;font-size:12px;color:var(--text3);margin-left:3px}
+.kpi-s{font-size:11px;color:var(--text3);margin-top:4px}
+.sec{display:flex;align-items:center;gap:10px;margin:26px 0 10px}
+.sec span{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);white-space:nowrap}
+.sec i{flex:1;height:1px;background:var(--border)}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.card{padding:14px 16px}
+.card h3{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px}
+.card p{font-size:11.5px;color:var(--text3);margin-top:10px;padding-top:9px;border-top:1px solid var(--border)}
+.chart{position:relative;height:230px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:880px;font-size:12.5px}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--border2);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-size:9.5px;font-family:var(--mono);border:1px solid var(--border2);border-radius:3px;padding:0 5px;margin-left:5px;color:var(--text3);vertical-align:middle}
+.tag.d{color:var(--amber);border-color:var(--amber)}
+.tag.o{color:var(--green);border-color:var(--green)}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.src{color:var(--text3);font-size:11.5px}
+ul.notes{margin:0;padding-left:18px;font-size:12.5px;color:var(--text2)}
+ul.notes li{margin-bottom:6px}
+footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+#err{display:none;background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.4);color:#e05555;border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px;margin-bottom:14px}
+@media (max-width:900px){.kpis,.g3{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.kpis,.g3{grid-template-columns:1fr}header,main,footer{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Bre-B Intelligence <span>/ Colombia</span></div>
+  <div class="hdr-right">
+    <span id="asof">cargando…</span>
+    <button class="btn" id="theme" type="button">Claro</button>
+  </div>
+</header>
+
+<main>
+  <div id="err"></div>
+
+  <div class="notice">
+    <b>Cómo leer estas cifras.</b> BanRep publica los indicadores de Bre-B solo en dashboards interactivos, sin descarga de datos; esta serie se arma con <b>hitos fechados</b> de documentos y comunicados oficiales (y notas de prensa que los citan). No es una serie mensual: cada punto trae su fuente y su estado de verificación en la tabla de abajo. Lo marcado <span class="tag d">derivado</span> se calculó aquí, no lo publicó BanRep.
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="sec"><span>Evolución</span><i></i></div>
+  <div class="g3">
+    <div class="card">
+      <h3>Transacciones acumuladas (millones)</h3>
+      <div class="chart"><canvas id="c-txn"></canvas></div>
+      <p>Desde el lanzamiento (6-oct-2025). Puntos = cortes publicados.</p>
+    </div>
+    <div class="card">
+      <h3>Ritmo diario implícito (M txn/día)</h3>
+      <div class="chart"><canvas id="c-rate"></canvas></div>
+      <p><span class="tag d">derivado</span> Δ transacciones acumuladas ÷ días entre cortes consecutivos.</p>
+    </div>
+    <div class="card">
+      <h3>Llaves registradas y usuarios (millones)</h3>
+      <div class="chart"><canvas id="c-keys"></canvas></div>
+      <p>Una persona puede tener varias llaves (celular, documento, correo…): ≈ 3 llaves por usuario.</p>
+    </div>
+  </div>
+
+  <div class="sec"><span>Hitos y fuentes</span><i></i></div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Corte</th><th>Txn acum. (M)</th><th>Valor acum. (B COP)</th><th>Ticket (COP)</th>
+          <th>Llaves (M)</th><th>Usuarios (M)</th><th>Fuente</th><th>Verificación</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec"><span>Notas</span><i></i></div>
+  <div class="card">
+    <ul class="notes" id="notes"></ul>
+  </div>
+</main>
+
+<footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/breb_hitos.csv</code>; para agregar un corte basta añadir una fila.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const LAUNCH = new Date('2025-10-06T00:00:00');
+const nf = (n, d = 1) => Number(n).toLocaleString('es-CO', { maximumFractionDigits: d });
+const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const fmtDate = s => { const d = new Date(s + 'T00:00:00'); return d.getDate() + '-' + MES[d.getMonth()] + '-' + d.getFullYear(); };
+const days = s => Math.round((new Date(s + 'T00:00:00') - LAUNCH) / 864e5);
+
+function parseCSV(txt) {
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < txt.length; i++) {
+    const c = txt[i];
+    if (q) { if (c === '"' && txt[i+1] === '"') { cell += '"'; i++; } else if (c === '"') q = false; else cell += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+    else if (c !== '\r') cell += c;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  const h = rows[0];
+  return rows.slice(1).filter(r => r.length === h.length).map(r => Object.fromEntries(h.map((k, i) => [k, r[i].trim()])));
+}
+
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+let charts = [], DATA = [];
+
+function line(label, pts, color, fill) {
+  return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
+           borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color };
+}
+
+function draw() {
+  charts.forEach(c => c.destroy()); charts = [];
+  const green = css('--green'), blue = css('--blue'), amber = css('--amber'), grid = css('--grid'), tick = css('--text3');
+  Chart.defaults.color = tick; Chart.defaults.font.family = "'DM Sans',system-ui"; Chart.defaults.font.size = 11;
+  const xAxis = { type: 'linear', min: 0, grid: { color: grid }, border: { display: false },
+    ticks: { color: tick, maxTicksLimit: 7, callback: v => { const d = new Date(LAUNCH.getTime() + v * 864e5); return MES[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2); } } };
+  const yAxis = (cb) => ({ beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: cb } });
+  const tipTitle = items => fmtDate(new Date(LAUNCH.getTime() + items[0].parsed.x * 864e5).toISOString().slice(0, 10));
+  const base = (extra = {}) => ({ responsive: true, maintainAspectRatio: false, ...extra });
+
+  const withTxn = DATA.filter(d => d.txn !== null);
+  charts.push(new Chart($('c-txn'), { type: 'line',
+    data: { datasets: [line('Txn acumuladas (M)', withTxn.map(d => ({ x: d.day, y: d.txn })), green, true)] },
+    options: base({ plugins: { legend: { display: false }, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M txn' } } },
+      scales: { x: xAxis, y: yAxis(v => nf(v, 0)) } }) }));
+
+  const rate = [];
+  for (let i = 1; i < withTxn.length; i++) {
+    const a = withTxn[i-1], b = withTxn[i];
+    rate.push({ lbl: fmtDate(a.fecha).slice(0, -5) + ' → ' + fmtDate(b.fecha).slice(0, -5), v: (b.txn - a.txn) / (b.day - a.day) });
+  }
+  charts.push(new Chart($('c-rate'), { type: 'bar',
+    data: { labels: rate.map(r => r.lbl), datasets: [{ data: rate.map(r => +r.v.toFixed(2)), backgroundColor: green + 'aa', borderColor: green, borderWidth: 1, borderRadius: 4 }] },
+    options: base({ plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => nf(c.parsed.y, 2) + ' M txn/día' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: false, font: { size: 10 } } }, y: yAxis(v => nf(v, 1)) } }) }));
+
+  const keys = DATA.filter(d => d.llaves !== null), users = DATA.filter(d => d.usuarios !== null);
+  charts.push(new Chart($('c-keys'), { type: 'line',
+    data: { datasets: [
+      line('Llaves (M)', keys.map(d => ({ x: d.day, y: d.llaves })), blue, false),
+      line('Usuarios (M)', users.map(d => ({ x: d.day, y: d.usuarios })), amber, false)] },
+    options: base({ plugins: { legend: { display: true, labels: { color: tick, boxWidth: 10, padding: 10 } },
+      tooltip: { callbacks: { title: tipTitle, label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + ' M' } } },
+      scales: { x: xAxis, y: yAxis(v => nf(v, 0)) } }) }));
+}
+
+function kpis() {
+  const last = k => [...DATA].reverse().find(d => d[k] !== null);
+  const items = [
+    ['Transacciones acumuladas', 'txn', v => nf(v / 1000, 2), 'mil M', d => ''],
+    ['Valor acumulado', 'valor', v => '$' + nf(v, 0), 'B COP', d => d.valorDerivado ? 'derivado' : ''],
+    ['Ticket promedio', 'ticket', v => '$' + nf(v, 0), 'COP', d => ''],
+    ['Llaves registradas', 'llaves', v => nf(v, 1), 'M', d => ''],
+    ['Usuarios con llave', 'usuarios', v => nf(v, 1), 'M', d => ''],
+  ];
+  $('kpis').innerHTML = items.map(([l, k, f, u, tag]) => {
+    const d = last(k);
+    return `<div class="kpi"><div class="kpi-l">${l}</div><div class="kpi-v">${f(d[k])}<em>${u}</em></div>
+      <div class="kpi-s">corte ${fmtDate(d.fecha)}${d.fechaAprox ? ' (aprox.)' : ''}${tag(d) ? ` <span class="tag d">${tag(d)}</span>` : ''}</div></div>`;
+  }).join('');
+}
+
+function table() {
+  const c = (v, f, extra = '') => v === null ? '<span class="src">—</span>' : f(v) + extra;
+  $('tbody').innerHTML = DATA.map(d => `<tr>
+    <td class="n">${fmtDate(d.fecha)}${d.fechaAprox ? '<span class="tag d">aprox.</span>' : ''}<div class="src">${d.periodo}</div></td>
+    <td class="n">${c(d.txn, v => nf(v, 1))}</td>
+    <td class="n">${c(d.valor, v => nf(v, 1), d.valorDerivado ? '<span class="tag d">derivado</span>' : '')}</td>
+    <td class="n">${c(d.ticket, v => '$' + nf(v, 0))}</td>
+    <td class="n">${c(d.llaves, v => nf(v, 1))}</td>
+    <td class="n">${c(d.usuarios, v => nf(v, 1))}</td>
+    <td><a href="${d.url}" target="_blank" rel="noopener">${d.fuente}</a><span class="tag ${d.tipo === 'oficial' ? 'o' : ''}">${d.tipo}</span></td>
+    <td class="src">${d.verificacion}<div>${d.nota}</div></td></tr>`).join('');
+  $('notes').innerHTML = [
+    'El ritmo diario implícito sube de 3,2 M txn/día (oct–ene) a 4,6–4,7 M txn/día desde febrero; los picos diarios reportados por prensa (5 M o más) no se grafican porque son máximos, no promedios.',
+    'Valor y transacciones son consistentes entre sí: transacciones acumuladas × ticket promedio reproduce el valor publicado en los dos cortes oficiales.',
+    'Pendiente: cotejar cada cifra marcada como “pendiente cotejo” contra el documento primario de BanRep y completar cortes intermedios (marzo, mayo, julio–septiembre) cuando haya fuente fechada.',
+  ].map(t => `<li>${t}</li>`).join('');
+}
+
+async function init() {
+  try {
+    const r = await fetch('data/breb_hitos.csv', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('No se pudo cargar data/breb_hitos.csv (' + r.status + ')');
+    const num = s => (s === '' ? null : parseFloat(s));
+    DATA = parseCSV(await r.text()).map(r => ({
+      fecha: r.fecha, periodo: r.periodo, day: days(r.fecha),
+      txn: num(r.txn_acumuladas_millones), valor: num(r.valor_acumulado_billones_cop), valorDerivado: r.valor_derivado === 'true',
+      ticket: num(r.ticket_promedio_cop), llaves: num(r.llaves_millones), usuarios: num(r.usuarios_millones),
+      fechaAprox: r.fecha_aprox === 'true', tipo: r.tipo, verificacion: r.verificacion, fuente: r.fuente, url: r.url, nota: r.nota,
+    })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    if (DATA.length < 2) throw new Error('Datos insuficientes');
+    const lastRow = DATA[DATA.length - 1];
+    $('asof').textContent = 'Último corte: ' + fmtDate(lastRow.fecha) + (lastRow.fechaAprox ? ' (aprox.)' : '');
+    kpis(); table(); draw();
+  } catch (e) {
+    $('err').style.display = 'block'; $('err').textContent = 'Error: ' + e.message;
+    $('asof').textContent = 'error';
+  }
+}
+
+$('theme').addEventListener('click', () => {
+  const light = document.documentElement.getAttribute('data-theme') !== 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+  $('theme').textContent = light ? 'Oscuro' : 'Claro';
+  if (DATA.length) draw();
+});
+init();
+</script>
+</body>
+</html>
