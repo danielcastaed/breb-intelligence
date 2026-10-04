@@ -19,7 +19,7 @@ Se descartó un borrador anterior (`breb-intelligence-preview.html`) porque su s
 
 ## Pendiente
 
-- Cotejar con el documento primario las filas marcadas "pendiente cotejo".
+- Cotejar con el documento primario abril, junio y agosto (hoy confirmados solo vía prensa que cita a BanRep). Octubre y enero ya están verificados contra el PDF del documento técnico.
 - Cortes intermedios (marzo, mayo, julio–septiembre) cuando haya fuente fechada.
 - Comparación contra volumen de tarjetas (publicar un JSON anual desde visa-intelligence y leerlo aquí).
 - Refresco periódico (hoy es manual por la limitación de datos).
