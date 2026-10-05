@@ -13,66 +13,90 @@
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   64.0,
-   55.0
+   63.98,
+   55.05,
+   63982177
   ],
   [
    "Celular",
-   22.5,
-   19.3
+   22.47,
+   19.33,
+   22471934
   ],
   [
    "Documento de identidad",
-   15.1,
-   13.0
+   15.13,
+   13.02,
+   15131893
   ],
   [
    "Correo electrónico",
-   10.2,
-   8.8
+   10.19,
+   8.76,
+   10187776
   ],
   [
    "Código de comercio",
-   4.5,
-   3.8
+   4.46,
+   3.84,
+   4460766
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   39.7,
-   53.8
+   39.72,
+   53.83,
+   39716606
   ],
   [
    "Depósito de bajo monto",
-   33.2,
-   45.0
+   33.22,
+   45.01,
+   33215792
   ],
   [
-   "Otros (cuenta corriente, depósito ordinario, bajo monto inclusivo)",
-   0.9,
-   1.2
+   "Cuenta corriente",
+   0.45,
+   0.61,
+   449758
+  ],
+  [
+   "Depósitos ordinarios",
+   0.41,
+   0.55,
+   406229
+  ],
+  [
+   "Depósito bajo monto inclusivo",
+   0.0,
+   0.0,
+   1
   ]
  ],
- "medios_de_pago_nota": "Las dos primeras categorías son etiquetas del reporte; 'Otros' es el residuo hasta el total (73,8 M), derivado aquí.",
+ "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.2,
-   89.3
+   32.23,
+   89.29,
+   32234036
   ],
   "juridicas": [
-   3.9,
-   10.7
+   3.87,
+   10.71,
+   3865804
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   110.0,
-   94.6
+   109.99,
+   94.63,
+   109988061
   ],
   "juridicas": [
-   6.2,
-   5.4
+   6.25,
+   5.37,
+   6246485
   ]
  }
 }

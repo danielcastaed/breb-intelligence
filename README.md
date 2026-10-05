@@ -20,7 +20,8 @@ Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-in
 | `breb_mol_cortes.csv` | Transacciones, valor y ticket acumulados: cierres de mes y último corte | Reporte MOL de BanRep (Power BI público), fecha final exacta |
 | `breb_distribucion_monto.json` | Distribución de transacciones y valor por rango de monto | Reporte MOL |
 | `breb_acceso.json` | QR vs llave (desde el 19-ene-2026) | Reporte MOL, sección de tecnología de acceso |
-| `breb_dice.json` | Llaves por tipo, medios de pago, clientes naturales/jurídicos | Reporte DICE de BanRep |
+| `breb_dice.json` | Último corte: llaves por tipo, medios de pago (5 categorías), clientes y llaves naturales/jurídicas, con cantidades exactas | Reporte DICE de BanRep |
+| `breb_dice_composicion.csv` | Las mismas composiciones en cada captura (`fecha, panel, categoria, cantidad, porcentaje`); crece un corte por actualización | Reporte DICE |
 | `breb_dice_historico.csv` | Totales del DICE en cada captura | Reporte DICE |
 | `breb_llaves_dice.csv` | Llaves por mes: jul-2025 a ene-2026 (documento técnico) y puntos etiquetados del reporte DICE | Documento técnico (Gráfico 6) y reporte DICE |
 | `breb_diario_mol.csv` | Operaciones diarias liquidadas, 6-oct-2025 a 31-ene-2026 | Gráfico 7 del documento técnico, **digitalizado** y validado |
@@ -28,7 +29,7 @@ Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-in
 
 Lo calculado aquí y no publicado se marca como **derivado** en el dashboard (transacciones y valor del mes, promedio diario, crecimiento).
 
-**Validación.** En cada corte, transacciones × ticket reproduce el valor; las tablas de distribución suman exactamente el total; las cifras del 31-ene-2026 coinciden con el documento técnico (370,4 M, $59 billones, $159.456) y varias fechas citadas por la prensa coinciden con el reporte (4-may-2026: 782.218.571 transacciones, ticket $155.755, idéntico a Infobae). La serie diaria digitalizada del Gráfico 7 suma 369,6 M frente a 370,4 M oficial.
+**Validación.** Las composiciones del DICE se leen de los `aria-label` de cada sector (nombre y cantidad exacta) y el script exige que cada panel sume su total (llaves, medios de pago, clientes). En cada corte, transacciones × ticket reproduce el valor; las tablas de distribución suman exactamente el total; las cifras del 31-ene-2026 coinciden con el documento técnico (370,4 M, $59 billones, $159.456) y varias fechas citadas por la prensa coinciden con el reporte (4-may-2026: 782.218.571 transacciones, ticket $155.755, idéntico a Infobae). La serie diaria digitalizada del Gráfico 7 suma 369,6 M frente a 370,4 M oficial.
 
 ## Actualización automática
 
@@ -54,7 +55,6 @@ Ejecutar a mano: *Actions → Actualizar datos de BanRep → Run workflow* (la o
 ## Pendiente
 
 - Serie diaria completa del MOL más allá de enero (el reporte la tiene; hoy solo está digitalizada hasta enero).
-- Distribución de llaves por tipo en cada captura (el reporte etiqueta los valores sin nombre en el texto; hoy se carga a mano) y desglose de medios de pago originados/recibidos.
 - Comparación contra volumen de tarjetas (publicar un JSON anual desde visa-intelligence y leerlo aquí).
 
 ## Vista local

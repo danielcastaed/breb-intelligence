@@ -335,10 +335,10 @@ function draw() {
   const pal = [blue, green, violet, amber, pink];
   charts.push(new Chart($('c-tipo'), { type: 'doughnut',
     data: { labels: DICE.tipos_de_llave.map(t => t[0]), datasets: [{ data: DICE.tipos_de_llave.map(t => t[2]), backgroundColor: pal.map(c => c + 'cc'), borderColor: css('--s1'), borderWidth: 2 }] },
-    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.label + ': ' + nf(c.parsed, 1) + '% · ' + nf(DICE.tipos_de_llave[c.dataIndex][1], 1) + ' M' } } } }) }));
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.label + ': ' + nf(c.parsed, 1) + '% · ' + nf(DICE.tipos_de_llave[c.dataIndex][3], 0) + ' llaves' } } } }) }));
   charts.push(new Chart($('c-medios'), { type: 'doughnut',
-    data: { labels: DICE.medios_de_pago.map(t => t[0].split(' (')[0]), datasets: [{ data: DICE.medios_de_pago.map(t => t[2]), backgroundColor: [blue + 'cc', green + 'cc', amber + 'cc'], borderColor: css('--s1'), borderWidth: 2 }] },
-    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.label + ': ' + nf(c.parsed, 1) + '% · ' + nf(DICE.medios_de_pago[c.dataIndex][1], 1) + ' M' } } } }) }));
+    data: { labels: DICE.medios_de_pago.map(t => t[0].split(' (')[0]), datasets: [{ data: DICE.medios_de_pago.map(t => t[2]), backgroundColor: pal.map(c => c + 'cc'), borderColor: css('--s1'), borderWidth: 2 }] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.label + ': ' + nf(c.parsed, c.parsed < 1 ? 2 : 1) + '% · ' + nf(DICE.medios_de_pago[c.dataIndex][3], 0) + ' medios' } } } }) }));
   charts.push(new Chart($('c-naj'), { type: 'bar',
     data: { labels: ['Clientes con llaves', 'Llaves registradas'], datasets: [
       { label: 'Personas naturales', data: [DICE.clientes.naturales[1], DICE.llaves_por_tipo_de_cliente.naturales[1]], backgroundColor: green + 'bb' },
@@ -400,7 +400,7 @@ function table() {
     'El promedio diario sube de 2,5 M de transacciones en octubre a 7,7 M en septiembre; el valor mensual, de $9,4 a $30,2 billones. El ticket promedio acumulado baja de $160 mil (dic–ene) a $147 mil: cada vez hay más transacciones pequeñas.',
     'Bre-B no creó el volumen de la nada: opera sobre redes de transferencias inmediatas que ya existían (promedio mensual de jul–oct 2025 cercano a 108 M según el Gráfico 5 de BanRep) y las interopera.',
     'El reporte DICE cuenta llaves activas y bloqueadas; entre enero y marzo los puntos de la serie combinan esa base con la del documento técnico, de ahí una diferencia menor (98,8 vs 99,0 M en enero). Los meses sin etiqueta en el gráfico del reporte no se estiman.',
-    'Pendiente: automatizar la lectura mensual de los reportes (ver README), la serie diaria completa más allá de enero, y el desglose por medio de pago originado/recibido.',
+    'Pendiente: la serie diaria completa más allá de enero. La lectura mensual de los reportes es automática (ver README).',
   ].map(t => `<li>${t}</li>`).join('');
 }
 
