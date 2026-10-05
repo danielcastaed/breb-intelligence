@@ -160,19 +160,28 @@ def update_mol(page, url, backfill):
 
     open_report(page, url)
     _, last = available_range(page)
-    wanted = [d for d in month_ends(last) if d.isoformat() not in have]
+    cierres = month_ends(last)
+    faltan_cortes = [d for d in cierres if d.isoformat() not in have]
+    faltan_dist = [d for d in cierres if d.isoformat() not in dist_have]   # la distribución puede faltar aunque el corte ya exista
     if not backfill:
-        wanted = wanted[-2:]  # el mes recién cerrado (y uno de margen)
+        faltan_cortes, faltan_dist = faltan_cortes[-2:], faltan_dist[-2:]  # el mes recién cerrado (y uno de margen)
+    wanted = sorted(set(faltan_cortes) | set(faltan_dist))
     added = []
+    previos = {r["fecha"]: r for r in rows}
 
     for d in wanted:
         set_end_date(page, d)
         txn, valor, ticket, filas = parse_mol(page)
-        rows.append(dict(fecha=d.isoformat(), tipo="mensual", txn_acumuladas=txn, valor_acumulado_cop=valor,
-                         ticket_promedio_cop=ticket, fuente=FUENTE_MOL, nota=""))
-        if d.isoformat() not in dist_have:
-            dist["cortes"].append({"fecha": d.isoformat(), "filas": filas})
-        added.append(d.isoformat())
+        iso = d.isoformat()
+        if iso in previos:   # BanRep puede corregir cifras ya publicadas: se avisa, no se sobrescribe
+            if int(previos[iso]["txn_acumuladas"]) != txn or int(previos[iso]["valor_acumulado_cop"]) != valor:
+                print(f"AVISO: {iso} ya estaba guardado con otras cifras ({previos[iso]['txn_acumuladas']} txn) y el reporte hoy da {txn}")
+        else:
+            rows.append(dict(fecha=iso, tipo="mensual", txn_acumuladas=txn, valor_acumulado_cop=valor,
+                             ticket_promedio_cop=ticket, fuente=FUENTE_MOL, nota=""))
+        if iso not in dist_have:
+            dist["cortes"].append({"fecha": iso, "filas": filas})
+        added.append(iso)
 
     # último corte disponible (reemplaza al anterior "ultimo")
     set_end_date(page, last)
