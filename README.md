@@ -15,7 +15,7 @@ Como en el dashboard de Visa, una barra de filtros arriba afecta toda la página
 | **Franquicia** (todas / Visa / Mastercard / Amex, Diners y otras) | Idem. Con una franquicia, las transacciones de débito no se muestran: la SFC no las reparte | Tarjetas (panorama, franquicias) |
 | **Banco** (selección múltiple) | Filtra las entidades | Adopción > Bancos y entidades |
 
-Las vistas «Quién cede más», «Emisores» y «¿Crecen más lento?» comparan ventanas fijas (desde el lanzamiento frente al mismo periodo de años anteriores) y no responden a los filtros. La distribución por monto solo se puede recortar por período si hay cortes mensuales guardados: ejecutar el workflow con la opción *backfill* los guarda todos.
+Las vistas «Quién cede más», «Emisores» y «¿Crecen más lento?» comparan ventanas fijas (desde el lanzamiento frente al mismo periodo de años anteriores) y no responden a los filtros. La distribución por monto se recorta por período como la diferencia entre dos cortes mensuales acumulados (están guardados los 12 cierres de mes y el último corte); si algún día falta un corte, la barra de filtros avisa y la gráfica muestra el acumulado. El workflow mensual guarda cada cierre nuevo, y con la opción *backfill* revisa y completa los que falten.
 
 ## Cómo está organizado
 
