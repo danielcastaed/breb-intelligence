@@ -8,7 +8,7 @@ solapan entre sí.
 Escribe todo el histórico (la SFC corrige meses anteriores, así que se reescribe completo):
   data/tarjetas_sfc_mensual.csv     compras y retiros por producto (crédito / débito)
   data/tarjetas_sfc_franquicia.csv  compras por producto y franquicia
-  data/tarjetas_sfc_emisores_credito.csv  compras de crédito por emisor (Visa y Mastercard), desde ene-2024
+  data/tarjetas_sfc_emisores_credito.csv  compras de crédito por emisor (Visa y Mastercard), desde oct-2023
 No necesita credenciales ni dependencias externas.
 
 Franquicia. En crédito la SFC la reporta directo (campo nombre_uca). En débito no: se estima por emisor y mes con la
@@ -32,7 +32,7 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 OUT = DATA / "tarjetas_sfc_mensual.csv"
 OUT_FRANQ = DATA / "tarjetas_sfc_franquicia.csv"
 OUT_EMISORES = DATA / "tarjetas_sfc_emisores_credito.csv"
-EMISORES_DESDE = "2024-01"
+EMISORES_DESDE = "2023-10"
 FRANQ_CREDITO = {"CREDIBANCO-VISA": "VISA", "MASTERCARD": "MASTERCARD", "AMERICAN EXPRESS": "AMEX", "DINERS": "DINERS",
                  "OTRAS TARJETAS DE CREDITO": "OTRAS"}
 BANCOS_100_MC = {"SCOTIABANK COLPATRIA S.A.", "BANCO FALABELLA S.A.", "MIBANCO S.A.", "NU FINANCIERA S.A."}
