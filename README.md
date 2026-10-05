@@ -46,7 +46,7 @@ La dirección lleva la clave del reporte; si BanRep lo republica con otra clave,
 
 Ejecutar a mano: *Actions → Actualizar datos de BanRep → Run workflow* (la opción `backfill` revisa todos los cierres de mes).
 
-**Estado:** verificado en GitHub Actions el 4-oct-2026 (corrida manual en verde, commit del bot incluido). Las cifras que leyó el runner coinciden dígito a dígito con las capturadas a mano. Ojo con los secrets: deben ser la URL del reporte completo, no la de la portada.
+**Estado:** verificado en GitHub Actions el 4-oct-2026. El runner lee cortes mensuales, serie diaria (363 días), tipos de llave, medios de pago y clientes, y reproduce byte a byte los archivos de `data/` que se habían capturado a mano en Chrome (la corrida terminó en verde y sin cambios que publicar). Un corte nuevo genera un commit del bot. Ojo con los secrets: deben ser la URL del reporte completo, no la de la portada.
 
 - `BREB_MOL_URL` → el reporte de `banrep.gov.co/es/bre-b/indicadores-mol` ("Indicadores MOL", el que tiene el filtro de fecha). El de `/indicadores` es solo la portada ("Intro") y no sirve.
 - `BREB_DICE_URL` → el de `/indicadores-dice` ("Total de llaves registradas").
