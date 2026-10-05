@@ -214,6 +214,28 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <p class="fn"><span class="tag d">derivado</span> Bre-B del mes ÷ compras con tarjeta del mismo mes.</p>
     </div>
   </div>
+  <div class="g2">
+    <div class="card">
+      <h3>Valor por mes, por producto y franquicia (billones COP)</h3>
+      <div class="chart tall"><canvas id="c-vs-franq"></canvas></div>
+      <p class="fn">Barras: compras con tarjeta. Línea: Bre-B. <span class="tag d">estimado</span> el débito por franquicia (ver nota).</p>
+    </div>
+    <div class="card">
+      <h3>Peso en el valor combinado (%)</h3>
+      <div class="chart tall"><canvas id="c-vs-peso"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + Bre-B) del mes. Muestra cuánto pesa Bre-B si se pone junto a las franquicias.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <h3 id="vs-tbl-h"></h3>
+    <div class="tbl-wrap">
+      <table style="min-width:760px">
+        <thead><tr><th>Producto · franquicia</th><th>Compras (B COP)</th><th>% de las tarjetas</th><th>Transacciones (M)</th><th>Ticket (COP)</th><th>Bre-B equivale a</th></tr></thead>
+        <tbody id="vs-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="vs-franq-fn"></p>
+  </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
 
   <div class="sec"><span>Contexto</span><i></i></div>
@@ -268,7 +290,7 @@ function parseCSV(txt) {
 }
 const load = async (p, json) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error('No se pudo cargar ' + p + ' (' + r.status + ')'); return json ? r.json() : parseCSV(await r.text()); };
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [];
+let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [], TARJF = [];
 
 function line(label, pts, color, fill) {
   return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
@@ -293,6 +315,13 @@ function vsData() {
     const b = bre[t.mes], n = t.credito_compras_num + t.debito_compras_num, v = t.credito_compras_cop + t.debito_compras_cop;
     return { mes: t.mes, label: b ? b.label : mlabel(t.mes + '-01'), t, n, v, b, rN: b ? b.txn / n * 100 : null, rV: b ? b.valor / v * 100 : null };
   });
+}
+
+// Compras por producto y franquicia: mes -> { 'credito_VISA': {cop, num}, ... }
+function vsFranq() {
+  const by = {};
+  TARJF.forEach(r => { (by[r.mes] = by[r.mes] || {})[r.producto + '_' + r.franquicia] = r; });
+  return by;
 }
 
 function draw() {
@@ -374,6 +403,26 @@ function draw() {
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 0) + '%' } } },
       scales: { x: catX, y: { beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
 
+  // Por producto y franquicia
+  const BF = vsFranq(), gf = (m, k) => (BF[m] && BF[m][k] ? BF[m][k].cop : 0);
+  const stk = (label, color, alpha, fnv) => ({ type: 'bar', label, data: VS.map(r => +(fnv(r.mes) / 1e12).toFixed(2)), backgroundColor: color + alpha, borderColor: color, borderWidth: 1, order: 2, stack: 'tarjetas' });
+  charts.push(new Chart($('c-vs-franq'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
+      stk('Visa crédito', blue, 'cc', m => gf(m, 'credito_VISA')), stk('Visa débito (est.)', blue, '55', m => gf(m, 'debito_VISA')),
+      stk('Mastercard crédito', amber, 'cc', m => gf(m, 'credito_MASTERCARD')), stk('Mastercard débito (est.)', amber, '55', m => gf(m, 'debito_MASTERCARD')),
+      stk('Amex, Diners y otras', tick, '88', m => gf(m, 'credito_AMEX') + gf(m, 'credito_DINERS') + gf(m, 'credito_OTRAS')),
+      { ...line('Bre-B', VS.map(r => (r.b ? +(r.b.valor / 1e12).toFixed(2) : null)), green, false), type: 'line', order: 1 }] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': $' + nf(c.parsed.y, 2) + ' B' } } },
+      scales: { x: { ...catX, stacked: true }, y: { ...yAxis(v => nf(v, 0)), stacked: true } } }) }));
+  const pesoDe = r => { const f = k => gf(r.mes, k), tot = r.v + r.b.valor; return [
+    (f('credito_VISA') + f('debito_VISA')) / tot, (f('credito_MASTERCARD') + f('debito_MASTERCARD')) / tot,
+    (f('credito_AMEX') + f('credito_DINERS') + f('credito_OTRAS')) / tot, r.b.valor / tot].map(x => +(x * 100).toFixed(1)); };
+  const peso = VR.map(pesoDe);
+  const pes = (label, color, i) => ({ label, data: peso.map(x => x[i]), backgroundColor: color + 'bb', borderColor: color, borderWidth: 1 });
+  charts.push(new Chart($('c-vs-peso'), { type: 'bar', data: { labels: VR.map(r => r.label), datasets: [
+      pes('Visa', blue, 0), pes('Mastercard', amber, 1), pes('Amex, Diners y otras', tick, 2), pes('Bre-B', green, 3)] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
+      scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
+
   // DICE
   charts.push(new Chart($('c-keys'), { type: 'line',
     data: { datasets: [line('Llaves (M)', KEYS.map(k => ({ x: k.day, y: k.v })), blue, false)] },
@@ -424,6 +473,27 @@ function statics() {
     + `<br><span class="tag o">oficial</span> Tarjetas: compras con tarjeta de crédito (nacionales) y débito que reportan los establecimientos de crédito a la SFC, ${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos «Tarjetas de crédito y débito»')}; sin retiros ni compras en el exterior. La SFC publica con rezago (último mes: ${lastTarj.label}). `
     + `Se usan las cifras de los emisores, que cuentan cada tarjeta una vez; las administradoras de sistemas de pago (Credibanco, Redeban, redes de Visa y Mastercard) reportan lo que procesa su red y en 2025 sumaron entre 1,4 y 1,6 veces esas cifras, porque una misma compra puede contarse en la red y en el adquirente, así que no se suman. `
     + `No es una comparación uno a uno: Bre-B incluye transferencias entre personas y pagos a comercios, y parte de su volumen no sale de una compra con tarjeta.`;
+  const BFm = vsFranq()[lastTarj.mes] || {}, gk = k => BFm[k] || { cop: 0, num: null }, sumK = ks => ks.reduce((a, k) => a + gk(k).cop, 0);
+  const TJ = vL.t, bre = vL.b, totCop = vL.v, totNum = vL.n;
+  const fila = (nombre, cop, num, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
+    + `<td class="n">${nf(cop / 1e12, 2)}</td><td class="n">${nf(cop / totCop * 100, 1)}%</td><td class="n">${num == null ? '—' : nf(num / 1e6, 1)}</td>`
+    + `<td class="n">${num == null ? '—' : '$' + nf(cop / num, 0)}</td><td class="n">${extra.noRatio ? '—' : nf(bre.valor / cop, 1) + ' veces'}</td></tr>`;
+  const cr = (nombre, k, noRatio) => fila(nombre, gk(k).cop, gk(k).num, { pad: true, noRatio });
+  const crTot = sumK(['credito_VISA', 'credito_MASTERCARD', 'credito_AMEX', 'credito_DINERS', 'credito_OTRAS']);
+  $('vs-tbl-h').textContent = `Compras con tarjeta y Bre-B en ${lastTarj.label}, por producto y franquicia`;
+  $('vs-tbody').innerHTML = [
+    fila('Crédito', crTot, TJ.credito_compras_num, { bold: true }),
+    cr('Visa', 'credito_VISA'), cr('Mastercard', 'credito_MASTERCARD'), cr('American Express', 'credito_AMEX', true), cr('Diners', 'credito_DINERS', true), cr('Otras tarjetas de crédito', 'credito_OTRAS', true),
+    fila('Débito', TJ.debito_compras_cop, TJ.debito_compras_num, { bold: true }),
+    fila('Visa <span class="tag d">estimado</span>', gk('debito_VISA').cop, null, { pad: true }), fila('Mastercard <span class="tag d">estimado</span>', gk('debito_MASTERCARD').cop, null, { pad: true }),
+    fila('Total tarjetas', totCop, totNum, { bold: true }),
+    fila('Visa, crédito + débito <span class="tag d">estimado</span>', sumK(['credito_VISA', 'debito_VISA']), null, { pad: true }),
+    fila('Mastercard, crédito + débito <span class="tag d">estimado</span>', sumK(['credito_MASTERCARD', 'debito_MASTERCARD']), null, { pad: true }),
+    fila('Amex, Diners y otras', sumK(['credito_AMEX', 'credito_DINERS', 'credito_OTRAS']), null, { pad: true, noRatio: true }),
+    `<tr><td style="font-weight:600;color:var(--green)">Bre-B (${vL.label})</td><td class="n">${nf(bre.valor / 1e12, 2)}</td><td class="n">${nf(bre.valor / totCop * 100, 1)}%</td><td class="n">${nf(bre.txn / 1e6, 1)}</td><td class="n">$${nf(bre.ticket, 0)}</td><td class="n">—</td></tr>`,
+  ].join('');
+  $('vs-franq-fn').innerHTML = `<span class="tag o">oficial</span> Crédito por franquicia: lo que reporta la SFC (compras nacionales). <span class="tag d">estimado</span> Débito por franquicia: la SFC no lo reporta; se reparte el valor de cada emisor según sus ingresos por tarifa interbancaria (TII) de Visa y de Mastercard, con excepciones manuales (Scotiabank Colpatria, Falabella, Mibanco y Nu: 100% Mastercard; JFK: 100% Visa, confirmado por Visa Colombia) y Mastercard por defecto si el emisor no reporta TII. A jul-2026, cerca del 95% del valor de débito sale del reparto por TII, 4% de las excepciones y 1% cae por defecto. `
+    + `Las filas de débito por franquicia y los totales por franquicia no llevan transacciones ni ticket porque no hay un reparto equivalente del número de transacciones. «Bre-B equivale a» = valor de Bre-B del mes ÷ valor de esa fila; no es una cuota de mercado, porque Bre-B también mueve transferencias entre personas.`;
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -463,14 +533,15 @@ function table() {
 
 async function init() {
   try {
-    const [cuts, daily, keys, ctx, dice, dist, acc, tarj] = await Promise.all([
+    const [cuts, daily, keys, ctx, dice, dist, acc, tarj, tarjf] = await Promise.all([
       load('data/breb_mol_cortes.csv'), load('data/breb_diario_mol.csv'), load('data/breb_llaves_dice.csv'),
-      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv')]);
+      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv'), load('data/tarjetas_sfc_franquicia.csv')]);
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
     DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
     KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
+    TARJF = tarjf.map(r => ({ mes: r.mes, producto: r.producto, franquicia: r.franquicia, cop: +r.compras_cop, num: r.compras_num === '' ? null : +r.compras_num }));
     TARJ = tarj.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, k === 'mes' ? v : +v])));
     if (CUTS.length < 3) throw new Error('Datos insuficientes');
     derive();
