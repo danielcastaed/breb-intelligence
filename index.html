@@ -229,7 +229,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
 
   <section class="tab" id="tab-tarjetas">
     <div class="subtabs" id="subtabs">
-      <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/transacciones" data-s="transacciones">Transacciones</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
+      <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/transacciones" data-s="transacciones">Transacciones</a><a href="#tarjetas/cede" data-s="cede">Quién cede más</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
     </div>
     <div class="sub" data-sub="panorama">
     <p class="lec" id="lec-panorama"></p>
@@ -276,16 +276,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
     </div>
     <p class="fn" id="vs-franq-fn"></p>
   </div>
-  <div class="card" style="margin-top:8px">
-    <h3 id="ced-h">¿Quién cede más participación?</h3>
-    <div class="tbl-wrap">
-      <table style="min-width:860px">
-        <thead><tr><th>Segmento</th><th>Peso antes de Bre-B</th><th>Peso hoy</th><th>Cambio del peso</th><th>Valor acumulado, vs. mismo periodo del año anterior</th><th>Año anterior, vs. el previo</th><th>Cuota entre tarjetas</th></tr></thead>
-        <tbody id="ced-tbody"></tbody>
-      </table>
-    </div>
-    <p class="fn" id="ced-fn"></p>
-  </div>
+  
     </div>
     <div class="sub" data-sub="transacciones">
     <p class="lec" id="lec-transacciones"></p>
@@ -300,6 +291,20 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
       <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
       <p class="fn"><span class="tag d">derivado</span> Suma de meses frente a la suma del mismo periodo del año anterior: desde el lanzamiento (con Bre-B) y el periodo equivalente previo.</p>
     </div>
+  </div>
+  
+    </div>
+    <div class="sub" data-sub="cede">
+    <p class="lec" id="lec-cede"></p>
+  <div class="card" style="margin-top:8px">
+    <h3 id="ced-h">¿Quién cede más participación?</h3>
+    <div class="tbl-wrap">
+      <table style="min-width:860px">
+        <thead><tr><th>Segmento</th><th>Peso antes de Bre-B</th><th>Peso hoy</th><th>Cambio del peso</th><th>Valor acumulado, vs. mismo periodo del año anterior</th><th>Año anterior, vs. el previo</th><th>Cuota entre tarjetas</th></tr></thead>
+        <tbody id="ced-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="ced-fn"></p>
   </div>
   <div class="card" style="margin-top:8px">
     <h3 id="ced-t-h">¿Quién cede más participación? Por número de transacciones</h3>
@@ -473,7 +478,7 @@ function klData() {
 }
 
 // Navegación por pestañas (#resumen, #tarjetas/lento, ...) y notas largas plegadas
-const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'transacciones', 'emisores', 'lento', 'llaves'];
+const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'transacciones', 'cede', 'emisores', 'lento', 'llaves'];
 let tabActual = null;
 function ir() {
   const [t0, s0] = (location.hash.slice(1) || 'resumen').split('/'), t = TABS.includes(t0) ? t0 : 'resumen', sub = SUBS.includes(s0) ? s0 : 'panorama';
@@ -850,6 +855,9 @@ function statics() {
   $('lec-franquicias').innerHTML = `En ${vL.label}, Bre-B movió <b>${f1(bre.valor / sumK(['credito_VISA', 'debito_VISA']))} veces</b> el valor de Visa y <b>${f1(bre.valor / sumK(['credito_MASTERCARD', 'debito_MASTERCARD']))} veces</b> el de Mastercard (crédito + débito; el débito por franquicia es estimado). Casi toda la pérdida de peso de las tarjetas es dilución, no sustitución.`;
   $('lec-transacciones').innerHTML = `Bre-B pesa <b>${f1(breT(mHoy) / totT(mHoy) * 100)}%</b> de las transacciones combinadas y ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor, porque su ticket es más alto que el de las tarjetas. En puntos cede más el débito, por ser el segmento más grande.`;
   $('lec-emisores').innerHTML = `<b>${eMC.nombre}</b> aporta ${f1(eMC.aporte)}% del aumento de Mastercard crédito y <b>${eV.nombre}</b> ${f1(eV.aporte)}% del de Visa; sin ellos, las dos franquicias crecen ${sg(eMC.gx)}% y ${sg(eV.gx)}%.`;
+  const dPP = FILAS.filter(f => !f[2]).map(([n, ks]) => { const w0 = segV(mAntes, ks) / tot(mAntes) * 100, w1 = segV(mHoy, ks) / tot(mHoy) * 100; return [n.replace(/ <span.*$/, ''), w1 - w0, (w1 / w0 - 1) * 100]; });
+  const mayorPP = [...dPP].sort((a, b) => a[1] - b[1])[0], mayorRel = [...dPP].sort((a, b) => a[2] - b[2])[0];
+  $('lec-cede').innerHTML = `<b>Casi toda la caída de peso es dilución:</b> Bre-B pesa ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor y ${f1(breT(mHoy) / totT(mHoy) * 100)}% de las transacciones combinadas. En puntos cede más ${mayorPP[0]} (${sg(mayorPP[1])} pp) y, en términos relativos, ${mayorRel[0]} (${sg(mayorRel[2])}%). ${bajan.length ? 'Lo único que baja de verdad en valor: ' + bajan.join(', ') + '.' : 'Ningún segmento baja en valor.'}`;
   $('lec-lento').innerHTML = lLen;
   $('lec-llaves').innerHTML = `Hay <b>${f1(DT.llaves / vigT)} llaves por cada tarjeta vigente</b>. Al mes, una tarjeta hace ${f1(lastTarj.n / vigT)} compras y una llave de Bre-B ${f1(KLd.bre[lastTarj.mes].txn / (kJ * 1e6))} transacciones (${lastTarj.label}).`;
   const ult = CUTS[CUTS.length - 1], mUlt = MONTHS[MONTHS.length - 1];

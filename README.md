@@ -14,7 +14,7 @@ El dashboard es una sola página con pestañas (el enlace conserva la vista, por
 | **Volumen** | Transacciones y valor por mes, crecimiento, serie diaria |
 | **Adopción** | Rangos de monto, entidades, origen, QR vs llave |
 | **Llaves** | Directorio DICE: llaves por tipo, medios de pago, naturales y jurídicas |
-| **Tarjetas** | Seis subvistas: Panorama, Franquicias y productos, Transacciones, Emisores, ¿Crecen más lento?, Tarjetas y llaves; cada una abre con una línea de lectura |
+| **Tarjetas** | Siete subvistas: Panorama, Franquicias y productos, Transacciones, Quién cede más, Emisores, ¿Crecen más lento?, Tarjetas y llaves; cada una abre con una línea de lectura |
 | **Datos y notas** | Fuentes, contexto, tabla de cortes y notas |
 
 Las notas largas de cada gráfico están plegadas en «Cómo leerlo y salvedades».
