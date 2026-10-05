@@ -1,0 +1,1240 @@
+{
+ "corte": "2026-07-27",
+ "fuente": "https://www.banrep.gov.co/es/bre-b/preguntas-frecuentes/participantes",
+ "titulo": "¿Cuáles son las entidades participantes de Bre-B?",
+ "nota": "Lista oficial de BanRep, «Última actualización: 27 de julio de 2026». El tipo «banco» es una clasificación propia a partir del nombre; el resto no se clasifica.",
+ "sistemas": [
+  "CREDIBANCO",
+  "REDEBAN",
+  "SERVIBANCA",
+  "TRANSFIYA",
+  "VISIONAMOS"
+ ],
+ "entidades": [
+  {
+   "nombre": "A&C COLANTA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "ACCIONES Y VALORES",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "ACOMFENALCO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "AFROAMERICANA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "ALCALICOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "AMAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "AVANCOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "BADIVENCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "BAN100",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "BANCAMIA S A",
+   "tipo": "banco",
+   "sfc": "BANCO DE LAS MICROFINANZAS BANCAMIA S.A."
+  },
+  {
+   "nombre": "BANCO AGRARIO",
+   "tipo": "banco",
+   "sfc": "BANCO AGRARIO DE COLOMBIA S.A."
+  },
+  {
+   "nombre": "BANCO AV VILLAS",
+   "tipo": "banco",
+   "sfc": "BANCO COMERCIAL AV VILLAS S.A."
+  },
+  {
+   "nombre": "BANCO BTG PACTUAL",
+   "tipo": "banco",
+   "sfc": null
+  },
+  {
+   "nombre": "BANCO CAJA SOCIAL",
+   "tipo": "banco",
+   "sfc": "BANCO CAJA SOCIAL S.A."
+  },
+  {
+   "nombre": "BANCO CONTACTAR",
+   "tipo": "banco",
+   "sfc": null
+  },
+  {
+   "nombre": "BANCO DAVIVIENDA",
+   "tipo": "banco",
+   "sfc": "BANCO DAVIVIENDA S.A."
+  },
+  {
+   "nombre": "BANCO DE BOGOTA",
+   "tipo": "banco",
+   "sfc": "BANCO DE BOGOTA S. A."
+  },
+  {
+   "nombre": "BANCO DE OCCIDENTE",
+   "tipo": "banco",
+   "sfc": "BANCO DE OCCIDENTE S.A."
+  },
+  {
+   "nombre": "BANCO FALABELLA",
+   "tipo": "banco",
+   "sfc": "BANCO FALABELLA S.A."
+  },
+  {
+   "nombre": "BANCO FINANDINA",
+   "tipo": "banco",
+   "sfc": "BANCO FINANDINA S.A."
+  },
+  {
+   "nombre": "BANCO ITAÚ",
+   "tipo": "banco",
+   "sfc": "ITAU CORPBANCA COLOMBIA S.A."
+  },
+  {
+   "nombre": "BANCO MUNDO MUJER",
+   "tipo": "banco",
+   "sfc": "BANCO MUNDO MUJER S.A."
+  },
+  {
+   "nombre": "BANCO POPULAR",
+   "tipo": "banco",
+   "sfc": "BANCO POPULAR S.A."
+  },
+  {
+   "nombre": "BANCO SANTANDER",
+   "tipo": "banco",
+   "sfc": null
+  },
+  {
+   "nombre": "BANCO SERFINANZA",
+   "tipo": "banco",
+   "sfc": "BANCO SERFINANZA S.A."
+  },
+  {
+   "nombre": "BANCO SUDAMERIS",
+   "tipo": "banco",
+   "sfc": "BANCO GNB SUDAMERIS S.A."
+  },
+  {
+   "nombre": "BANCO UNION",
+   "tipo": "banco",
+   "sfc": "BANCO UNIÓN S.A."
+  },
+  {
+   "nombre": "BANCO W",
+   "tipo": "banco",
+   "sfc": "BANCO W S.A."
+  },
+  {
+   "nombre": "BANCOLOMBIA",
+   "tipo": "banco",
+   "sfc": "BANCOLOMBIA S.A."
+  },
+  {
+   "nombre": "BANCOOMEVA",
+   "tipo": "banco",
+   "sfc": "BANCO COOMEVA S.A."
+  },
+  {
+   "nombre": "BBVA COLOMBIA",
+   "tipo": "banco",
+   "sfc": "BANCO BILBAO VIZCAYA ARGENTARIA COLOMBIA S.A. BBVA COLOMBIA"
+  },
+  {
+   "nombre": "BENEFICIAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "BIENESTAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "BOLD",
+   "tipo": "otra",
+   "sfc": "BOLD C.F.\", \"BOLD CF S.A.\", O \"BOLD. CF"
+  },
+  {
+   "nombre": "CAJA UNION",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CANAPRO CAC",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CARDIOCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CAVIPETROL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CEMCOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CESCA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CFA",
+   "tipo": "otra",
+   "sfc": "COOPERATIVA FINANCIERA DE ANTIOQUIA CFA"
+  },
+  {
+   "nombre": "CIDESA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COAPAZ",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COASMEDAS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COBELÉN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CODELCAUCA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CODEMA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COEDUCADORES BOYACA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COESCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COFACENEIVA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COFINAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COINK",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COINPROGUA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COLTEFINANCIERA",
+   "tipo": "otra",
+   "sfc": "COLTEFINANCIERA S.A C.F"
+  },
+  {
+   "nombre": "COMEDAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COMERCIACOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COMULSEB",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COMULTRASAN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COMUNA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CONEXRED",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CONFIAMOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CONFIAR",
+   "tipo": "otra",
+   "sfc": "CONFIAR COOPERATIVA FINANCIERA"
+  },
+  {
+   "nombre": "CONGENTE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CONSOLARIDAD",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOABEJORRAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOACUEDUCTO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOBAGRE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOCREAFAM",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COODIN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOEDUCAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOFINANCIAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOFIPOPULAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOFISAM",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOFRASA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOGOMEZPLATA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOGRANADA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOINDEGABO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOINPE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMBEL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMEC",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMPARTIR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMSERVI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMULDESA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMULTAGRO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOMULTRAISS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COONECTA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COONFIE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPACREDITO SANTA ROSA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPANTEX",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPARAMO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPCANAPRO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPCARVAJAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPCENTRAL",
+   "tipo": "banco",
+   "sfc": "BANCO COOPERATIVO COOPCENTRAL S.A."
+  },
+  {
+   "nombre": "COOPEAIPE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPEBIS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPECREDITO ENTRERRIOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPEMSURA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPEMTOL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPERATIVA ALIANZA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPERATIVA AVANZA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPERATIVA AVP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPERATIVA CUB",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPEREN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPERENKA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPETEXAS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPETRABAN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPETROL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPICREDITO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPIGON",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPINTEGRATE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPIO XII",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPJUDICIAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPLAROSA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPMACEO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPRIACHON",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPROCAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPROFESIONALES",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPROFESORES",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPROFESORESUN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPRUDEA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSANFRANCISCO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSANSIMON",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSERVIVÉLEZ",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSIGLOXX",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSOCIAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSURAMERICANA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPSUYA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPTENJO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRAIM",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPTRAISS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPVALLE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOPYARUMAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOSANANDRESITO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOSANLUIS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOSANROQUE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOSERVUNAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOSVICENTE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTEP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRACERREJON",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRACHEC",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRADECUN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRAIPI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRAMED",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRAPELDAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRASENA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTRAUNION",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOTREGUA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COOVITEL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COPACREDITO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COPROCENVA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COPVILLANUEVA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CORPECOL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COTRAFA",
+   "tipo": "otra",
+   "sfc": "COTRAFA FINANCIERA"
+  },
+  {
+   "nombre": "COTRASENA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COVICSS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "COY-AMOR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CREARCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CRECIAT",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CREDIFLORES",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CREDIFUTURO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CREDISERVIR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "CREZCAMOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "DALE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "DAVIBANK",
+   "tipo": "banco",
+   "sfc": null
+  },
+  {
+   "nombre": "DAVIPLATA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FACREDIG",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FAPUN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FAVI UTP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEBOR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FECEDA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FECEL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FECSA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEDANE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEDEJOHNSON",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEDIAN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEG",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FELAFRANCOL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEMPHA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEPIMSA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FESICOL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FETRABUV",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FEU QUINDIO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FINANCIAFONDOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FINANCIERA COAGROSUR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FINANCIERA COFINCAFE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FINCOMERCIO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FINECOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FODEBAX",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FODELSA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FODEMCA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FODUN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FOMANORT",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONALIANZA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONCALDAS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONDECOM",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONDECOR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONDUCAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONEDH",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONFABRICAFE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONEM PLUS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONRECAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FONVALLE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "FORJAR",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "GRANCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "JFK",
+   "tipo": "otra",
+   "sfc": "JFK COOPERATIVA FINANCIERA"
+  },
+  {
+   "nombre": "JURISCOOP",
+   "tipo": "otra",
+   "sfc": "FINANCIERA JURISCOOP C.F."
+  },
+  {
+   "nombre": "KAMIN",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "KUSHKI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "LULO BANK",
+   "tipo": "banco",
+   "sfc": "LULO BANK"
+  },
+  {
+   "nombre": "MANUELITACOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MICROEMPRESAS DE COLOMBIA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MILENIO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MONO COLOMBIA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MOVII",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MULTIACOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MULTICOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MULTIEMPRESAS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MULTIROBLE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MUTUAL CANAPRO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MUTUAL INTEGRAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "MUTUAL SAN JERONIMO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "NEQUI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "NU COLOMBIA",
+   "tipo": "otra",
+   "sfc": "NU O NU FINANCIERA"
+  },
+  {
+   "nombre": "NUVEI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "ORBISCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PAYMENTS WAY SOLUTIONS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PAYU",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PEXTO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "POWWI",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PRESENTE",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PREVENSERVICIOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PROMEDICO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "PROSPERANDO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "RAPPIPAY",
+   "tipo": "otra",
+   "sfc": "RAPPIPAY"
+  },
+  {
+   "nombre": "SERVICONAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "SERVIMCOOP",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "SERVITRUST",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "SUCREDITO",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "TAX LA FERIA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "TECNIPAGOS",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "TELEPOSTAL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "UALÁ",
+   "tipo": "otra",
+   "sfc": "BANCAR TECNOLOGÍA CO S.A. COMPAÑÍA DE FINANCIAMIENTO"
+  },
+  {
+   "nombre": "UTRAHUILCA",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "VIDASOL",
+   "tipo": "otra",
+   "sfc": null
+  },
+  {
+   "nombre": "WOMPI",
+   "tipo": "otra",
+   "sfc": null
+  }
+ ]
+}

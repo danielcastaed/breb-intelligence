@@ -12,7 +12,7 @@ El dashboard es una sola página con pestañas (el enlace conserva la vista, por
 |---|---|
 | **Resumen** | Cifras clave y cinco mensajes con enlace a su detalle |
 | **Volumen** | Transacciones y valor por mes, crecimiento, serie diaria |
-| **Adopción** | Rangos de monto, entidades, origen, QR vs llave |
+| **Adopción** | General (rangos de monto, entidades, origen, QR vs llave) y **Bancos y entidades** (lista oficial de participantes, tarjetas de cada banco y cifras por banco de prensa) |
 | **Llaves** | Directorio DICE: llaves por tipo, medios de pago, naturales y jurídicas |
 | **Tarjetas** | Seis subvistas: Panorama (valor y transacciones), Franquicias y productos, Quién cede más, Emisores, ¿Crecen más lento?, Tarjetas y llaves; cada una abre con una línea de lectura |
 | **Datos y notas** | Fuentes, contexto, tabla de cortes y notas |
@@ -42,6 +42,9 @@ Las notas largas de cada gráfico están plegadas en «Cómo leerlo y salvedades
 | `breb_llaves_dice.csv` | Llaves por mes: jul-2025 a ene-2026 (documento técnico) y puntos etiquetados del reporte DICE | Documento técnico (Gráfico 6) y reporte DICE |
 | `breb_diario_mol.csv` | Transacciones por día, desde el 6-oct-2025 hasta el último corte (`fecha, transacciones`, enteros exactos) | Gráfico de evolución del reporte MOL (valor en el `aria-label` de cada barra, fecha del eje) |
 | `tarjetas_sfc_mensual.csv` | Compras con tarjeta de crédito (nacionales) y débito, y retiros con débito, por mes desde ene-2015: número y monto en COP, más tarjetas vigentes a la fecha de corte (solo la línea de total, sin las subcategorías contactless / sin chip). Base de emisores; sin administradoras de sistemas de pago | Datos abiertos de la SFC, conjunto [Tarjetas de crédito y débito](https://www.datos.gov.co/d/h2jg-r3zg) (`scripts/fetch_sfc_tarjetas.py`) |
+| `breb_participantes.json` | Lista oficial de entidades participantes de Bre-B (245 entidades y 5 sistemas de pago), con el cruce al nombre que usa la SFC. **Se actualiza a mano**: la página de BanRep tiene captcha | [BanRep, entidades participantes](https://www.banrep.gov.co/es/bre-b/preguntas-frecuentes/participantes), actualizada el 27-jul-2026 |
+| `breb_bancos_prensa.json` | Transacciones, valor y llaves de algunos bancos al 7-feb-2026. Dato de prensa, no verificable contra un reporte oficial; BanRep no publica volumen por banco | [La República](https://www.larepublica.co/finanzas/bancolombia-y-davivienda-son-los-bancos-que-mas-dinero-mueven-a-traves-de-bre-b-4321886) |
+| `tarjetas_sfc_entidades.csv` | Tarjetas vigentes y compras por entidad en el último mes (tipo de entidad oficial de la SFC) | Datos abiertos de la SFC (`scripts/fetch_sfc_tarjetas.py`) |
 | `tarjetas_sfc_franquicia.csv` | Compras por producto y franquicia, por mes. Crédito: directo de la SFC (valor y número). Débito: valor **estimado** por franquicia con la llave de ingresos por tarifa interbancaria (TII) de Visa y Mastercard, con las excepciones manuales del análisis de tarjetas (Scotiabank Colpatria, Falabella, Mibanco y Nu 100 % Mastercard; JFK 100 % Visa) | Datos abiertos de la SFC (`scripts/fetch_sfc_tarjetas.py`) |
 | `tarjetas_sfc_emisores_credito.csv` | Compras de crédito (número y monto) por emisor para Visa y Mastercard, desde oct-2023; suma exacta la franquicia | Datos abiertos de la SFC (`scripts/fetch_sfc_tarjetas.py`) |
 | `breb_contexto.json` | Entidades participantes, origen de operaciones, contexto | Documento técnico de BanRep (feb 2026) |

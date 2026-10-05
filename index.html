@@ -172,6 +172,8 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
   </section>
 
   <section class="tab" id="tab-adopcion">
+    <div class="subtabs" data-tab="adopcion"><a href="#adopcion/general" data-s="general">General</a><a href="#adopcion/bancos" data-s="bancos">Bancos y entidades</a></div>
+    <div class="sub" data-tab="adopcion" data-sub="general">
   <div class="g3">
     <div class="card">
       <h3 id="dist-title">Distribución por rango de monto</h3>
@@ -200,6 +202,33 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
       <ul class="facts" id="p2p"></ul>
     </div>
   </div>
+      </div>
+    <div class="sub" data-tab="adopcion" data-sub="bancos">
+      <p class="lec" id="lec-bancos"></p>
+      <div class="g2" style="margin-top:0">
+        <div class="card">
+          <h3>Transacciones por banco (millones, prensa)</h3>
+          <div class="chart tall"><canvas id="c-bk-prensa"></canvas></div>
+          <p class="fn"><span class="tag">prensa</span> Cifras de La República del 7-feb-2026 (el sistema sumaba 390,1 M); solo algunos bancos y de hace ocho meses.</p>
+        </div>
+        <div class="card">
+          <h3>Tarjetas vigentes por entidad (SFC, millones)</h3>
+          <div class="chart tall"><canvas id="c-bk-tarj"></canvas></div>
+          <p class="fn">Las 12 entidades con más tarjetas. En rosa y con * las que no aparecen en la lista de participantes de BanRep.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:8px">
+        <h3 id="bk-h"></h3>
+        <div class="tbl-wrap">
+          <table style="min-width:860px">
+            <thead><tr><th>Entidad</th><th>Tipo (SFC)</th><th>En la lista de BanRep</th><th>Tarjetas débito (M)</th><th>Tarjetas crédito (M)</th><th>Compras con tarjeta (B COP)</th><th>Bre-B, prensa: txn (M)</th><th>Bre-B, prensa: valor (B COP)</th></tr></thead>
+            <tbody id="bk-tbody"></tbody>
+          </table>
+        </div>
+        <p class="fn" id="bk-fn"></p>
+      </div>
+      <div class="card" style="margin-top:8px"><details class="fnd" style="border-top:none;margin-top:0;padding-top:0"><summary>Ver la lista completa de participantes de Bre-B</summary><p class="fn" id="bk-lista" style="border-top:none"></p></details></div>
+    </div>
   </section>
 
   <section class="tab" id="tab-llaves">
@@ -228,10 +257,10 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
   </section>
 
   <section class="tab" id="tab-tarjetas">
-    <div class="subtabs" id="subtabs">
+    <div class="subtabs" data-tab="tarjetas">
       <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/cede" data-s="cede">Quién cede más</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
     </div>
-    <div class="sub" data-sub="panorama">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-panorama"></p>
   <div class="g3">
     <div class="card">
@@ -264,7 +293,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
   </div>
 <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
     </div>
-    <div class="sub" data-sub="franquicias">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-franquicias"></p>
   <div class="g2">
     <div class="card">
@@ -290,7 +319,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
   </div>
   
     </div>
-    <div class="sub" data-sub="cede">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-cede"></p>
   <div class="card" style="margin-top:8px">
     <h3 id="ced-h">¿Quién cede más participación?</h3>
@@ -313,7 +342,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
     <p class="fn" id="ced-t-fn"></p>
   </div>
     </div>
-    <div class="sub" data-sub="emisores">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-emisores"></p>
   <div class="card" style="margin-top:8px">
     <h3 id="em-h">¿Qué emisores mueven el crédito?</h3>
@@ -326,7 +355,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
     <p class="fn" id="em-fn"></p>
   </div>
     </div>
-    <div class="sub" data-sub="lento">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-lento"></p>
   <div style="display:grid;gap:8px">
     <div class="card">
@@ -346,7 +375,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
   </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="lento-fn"></p></div>
     </div>
-    <div class="sub" data-sub="llaves">
+    <div class="sub" data-tab="tarjetas" data-sub="\1">
     <p class="lec" id="lec-llaves"></p>
   <div class="g2" style="margin-top:0">
     <div class="card">
@@ -428,7 +457,7 @@ function parseCSV(txt) {
 }
 const load = async (p, json) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error('No se pudo cargar ' + p + ' (' + r.status + ')'); return json ? r.json() : parseCSV(await r.text()); };
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [], TARJF = [], TEMI = [];
+let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [], TARJF = [], TEMI = [], PART = {}, PRENSA = {}, ENTSFC = [];
 
 function line(label, pts, color, fill) {
   return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
@@ -474,14 +503,15 @@ function klData() {
 }
 
 // Navegación por pestañas (#resumen, #tarjetas/lento, ...) y notas largas plegadas
-const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'cede', 'emisores', 'lento', 'llaves'];
+const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'];
+const SUBMAP = { adopcion: ['general', 'bancos'], tarjetas: ['panorama', 'franquicias', 'cede', 'emisores', 'lento', 'llaves'] };
 let tabActual = null;
 function ir() {
-  const [t0, s0] = (location.hash.slice(1) || 'resumen').split('/'), t = TABS.includes(t0) ? t0 : 'resumen', sub = SUBS.includes(s0) ? s0 : 'panorama';
+  const [t0, s0] = (location.hash.slice(1) || 'resumen').split('/'), t = TABS.includes(t0) ? t0 : 'resumen', subs = SUBMAP[t], sub = subs ? (subs.includes(s0) ? s0 : subs[0]) : null;
   document.querySelectorAll('.tab').forEach(e => e.classList.toggle('on', e.id === 'tab-' + t));
   document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.t === t));
-  document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.dataset.sub === sub));
-  document.querySelectorAll('#subtabs a').forEach(a => a.classList.toggle('on', a.dataset.s === sub));
+  document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.dataset.tab === t && e.dataset.sub === sub));
+  document.querySelectorAll('.subtabs a').forEach(a => a.classList.toggle('on', a.closest('.subtabs').dataset.tab === t && a.dataset.s === sub));
   if (t !== tabActual) window.scrollTo(0, 0);
   tabActual = t;
   if (CUTS.length) draw();   // los gráficos se crean con la vista visible: en un contenedor oculto nacen con tamaño cero
@@ -493,6 +523,12 @@ function plegarNotas() {
     p.parentNode.insertBefore(d, p); d.appendChild(p);
   });
 }
+
+// Nombre legible de una entidad como la reporta la SFC
+const NOM_ESP = { 'NU O NU FINANCIERA': 'Nu Colombia', 'BANCO COMERCIAL AV VILLAS S.A.': 'Banco AV Villas', 'ITAU CORPBANCA COLOMBIA S.A.': 'Itaú', 'BANCO BILBAO VIZCAYA ARGENTARIA COLOMBIA S.A. BBVA COLOMBIA': 'BBVA Colombia',
+  'BANCAR TECNOLOGÍA CO S.A. COMPAÑÍA DE FINANCIAMIENTO': 'Ualá', 'BANCO COOPERATIVO COOPCENTRAL S.A.': 'Coopcentral', 'BANCO DE LAS MICROFINANZAS BANCAMIA S.A.': 'Bancamía', 'TUYA S.A C.F': 'Tuya',
+  'RAPPIPAY': 'RappiPay', 'BANCO DE BOGOTA S. A.': 'Banco de Bogotá', 'BANCO UNIÓN S.A.': 'Banco Unión', 'BANCO GNB SUDAMERIS S.A.': 'Banco GNB Sudameris', 'CITIBANK - COLOMBIA S.A.': 'Citibank' };
+const nomEnt = n => NOM_ESP[n] || (/^BOLD/.test(n) ? 'Bold' : n.toLowerCase().replace(/(^|[ (/-])(\p{L})/gu, (m, a, c) => a + c.toUpperCase()).replace(/\s+S\.?\s?A\.?$/i, '').replace(/\s+C\.F\.?$/i, '').replace(/\b(De|Del|La)\b/g, w => w.toLowerCase()));
 
 function draw() {
   charts.forEach(c => c.destroy()); charts = [];
@@ -627,6 +663,20 @@ function draw() {
       scales: { x: catX, y: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } },
     ), plugins: [{ id: 'lanzamiento', afterDatasetsDraw(ch) { const x = ch.scales.x.getPixelForValue(idxL - 0.5), a = ch.chartArea, c = ch.ctx; c.save(); c.setLineDash([4, 4]); c.strokeStyle = green; c.lineWidth = 1;
       c.beginPath(); c.moveTo(x, a.top); c.lineTo(x, a.bottom); c.stroke(); c.fillStyle = green; c.font = '10px sans-serif'; c.fillText('Bre-B', x + 4, a.top + 10); c.restore(); } }] }));
+
+  // Bancos y entidades
+  if ($('c-bk-prensa')) {
+    const bk = PRENSA.bancos.filter(b => b.txn_millones != null).sort((a, b) => b.txn_millones - a.txn_millones), sis = PRENSA.sistema.transacciones_millones;
+    charts.push(new Chart($('c-bk-prensa'), { type: 'bar', data: { labels: bk.map(b => b.banco), datasets: [{ data: bk.map(b => b.txn_millones), backgroundColor: green + 'aa', borderColor: green, borderWidth: 1, borderRadius: 3 }] },
+      options: base({ indexAxis: 'y', plugins: { ...noLegend, tooltip: { callbacks: { label: c => { const b = bk[c.dataIndex]; return nf(b.txn_millones, 1) + ' M transacciones (' + nf(b.txn_millones / sis * 100, 1) + '% del sistema)' + (b.valor_billones != null ? ' · $' + nf(b.valor_billones, 1) + ' billones' : ''); } } } },
+        scales: { x: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => nf(v, 0) } }, y: { grid: { display: false }, ticks: { color: tick } } } }) }));
+    const top = ENTSFC.slice(0, 12), enLista = e => PART.entidades.some(p => p.sfc === e.entidad), cl = (a, b) => top.map(e => (enLista(e) ? a : b));
+    charts.push(new Chart($('c-bk-tarj'), { type: 'bar', data: { labels: top.map(e => nomEnt(e.entidad) + (enLista(e) ? '' : ' *')), datasets: [
+        { label: 'Tarjetas débito', data: top.map(e => +(e.debito_vigentes / 1e6).toFixed(2)), backgroundColor: cl(violet + 'bb', pink + 'bb'), borderColor: cl(violet, pink), borderWidth: 1 },
+        { label: 'Tarjetas crédito', data: top.map(e => +(e.credito_vigentes / 1e6).toFixed(2)), backgroundColor: cl(violet + '55', pink + '55'), borderColor: cl(violet, pink), borderWidth: 1 }] },
+      options: base({ indexAxis: 'y', plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.x, 2) + ' M' } } },
+        scales: { x: { stacked: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => nf(v, 0) } }, y: { stacked: true, grid: { display: false }, ticks: { color: tick, font: { size: 10 } } } } }) }));
+  }
 
   // Tarjetas y llaves
   const KL = klData(), klLabel = m => (KL.bre[m] ? KL.bre[m].label : mlabel(m + '-01')), lastM = KL.meses[KL.meses.length - 1];
@@ -862,6 +912,28 @@ function statics() {
     [`<b>${nf(DICE.totales.llaves / 1e6, 1)} M llaves</b> registradas, ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M medios de pago vinculados y ${nf(DICE.totales.clientes / 1e6, 1)} M clientes; la más común es ${DICE.tipos_de_llave[0][0].toLowerCase()} (${nf(DICE.tipos_de_llave[0][2], 0)}%).`, '#llaves'],
     [lPan, '#tarjetas/panorama'], [lLen, '#tarjetas/lento'],
   ].map(([t, h]) => `<li><span>${t}</span><a class="ver" href="${h}">Ver →</a></li>`).join('');
+  // Bancos y entidades: lista oficial de participantes + tarjetas (SFC) + cifras por banco de prensa
+  const enLista = e => PART.entidades.some(p => p.sfc === e.entidad), tarj = e => e.credito_vigentes + e.debito_vigentes;
+  const sumE = (f, c) => ENTSFC.filter(f).reduce((a, e) => a + e[c], 0), cob = c => sumE(enLista, c) / sumE(() => true, c) * 100;
+  const fuera = ENTSFC.filter(e => !enLista(e) && tarj(e) > 0), nEnt = PART.entidades.length, nBancos = PART.entidades.filter(p => p.tipo === 'banco').length;
+  const prensaDe = e => PRENSA.bancos.find(b => b.sfc === e.entidad) || {}, sisT = PRENSA.sistema.transacciones_millones;
+  const top3 = ['Bancolombia', 'Banco Davivienda', 'Banco de Bogotá'].map(n => PRENSA.bancos.find(b => b.banco === n).txn_millones).reduce((a, b) => a + b, 0);
+  $('lec-bancos').innerHTML = `En la lista oficial de BanRep (${fmtDate(PART.corte)}) figuran <b>${nEnt} entidades</b> y ${PART.sistemas.length} sistemas de pago (eran ${CTX.entidades.total} entidades en ${CTX.entidades.corte.toLowerCase()}). De las ${ENTSFC.length} entidades que reportan tarjetas a la SFC, ${ENTSFC.length - fuera.length} aparecen en la lista y cubren el <b>${f1(cob('debito_vigentes'))}%</b> de las tarjetas débito y el <b>${f1(cob('credito_vigentes'))}%</b> de las de crédito`
+    + (fuera.length ? `; no aparecen ${fuera.slice(0, 3).map(e => nomEnt(e.entidad)).join(', ')}${fuera.length > 3 ? ' y otras' : ''}` : '') + `. La única cifra por banco disponible (${fmtDate(PRENSA.corte)}, prensa) mostraba a Bancolombia, Davivienda y Banco de Bogotá con el <b>${f1(top3 / sisT * 100)}%</b> de las transacciones del sistema.`;
+  $('bk-h').textContent = `Entidades que reportan tarjetas a la SFC (${mlabel(ENTSFC[0].mes + '-01')}) y su presencia en Bre-B`;
+  $('bk-tbody').innerHTML = ENTSFC.map(e => { const p = prensaDe(e), si = enLista(e);
+    return `<tr><td>${nomEnt(e.entidad)}</td><td>${e.tipo}</td><td ${si ? '' : 'style="color:var(--pink)"'}>${si ? 'Sí' : 'No aparece'}</td>`
+      + `<td class="n">${f1(e.debito_vigentes / 1e6)}</td><td class="n">${f1(e.credito_vigentes / 1e6)}</td><td class="n">${f1((e.credito_compras_cop + e.debito_compras_cop) / 1e9)}</td>`
+      + `<td class="n">${p.txn_millones != null ? f1(p.txn_millones) : '—'}</td><td class="n">${p.valor_billones != null ? f1(p.valor_billones) : '—'}</td></tr>`; }).join('');
+  const sinLista = PART.entidades.filter(p => !p.sfc);
+  const nom = n => n.toLowerCase().replace(/(^|[ (/-])(\p{L})/gu, (m, a, c) => a + c.toUpperCase());
+  $('bk-lista').innerHTML = `<b>Bancos habilitados (${nBancos}, clasificación propia por nombre):</b> ${PART.entidades.filter(p => p.tipo === 'banco').map(p => nom(p.nombre)).join(', ')}.<br><br>`
+    + `<b>Sistemas de pago de bajo valor inmediatos (${PART.sistemas.length}):</b> ${PART.sistemas.map(nom).join(', ')}.<br><br>`
+    + `<b>Otras entidades habilitadas (${PART.entidades.filter(p => p.tipo !== 'banco').length}):</b> ${PART.entidades.filter(p => p.tipo !== 'banco').map(p => nom(p.nombre)).join(', ')}.`;
+  $('bk-fn').innerHTML = `<span class="tag o">oficial</span> Lista de participantes: ${link(PART.fuente, 'BanRep, entidades participantes')} (actualizada el ${fmtDate(PART.corte)}); se carga a mano porque la página de BanRep pide un captcha que impide leerla automáticamente. `
+    + `<span class="tag o">oficial</span> Tarjetas y compras por entidad: SFC, datos abiertos, ${mlabel(ENTSFC[0].mes + '-01')}; Bancolombia incluye Nequi y Davivienda incluye Daviplata en las tarjetas, aunque BanRep los lista aparte. «Compras» suma crédito nacional y débito. `
+    + `<span class="tag">prensa</span> Transacciones y valor por banco: ${link(PRENSA.fuente, PRENSA.medio)}, ${fmtDate(PRENSA.corte)}. ${PRENSA.nota} `
+    + `<span class="tag d">derivado</span> La clasificación «banco» de la lista de BanRep es propia (por el nombre); la de la SFC es oficial. Que haya ${nEnt} entidades frente a ${CTX.entidades.total} en enero puede no ser comparable: el documento técnico contaba las vinculadas a través de los sistemas de pago y no sé si la lista actual se cuenta igual. «No aparece» significa que el nombre no figura en la lista de BanRep; no sé el motivo (puede ser un cambio de nombre, una fusión o que aún no están habilitados) y conviene confirmarlo con la entidad. BanRep no publica volumen por banco.`;
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -901,14 +973,17 @@ function table() {
 
 async function init() {
   try {
-    const [cuts, daily, keys, ctx, dice, dist, acc, tarj, tarjf, temi] = await Promise.all([
+    const [cuts, daily, keys, ctx, dice, dist, acc, tarj, tarjf, temi, part, prensa, entsfc] = await Promise.all([
       load('data/breb_mol_cortes.csv'), load('data/breb_diario_mol.csv'), load('data/breb_llaves_dice.csv'),
-      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv'), load('data/tarjetas_sfc_franquicia.csv'), load('data/tarjetas_sfc_emisores_credito.csv')]);
+      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv'), load('data/tarjetas_sfc_franquicia.csv'), load('data/tarjetas_sfc_emisores_credito.csv'),
+      load('data/breb_participantes.json', true), load('data/breb_bancos_prensa.json', true), load('data/tarjetas_sfc_entidades.csv')]);
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
     DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
     KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones), mes: r.fecha.slice(0, 7) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
+    PART = part; PRENSA = prensa;
+    ENTSFC = entsfc.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, ['mes', 'tipo', 'entidad'].includes(k) ? v : +v])));
     TEMI = temi.map(r => ({ mes: r.mes, fr: r.franquicia, emisor: r.emisor, num: +r.compras_num, cop: +r.compras_cop }));
     TARJF = tarjf.map(r => ({ mes: r.mes, producto: r.producto, franquicia: r.franquicia, cop: +r.compras_cop, num: r.compras_num === '' ? null : +r.compras_num }));
     TARJ = tarj.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, k === 'mes' ? v : +v])));

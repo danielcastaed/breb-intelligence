@@ -9,6 +9,7 @@ Escribe todo el histórico (la SFC corrige meses anteriores, así que se reescri
   data/tarjetas_sfc_mensual.csv     compras y retiros por producto (crédito / débito)
   data/tarjetas_sfc_franquicia.csv  compras por producto y franquicia
   data/tarjetas_sfc_emisores_credito.csv  compras de crédito por emisor (Visa y Mastercard), desde oct-2023
+  data/tarjetas_sfc_entidades.csv  tarjetas vigentes y compras por entidad, último mes
 No necesita credenciales ni dependencias externas.
 
 Franquicia. En crédito la SFC la reporta directo (campo nombre_uca). En débito no: se estima por emisor y mes con la
@@ -32,6 +33,7 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 OUT = DATA / "tarjetas_sfc_mensual.csv"
 OUT_FRANQ = DATA / "tarjetas_sfc_franquicia.csv"
 OUT_EMISORES = DATA / "tarjetas_sfc_emisores_credito.csv"
+OUT_ENTIDADES = DATA / "tarjetas_sfc_entidades.csv"
 EMISORES_DESDE = "2023-10"
 FRANQ_CREDITO = {"CREDIBANCO-VISA": "VISA", "MASTERCARD": "MASTERCARD", "AMERICAN EXPRESS": "AMEX", "DINERS": "DINERS",
                  "OTRAS TARJETAS DE CREDITO": "OTRAS"}
@@ -148,6 +150,31 @@ def emisores_credito(meses_ok):
     return len(out)
 
 
+def por_entidad(mes):
+    """Tarjetas vigentes y compras por entidad en el último mes (cuántas tarjetas tiene cada banco)."""
+    y, m = map(int, mes.split("-"))
+    sig = f"{y + (m == 12)}-{m % 12 + 1:02d}-01T00:00:00.000"
+    rows = consulta({"$select": "tipoentidad,nombreentidad,descripcion,sum(total_tarjetas) as v",
+                     "$where": f"nombre_uca != '{EXCLUIDA}' and fechacorte >= '{mes}-01T00:00:00.000' and fechacorte < '{sig}'",
+                     "$group": "tipoentidad,nombreentidad,descripcion", "$limit": "50000"})
+    campos = {"Número total de tarjetas de crédito vigentes a la fecha de corte": "credito_vigentes", "Número total de tarjetas débito vigentes a la fecha de corte": "debito_vigentes",
+              "Monto de las transacciones por compras con tarjeta de crédito a nivel nacional": "credito_compras_cop", "Número de transacciones por compras a nivel nacional con tarjeta de crédito": "credito_compras_num",
+              "Monto de transacciones por compras con tarjetas débito": "debito_compras_cop", "Número de transacciones por compras con tarjetas débito": "debito_compras_num"}
+    tipos = {"1": "banco", "4": "compañía de financiamiento", "32": "cooperativa financiera"}
+    datos = defaultdict(lambda: defaultdict(float)); tipo = {}
+    for r in rows:
+        c = campos.get(re.sub(r"\s+", " ", r["descripcion"]).strip())
+        if c:
+            e = r["nombreentidad"].strip('"')
+            datos[e][c] += float(r["v"]); tipo[e] = tipos.get(r["tipoentidad"], r["tipoentidad"])
+    out = [{"mes": mes, "tipo": tipo[e], "entidad": e, **{c: int(round(d[c])) for c in campos.values()}} for e, d in datos.items()]
+    out.sort(key=lambda r: -(r["credito_vigentes"] + r["debito_vigentes"]))
+    with open(OUT_ENTIDADES, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["mes", "tipo", "entidad", "credito_vigentes", "debito_vigentes", "credito_compras_num", "credito_compras_cop", "debito_compras_num", "debito_compras_cop"], lineterminator="\n")
+        w.writeheader(); w.writerows(out)
+    return out
+
+
 def main():
     donde = (f"(upper(descripcion) like '%TRANSACCIONES POR COMPRAS%' or upper(descripcion) like '%TRANSACCIONES POR RETIROS%') "
              f"and nombre_uca != '{EXCLUIDA}'")
@@ -202,6 +229,11 @@ def main():
     print(f"SFC tarjetas: {len(out)} meses, {out[0]['mes']} a {out[-1]['mes']}")
     print("SFC tarjetas por franquicia:", franquicias({r["mes"]: r for r in out}), "filas")
     print("SFC crédito por emisor:", emisores_credito({r["mes"] for r in out}), "filas")
+    ent = por_entidad(out[-1]["mes"])
+    # la suma por entidad debe reproducir el total del mes (tarjetas vigentes y compras)
+    for c in ("credito_vigentes", "debito_vigentes", "credito_compras_cop", "debito_compras_cop"):
+        assert abs(sum(e[c] for e in ent) - out[-1][c]) <= 50 * len(ent), f"entidades: {c} no suma el total del mes"
+    print("SFC por entidad:", len(ent), "entidades en", out[-1]["mes"])
 
 
 if __name__ == "__main__":

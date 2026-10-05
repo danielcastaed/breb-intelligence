@@ -1,0 +1,94 @@
+{
+ "corte": "2026-02-07",
+ "medio": "La República",
+ "fuente": "https://www.larepublica.co/finanzas/bancolombia-y-davivienda-son-los-bancos-que-mas-dinero-mueven-a-traves-de-bre-b-4321886",
+ "nota": "Artículo del 7-feb-2026. Los totales del sistema (33,9 M de clientes, 99,2 M de llaves, 390,1 M de transacciones, ticket $160.078) los atribuye al Banco de la República; las cifras por banco no están atribuidas explícitamente y no se pueden verificar contra un reporte oficial. Bancolombia va «sin Nequi». No dice si las transacciones son originadas o recibidas. Son cifras de hace ocho meses y de solo algunos bancos.",
+ "sistema": {
+  "clientes_millones": 33.9,
+  "llaves_millones": 99.2,
+  "transacciones_millones": 390.1,
+  "ticket_cop": 160078
+ },
+ "bancos": [
+  {
+   "banco": "Bancolombia",
+   "sfc": "BANCOLOMBIA S.A.",
+   "txn_millones": 143.6,
+   "valor_billones": 20.0,
+   "llaves_millones": null,
+   "nota": "Sin Nequi"
+  },
+  {
+   "banco": "Banco Davivienda",
+   "sfc": "BANCO DAVIVIENDA S.A.",
+   "txn_millones": 67.0,
+   "valor_billones": 12.5,
+   "llaves_millones": 19.0,
+   "nota": ""
+  },
+  {
+   "banco": "Banco de Bogotá",
+   "sfc": "BANCO DE BOGOTA S. A.",
+   "txn_millones": 33.0,
+   "valor_billones": 7.6,
+   "llaves_millones": null,
+   "nota": "Su presidente dice que son cerca de 7% del total; 33 de 390,1 M es 8,5%"
+  },
+  {
+   "banco": "Davibank",
+   "sfc": null,
+   "txn_millones": 5.2,
+   "valor_billones": 1.7,
+   "llaves_millones": 0.733389,
+   "nota": ""
+  },
+  {
+   "banco": "Banco Popular",
+   "sfc": "BANCO POPULAR S.A.",
+   "txn_millones": 2.2,
+   "valor_billones": null,
+   "llaves_millones": null,
+   "nota": ""
+  },
+  {
+   "banco": "Banco Falabella",
+   "sfc": "BANCO FALABELLA S.A.",
+   "txn_millones": 1.7,
+   "valor_billones": null,
+   "llaves_millones": null,
+   "nota": ""
+  },
+  {
+   "banco": "Banco de Occidente",
+   "sfc": "BANCO DE OCCIDENTE S.A.",
+   "txn_millones": 0.884,
+   "valor_billones": 0.096,
+   "llaves_millones": null,
+   "nota": ""
+  },
+  {
+   "banco": "Banco AV Villas",
+   "sfc": "BANCO COMERCIAL AV VILLAS S.A.",
+   "txn_millones": null,
+   "valor_billones": null,
+   "llaves_millones": 1.1,
+   "nota": "Dato de su presidente: más de 1,1 M de llaves y 1,2 M de clientes"
+  },
+  {
+   "banco": "Bancamía",
+   "sfc": "BANCO DE LAS MICROFINANZAS BANCAMIA S.A.",
+   "txn_millones": null,
+   "valor_billones": null,
+   "llaves_millones": null,
+   "nota": "Menos de 0,5 M de operaciones"
+  },
+  {
+   "banco": "Bancoomeva",
+   "sfc": "BANCO COOMEVA S.A.",
+   "txn_millones": null,
+   "valor_billones": null,
+   "llaves_millones": null,
+   "nota": "Menos de 0,5 M de operaciones"
+  }
+ ]
+}
