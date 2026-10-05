@@ -2,7 +2,7 @@
 
 Tracker de **Bre-B**, el sistema de pagos inmediatos interoperable del Banco de la República (operación plena desde el 6 de octubre de 2025): transacciones, valor, ticket, llaves, usuarios y adopción.
 
-Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-intelligence) (tarjetas, fuente SFC). Se mantiene aparte porque la fuente (BanRep), la cadencia y la estructura de datos son distintas.
+Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-intelligence) (tarjetas, fuente SFC; [dashboard en vivo](https://danielcastaed.github.io/visa-intelligence/)); este dashboard enlaza al de tarjetas desde el pie y desde la sección de franquicias. Se mantiene aparte porque la fuente (BanRep), la cadencia y la estructura de datos son distintas.
 
 ## Qué muestra
 
@@ -59,7 +59,7 @@ Ejecutar a mano: *Actions → Actualizar datos de BanRep → Run workflow* (la o
 
 ## Pendiente
 
-- Enlazar este dashboard con el de tarjetas (visa-intelligence), si se quiere (opcional).
+Nada por ahora. El enlace de vuelta desde el dashboard de tarjetas queda a criterio de ese proyecto (no se tocó).
 
 ## Vista local
 

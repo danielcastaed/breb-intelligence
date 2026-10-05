@@ -286,7 +286,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   </div>
 </main>
 
-<footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/</code>, cada archivo con su fuente.</footer>
+<footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/</code>, cada archivo con su fuente. Dashboard hermano de tarjetas (participación de mercado Visa y Mastercard, SFC): <a href="https://danielcastaed.github.io/visa-intelligence/" target="_blank" rel="noopener">Visa Market Intelligence</a>.</footer>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -547,7 +547,7 @@ function statics() {
     `<tr><td style="font-weight:600;color:var(--green)">Bre-B (${vL.label})</td><td class="n">${nf(bre.valor / 1e12, 2)}</td><td class="n">${nf(bre.valor / totCop * 100, 1)}%</td><td class="n">${nf(bre.txn / 1e6, 1)}</td><td class="n">$${nf(bre.ticket, 0)}</td><td class="n">—</td></tr>`,
   ].join('');
   $('vs-franq-fn').innerHTML = `<span class="tag o">oficial</span> Crédito por franquicia: lo que reporta la SFC (compras nacionales). <span class="tag d">estimado</span> Débito por franquicia: la SFC no lo reporta; se reparte el valor de cada emisor según sus ingresos por tarifa interbancaria (TII) de Visa y de Mastercard, con excepciones manuales (Scotiabank Colpatria, Falabella, Mibanco y Nu: 100% Mastercard; JFK: 100% Visa) y Mastercard por defecto si el emisor no reporta TII. A jul-2026, cerca del 95% del valor de débito sale del reparto por TII, 4% de las excepciones y 1% cae por defecto. Es una estimación propia con datos públicos; puede diferir de otras que usen información directa de los emisores. `
-    + `Las filas de débito por franquicia y los totales por franquicia no llevan transacciones ni ticket porque no hay un reparto equivalente del número de transacciones. «Bre-B equivale a» = valor de Bre-B del mes ÷ valor de esa fila; no es una cuota de mercado, porque Bre-B también mueve transferencias entre personas.`;
+    + `Las filas de débito por franquicia y los totales por franquicia no llevan transacciones ni ticket porque no hay un reparto equivalente del número de transacciones. «Bre-B equivale a» = valor de Bre-B del mes ÷ valor de esa fila; no es una cuota de mercado, porque Bre-B también mueve transferencias entre personas. Para la participación de mercado de Visa y Mastercard, ver ${link('https://danielcastaed.github.io/visa-intelligence/', 'Visa Market Intelligence')}.`;
   const KLd = klData(), tj = lastTarj.t, vigT = tj.credito_vigentes + tj.debito_vigentes, DT = DICE.totales, mesFull = MONTHS[MONTHS.length - 1];
   const nf1 = n => Number(n).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const klFila = (nombre, cant, corte, veces, uso, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
