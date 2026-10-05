@@ -223,7 +223,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     <div class="card">
       <h3>Peso en el valor combinado (%)</h3>
       <div class="chart tall"><canvas id="c-vs-peso"></canvas></div>
-      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + Bre-B) del mes. Muestra cuánto pesa Bre-B si se pone junto a las franquicias.</p>
+      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + Bre-B) del mes, desde ene-2025; antes de oct-2025 Bre-B no existía. Muestra cuánto pesa Bre-B si se pone junto a las franquicias.</p>
     </div>
   </div>
   <div class="card" style="margin-top:8px">
@@ -235,6 +235,16 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       </table>
     </div>
     <p class="fn" id="vs-franq-fn"></p>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <h3 id="ced-h">¿Quién cede más participación?</h3>
+    <div class="tbl-wrap">
+      <table style="min-width:860px">
+        <thead><tr><th>Segmento</th><th>Peso antes de Bre-B</th><th>Peso hoy</th><th>Cambio del peso</th><th>Valor, vs. un año antes</th><th>Cuota entre tarjetas</th></tr></thead>
+        <tbody id="ced-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="ced-fn"></p>
   </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
 
@@ -448,12 +458,12 @@ function draw() {
       { ...line('Bre-B', VS.map(r => (r.b ? +(r.b.valor / 1e12).toFixed(2) : null)), green, false), type: 'line', order: 1 }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': $' + nf(c.parsed.y, 2) + ' B' } } },
       scales: { x: { ...catX, stacked: true }, y: { ...yAxis(v => nf(v, 0)), stacked: true } } }) }));
-  const pesoDe = r => { const f = k => gf(r.mes, k), tot = r.v + r.b.valor; return [
+  const pesoDe = r => { const f = k => gf(r.mes, k), bv = r.b ? r.b.valor : 0, tot = r.v + bv; return [
     (f('credito_VISA') + f('debito_VISA')) / tot, (f('credito_MASTERCARD') + f('debito_MASTERCARD')) / tot,
-    (f('credito_AMEX') + f('credito_DINERS') + f('credito_OTRAS')) / tot, r.b.valor / tot].map(x => +(x * 100).toFixed(1)); };
-  const peso = VR.map(pesoDe);
+    (f('credito_AMEX') + f('credito_DINERS') + f('credito_OTRAS')) / tot, bv / tot].map(x => +(x * 100).toFixed(1)); };
+  const peso = VS.map(pesoDe);
   const pes = (label, color, i) => ({ label, data: peso.map(x => x[i]), backgroundColor: color + 'bb', borderColor: color, borderWidth: 1 });
-  charts.push(new Chart($('c-vs-peso'), { type: 'bar', data: { labels: VR.map(r => r.label), datasets: [
+  charts.push(new Chart($('c-vs-peso'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
       pes('Visa', blue, 0), pes('Mastercard', amber, 1), pes('Amex, Diners y otras', tick, 2), pes('Bre-B', green, 3)] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
@@ -548,6 +558,30 @@ function statics() {
   ].join('');
   $('vs-franq-fn').innerHTML = `<span class="tag o">oficial</span> Crédito por franquicia: lo que reporta la SFC (compras nacionales). <span class="tag d">estimado</span> Débito por franquicia: la SFC no lo reporta; se reparte el valor de cada emisor según sus ingresos por tarifa interbancaria (TII) de Visa y de Mastercard, con excepciones manuales (Scotiabank Colpatria, Falabella, Mibanco y Nu: 100% Mastercard; JFK: 100% Visa) y Mastercard por defecto si el emisor no reporta TII. A jul-2026, cerca del 95% del valor de débito sale del reparto por TII, 4% de las excepciones y 1% cae por defecto. Es una estimación propia con datos públicos; puede diferir de otras que usen información directa de los emisores. `
     + `Las filas de débito por franquicia y los totales por franquicia no llevan transacciones ni ticket porque no hay un reparto equivalente del número de transacciones. «Bre-B equivale a» = valor de Bre-B del mes ÷ valor de esa fila; no es una cuota de mercado, porque Bre-B también mueve transferencias entre personas. Para la participación de mercado de Visa y Mastercard, ver ${link('https://danielcastaed.github.io/visa-intelligence/', 'Visa Market Intelligence')}.`;
+  const shiftMes = (m, d) => { const [y, mo] = m.split('-').map(Number), t = y * 12 + mo - 1 + d; return Math.floor(t / 12) + '-' + String(t % 12 + 1).padStart(2, '0'); };
+  const BFc = vsFranq(), mHoy = lastTarj.mes, mAntes = [...VS].reverse().find(r => !r.b).mes, mAno = shiftMes(mHoy, -12), mAno2 = shiftMes(mHoy, -24);
+  const segV = (m, ks) => ks.reduce((a, k) => a + ((BFc[m] && BFc[m][k]) ? BFc[m][k].cop : 0), 0);
+  const breV = m => { const b = MONTHS.find(x => x.fecha.slice(0, 7) === m); return b ? b.valor : 0; };
+  const SEG = [['Visa crédito', ['credito_VISA']], ['Visa débito <span class="tag d">estimado</span>', ['debito_VISA']], ['Mastercard crédito', ['credito_MASTERCARD']],
+    ['Mastercard débito <span class="tag d">estimado</span>', ['debito_MASTERCARD']], ['Amex, Diners y otras', ['credito_AMEX', 'credito_DINERS', 'credito_OTRAS']]];
+  const allK = SEG.flatMap(x => x[1]);
+  const FILAS = [...SEG.map(([n, ks]) => [n, ks, false]), ['Visa, crédito + débito', ['credito_VISA', 'debito_VISA'], true], ['Mastercard, crédito + débito', ['credito_MASTERCARD', 'debito_MASTERCARD'], true],
+    ['Crédito, todas las franquicias', ['credito_VISA', 'credito_MASTERCARD', 'credito_AMEX', 'credito_DINERS', 'credito_OTRAS'], true], ['Débito, todas las franquicias', ['debito_VISA', 'debito_MASTERCARD'], true], ['Total tarjetas', allK, true]];
+  const tot = m => segV(m, allK) + breV(m), cardsTot = m => segV(m, allK);
+  const sg = x => (x >= 0 ? '+' : '−') + Math.abs(x).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const col = x => `style="color:var(--${x >= 0 ? 'green' : 'pink'})"`, f1 = x => Number(x).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  $('ced-tbody').innerHTML = FILAS.map(([n, ks, bold]) => {
+    const w0 = segV(mAntes, ks) / tot(mAntes) * 100, w1 = segV(mHoy, ks) / tot(mHoy) * 100, g = (segV(mHoy, ks) / segV(mAno, ks) - 1) * 100;
+    const c0 = segV(mAno, ks) / cardsTot(mAno) * 100, c1 = segV(mHoy, ks) / cardsTot(mHoy) * 100;
+    return `<tr><td style="${bold ? 'font-weight:600' : 'padding-left:22px'}">${n}</td><td class="n">${f1(w0)}%</td><td class="n">${f1(w1)}%</td>`
+      + `<td class="n" ${col(w1 - w0)}>${sg(w1 - w0)} pp (${sg((w1 / w0 - 1) * 100)}%)</td><td class="n" ${col(g)}>${sg(g)}%</td><td class="n">${f1(c0)}% → ${f1(c1)}%</td></tr>`;
+  }).join('') + `<tr><td style="font-weight:600;color:var(--green)">Bre-B</td><td class="n">0,0%</td><td class="n">${f1(breV(mHoy) / tot(mHoy) * 100)}%</td><td class="n" ${col(1)}>${sg(breV(mHoy) / tot(mHoy) * 100)} pp</td><td class="n">—</td><td class="n">—</td></tr>`;
+  const vTot = m => (TARJ.find(r => r.mes === m) || {}).credito_compras_cop + (TARJ.find(r => r.mes === m) || {}).debito_compras_cop;
+  const gAnt = (vTot(mAno) / vTot(mAno2) - 1) * 100, gHoy = (vTot(mHoy) / vTot(mAno) - 1) * 100;
+  $('ced-h').textContent = `¿Quién cede más participación? ${mlabel(mAntes + '-01')} (antes de Bre-B) frente a ${lastTarj.label}`;
+  $('ced-fn').innerHTML = `<span class="tag d">derivado</span> Casi todo lo que «cede» es dilución: Bre-B pasó a pesar ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor combinado, así que cada segmento pierde alrededor de la mitad de su peso aunque siga creciendo. En puntos porcentuales cede más el segmento más grande (Mastercard débito); en términos relativos ceden casi igual. `
+    + `Para ver si alguien pierde de verdad, hay que mirar el valor y la cuota entre tarjetas: las compras con tarjeta crecieron ${f1(gAnt)}% entre ${mlabel(mAno2 + '-01')} y ${mlabel(mAno + '-01')}, y ${f1(gHoy)}% entre ${mlabel(mAno + '-01')} y ${lastTarj.label} (el ritmo se redujo a la mitad; la tabla no prueba que Bre-B sea la causa). `
+    + `Ninguna franquicia de crédito baja en valor, salvo Amex, Diners y otras. Cuidado con el débito por franquicia: es una estimación basada en ingresos por tarifa interbancaria y puede moverse si cambian las tarifas sin que cambie el volumen; la lectura más sólida es la de crédito (oficial) y la de los totales por producto.`;
   const KLd = klData(), tj = lastTarj.t, vigT = tj.credito_vigentes + tj.debito_vigentes, DT = DICE.totales, mesFull = MONTHS[MONTHS.length - 1];
   const nf1 = n => Number(n).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const klFila = (nombre, cant, corte, veces, uso, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
