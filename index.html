@@ -268,6 +268,16 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
     <p class="fn" id="ced-t-fn"></p>
   </div>
+  <div class="card" style="margin-top:8px">
+    <h3 id="em-h">¿Qué emisores mueven el crédito?</h3>
+    <div class="tbl-wrap">
+      <table style="min-width:900px">
+        <thead><tr><th>Franquicia · emisor</th><th id="em-c0"></th><th id="em-c1"></th><th>Crecimiento</th><th>Aporte al aumento</th><th>Ticket (COP)</th><th id="em-cp"></th></tr></thead>
+        <tbody id="em-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="em-fn"></p>
+  </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
 
   <div class="sec"><span>Tarjetas y llaves</span><i></i></div>
@@ -346,7 +356,7 @@ function parseCSV(txt) {
 }
 const load = async (p, json) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error('No se pudo cargar ' + p + ' (' + r.status + ')'); return json ? r.json() : parseCSV(await r.text()); };
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [], TARJF = [];
+let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [], TARJF = [], TEMI = [];
 
 function line(label, pts, color, fill) {
   return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
@@ -643,9 +653,45 @@ function statics() {
   $('ced-t-h').textContent = `¿Quién cede más participación? Por número de transacciones, ${mlabel(mAntes + '-01')} frente a ${lastTarj.label}`;
   $('ced-t-fn').innerHTML = `<span class="tag d">derivado</span> Bre-B pesa ${f1(breT(mHoy) / totT(mHoy) * 100)}% de las transacciones combinadas, menos que su ${f1(breV(mHoy) / tot(mHoy) * 100)}% en valor, porque su ticket ($${nf(MONTHS.find(x => x.fecha.slice(0, 7) === mHoy).ticket, 0)}) es más alto que el promedio de las compras con tarjeta ($${nf(vTot(mHoy) / cardsT(mHoy), 0)}). `
     + `De nuevo la mayor parte de la caída del peso es dilución; en puntos cede más el débito por ser el más grande, y en términos relativos las menores (Amex, Diners y otras). La señal real está en el crecimiento: las transacciones con tarjeta crecieron ${f1(((cardsT(mHoy) / cardsT(mAno)) - 1) * 100)}% en el último año frente a ${f1(((cardsT(mAno) / cardsT(mAno2)) - 1) * 100)}% el año previo. `
-    + `En crédito, que es oficial por franquicia, Mastercard crece más que Visa (${sg((txm(mHoy).mc / txm(mAno).mc - 1) * 100)}% frente a ${sg((txm(mHoy).vc / txm(mAno).vc - 1) * 100)}%) y su ticket baja ($${nf(tkt(mAno, 'credito_MASTERCARD'), 0)} → $${nf(tkt(mHoy, 'credito_MASTERCARD'), 0)}), mientras el de Visa se mantiene ($${nf(tkt(mAno, 'credito_VISA'), 0)} → $${nf(tkt(mHoy, 'credito_VISA'), 0)}). `
+    + `En crédito, que es oficial por franquicia, Mastercard crece más que Visa (${sg((txm(mHoy).mc / txm(mAno).mc - 1) * 100)}% frente a ${sg((txm(mHoy).vc / txm(mAno).vc - 1) * 100)}%) y su ticket baja ($${nf(tkt(mAno, 'credito_MASTERCARD'), 0)} → $${nf(tkt(mHoy, 'credito_MASTERCARD'), 0)}), mientras el de Visa se mantiene ($${nf(tkt(mAno, 'credito_VISA'), 0)} → $${nf(tkt(mHoy, 'credito_VISA'), 0)}); la tabla de emisores, más abajo, muestra que un solo emisor explica la mayor parte de esa diferencia. `
     + `Ojo con el efecto de base: Mastercard crédito venía de ${sg((txm(mAno).mc / txm(mAno2).mc - 1) * 100)}% el año previo, un salto atípico, así que parte de su desaceleración es aritmética. `
     + `No hay transacciones de débito por franquicia en la fuente, así que Visa y Mastercard no se pueden sumar en este cuadro.`;
+  // Emisores de crédito por franquicia
+  const nomEmisor = n => /BBVA/.test(n) ? 'BBVA Colombia' : /^NU( |$)/.test(n) ? 'Nu Colombia'
+    : n.toLowerCase().replace(/(^|[ (])(\p{L})/gu, (m, a, c) => a + c.toUpperCase()).replace(/\s+S\.?\s?A\.?$/i, '').replace(/\s+C\.F\.?$/i, '').replace(/\bY\b/g, 'y').replace(/\b(De|Del|La)\b/g, w => w.toLowerCase()).replace('Bogota', 'Bogotá');
+  const EM = {};
+  TEMI.forEach(r => { ((EM[r.fr] = EM[r.fr] || {})[r.emisor] = EM[r.fr][r.emisor] || {})[r.mes] = r; });
+  const eg = (F, e, m, k) => ((EM[F][e] || {})[m] || { num: 0, cop: 0 })[k], etot = (F, m, k, sin) => Object.keys(EM[F]).filter(e => e !== sin).reduce((a, e) => a + eg(F, e, m, k), 0);
+  const gr = (a, b) => (a > 0 ? sg((b / a - 1) * 100) + '%' : 'nuevo');
+  const emFila = (nombre, F, ents, bold, sinTop) => {
+    const sum = (m, k) => ents.reduce((a, e) => a + eg(F, e, m, k), 0), n0 = sum(mAno, 'num'), n1 = sum(mHoy, 'num'), np = sum(mAno2, 'num');
+    const aporte = ents.length === Object.keys(EM[F]).length ? 100 : (n1 - n0) / (etot(F, mHoy, 'num') - etot(F, mAno, 'num')) * 100;
+    return `<tr><td style="${bold ? 'font-weight:600' : 'padding-left:22px'}${sinTop ? ';color:var(--text3);font-style:italic' : ''}">${nombre}</td><td class="n">${f1(n0 / 1e6)}</td><td class="n">${f1(n1 / 1e6)}</td>`
+      + `<td class="n" ${n0 > 0 ? col(n1 - n0) : ''}>${gr(n0, n1)}</td><td class="n">${sinTop ? '—' : (aporte < 0 ? '−' : '') + f1(Math.abs(aporte)) + '%'}</td>`
+      + `<td class="n">$${nf(sum(mAno, 'cop') / n0, 0)} → $${nf(sum(mHoy, 'cop') / n1, 0)}</td><td class="n">${gr(np, n0)}</td></tr>`;
+  };
+  let emHtml = '', emTxt = [];
+  [['MASTERCARD', 'Mastercard'], ['VISA', 'Visa']].forEach(([F, nF]) => {
+    const todos = Object.keys(EM[F]), orden = [...todos].sort((a, b) => (eg(F, b, mHoy, 'num') - eg(F, b, mAno, 'num')) - (eg(F, a, mHoy, 'num') - eg(F, a, mAno, 'num')));
+    const top = orden.slice(0, 4), resto = todos.filter(e => !top.includes(e));
+    emHtml += emFila(nF + ' crédito, total', F, todos, true) + top.map(e => emFila(nomEmisor(e), F, [e])).join('') + emFila('Resto de emisores', F, resto)
+      + emFila('Sin ' + nomEmisor(top[0]), F, todos.filter(e => e !== top[0]), false, true);
+    const n0 = etot(F, mAno, 'num'), n1 = etot(F, mHoy, 'num'), x0 = etot(F, mAno, 'num', top[0]), x1 = etot(F, mHoy, 'num', top[0]);
+    const t = top[0], primero = Object.keys(EM[F][t]).sort().find(m => EM[F][t][m].num > 0);
+    emTxt.push({ F, nF, t, nombre: nomEmisor(t), aporte: (eg(F, t, mHoy, 'num') - eg(F, t, mAno, 'num')) / (n1 - n0) * 100, g: (n1 / n0 - 1) * 100, gx: (x1 / x0 - 1) * 100,
+      tk: eg(F, t, mHoy, 'cop') / eg(F, t, mHoy, 'num'), tkx: etot(F, mHoy, 'cop', t) / x1, nuevo: eg(F, t, mAno2, 'num') === 0, primero });
+  });
+  $('em-tbody').innerHTML = emHtml;
+  $('em-c0').textContent = `Transacciones ${mlabel(mAno + '-01')} (M)`; $('em-c1').textContent = `Transacciones ${lastTarj.label} (M)`;
+  $('em-cp').textContent = `Año previo (${mlabel(mAno2 + '-01')} → ${mlabel(mAno + '-01')})`;
+  $('em-h').textContent = `¿Qué emisores mueven el crédito? Compras de crédito por emisor, ${mlabel(mAno + '-01')} frente a ${lastTarj.label}`;
+  const eMC = emTxt[0], eV = emTxt[1], nuT = (TARJ.find(r => r.mes === mHoy).credito_compras_num + TARJ.find(r => r.mes === mHoy).debito_compras_num), nuT0 = (TARJ.find(r => r.mes === mAno).credito_compras_num + TARJ.find(r => r.mes === mAno).debito_compras_num);
+  $('em-fn').innerHTML = `<span class="tag o">oficial</span> Compras nacionales con tarjeta de crédito por emisor (SFC, datos abiertos). `
+    + `<b>${eMC.nombre}</b> explica ${f1(eMC.aporte)}% del aumento de transacciones de Mastercard crédito: sin ${eMC.nombre}, Mastercard crece ${sg(eMC.gx)}% (con ${eMC.nombre}, ${sg(eMC.g)}%), menos que Visa (${sg(eV.g)}%). `
+    + `Su ticket (<b>$${nf(eMC.tk, 0)}</b>) es ${f1(eMC.tk / eMC.tkx * 100)}% del de los demás emisores Mastercard ($${nf(eMC.tkx, 0)}), y por eso baja el ticket de la franquicia. `
+    + (eMC.nuevo ? `En los datos de la SFC aparece desde ${mlabel(eMC.primero + '-01')}; la fuente no dice si es un negocio nuevo o si empezó a reportar entonces. ` : '')
+    + `En Visa pasa algo parecido: <b>${eV.nombre}</b> aporta ${f1(eV.aporte)}% del aumento, y sin ese emisor Visa crece ${sg(eV.gx)}%. `
+    + `<span class="tag d">derivado</span> En cada franquicia, un solo emisor concentra casi todo el aumento, así que la comparación entre Visa y Mastercard hay que leerla con esos emisores aparte.`;
   const KLd = klData(), tj = lastTarj.t, vigT = tj.credito_vigentes + tj.debito_vigentes, DT = DICE.totales, mesFull = MONTHS[MONTHS.length - 1];
   const nf1 = n => Number(n).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const klFila = (nombre, cant, corte, veces, uso, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
@@ -702,14 +748,15 @@ function table() {
 
 async function init() {
   try {
-    const [cuts, daily, keys, ctx, dice, dist, acc, tarj, tarjf] = await Promise.all([
+    const [cuts, daily, keys, ctx, dice, dist, acc, tarj, tarjf, temi] = await Promise.all([
       load('data/breb_mol_cortes.csv'), load('data/breb_diario_mol.csv'), load('data/breb_llaves_dice.csv'),
-      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv'), load('data/tarjetas_sfc_franquicia.csv')]);
+      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv'), load('data/tarjetas_sfc_franquicia.csv'), load('data/tarjetas_sfc_emisores_credito.csv')]);
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
     DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
     KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones), mes: r.fecha.slice(0, 7) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
+    TEMI = temi.map(r => ({ mes: r.mes, fr: r.franquicia, emisor: r.emisor, num: +r.compras_num, cop: +r.compras_cop }));
     TARJF = tarjf.map(r => ({ mes: r.mes, producto: r.producto, franquicia: r.franquicia, cop: +r.compras_cop, num: r.compras_num === '' ? null : +r.compras_num }));
     TARJ = tarj.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, k === 'mes' ? v : +v])));
     if (CUTS.length < 3) throw new Error('Datos insuficientes');

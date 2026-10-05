@@ -8,6 +8,7 @@ solapan entre sí.
 Escribe todo el histórico (la SFC corrige meses anteriores, así que se reescribe completo):
   data/tarjetas_sfc_mensual.csv     compras y retiros por producto (crédito / débito)
   data/tarjetas_sfc_franquicia.csv  compras por producto y franquicia
+  data/tarjetas_sfc_emisores_credito.csv  compras de crédito por emisor (Visa y Mastercard), desde ene-2024
 No necesita credenciales ni dependencias externas.
 
 Franquicia. En crédito la SFC la reporta directo (campo nombre_uca). En débito no: se estima por emisor y mes con la
@@ -30,6 +31,8 @@ URL = "https://www.datos.gov.co/resource/h2jg-r3zg.json"
 DATA = Path(__file__).resolve().parent.parent / "data"
 OUT = DATA / "tarjetas_sfc_mensual.csv"
 OUT_FRANQ = DATA / "tarjetas_sfc_franquicia.csv"
+OUT_EMISORES = DATA / "tarjetas_sfc_emisores_credito.csv"
+EMISORES_DESDE = "2024-01"
 FRANQ_CREDITO = {"CREDIBANCO-VISA": "VISA", "MASTERCARD": "MASTERCARD", "AMERICAN EXPRESS": "AMEX", "DINERS": "DINERS",
                  "OTRAS TARJETAS DE CREDITO": "OTRAS"}
 BANCOS_100_MC = {"SCOTIABANK COLPATRIA S.A.", "BANCO FALABELLA S.A.", "MIBANCO S.A.", "NU FINANCIERA S.A."}
@@ -113,6 +116,38 @@ def franquicias(meses_ok):
     return len(out)
 
 
+def emisores_credito(meses_ok):
+    """Compras de crédito nacionales por emisor, para Visa y Mastercard (explica de dónde viene el crecimiento de cada franquicia)."""
+    rows = consulta({"$select": "fechacorte,nombre_uca,nombreentidad,descripcion,sum(total_tarjetas) as v",
+                     "$where": "nombre_uca in ('MASTERCARD','CREDIBANCO-VISA') and (upper(descripcion) like '%COMPRAS A NIVEL NACIONAL CON TARJETA DE CR%' or upper(descripcion) like '%COMPRAS CON TARJETA DE CR%NIVEL NACIONAL%')"
+                              f" and fechacorte >= '{EMISORES_DESDE}-01T00:00:00'",
+                     "$group": "fechacorte,nombre_uca,nombreentidad,descripcion", "$limit": "50000"})
+    datos = defaultdict(lambda: {"num": 0.0, "cop": 0.0})
+    for r in rows:
+        m = r["fechacorte"][:7]
+        if m not in meses_ok:
+            continue
+        f = "VISA" if r["nombre_uca"] == "CREDIBANCO-VISA" else "MASTERCARD"
+        d = re.sub(r"\s+", " ", r["descripcion"])
+        datos[(m, f, r["nombreentidad"].strip('"'))]["num" if d.startswith("Número") else "cop"] += float(r["v"])
+    out = [{"mes": m, "franquicia": f, "emisor": e, "compras_num": int(round(d["num"])), "compras_cop": int(round(d["cop"]))}
+           for (m, f, e), d in sorted(datos.items())]
+    # deben sumar la franquicia de tarjetas_sfc_franquicia.csv
+    with open(OUT_FRANQ, newline="", encoding="utf-8") as fh:
+        franq = {(r["mes"], r["franquicia"]): r for r in csv.DictReader(fh) if r["producto"] == "credito"}
+    for (m, f), r in franq.items():
+        if m < EMISORES_DESDE or f not in ("VISA", "MASTERCARD"):
+            continue
+        sn = sum(x["compras_num"] for x in out if x["mes"] == m and x["franquicia"] == f)
+        sc = sum(x["compras_cop"] for x in out if x["mes"] == m and x["franquicia"] == f)
+        assert abs(sn - int(r["compras_num"])) <= 50 and abs(sc - int(r["compras_cop"])) <= 50, f"emisores {f} {m}: no suman la franquicia"
+    with open(OUT_EMISORES, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["mes", "franquicia", "emisor", "compras_num", "compras_cop"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(out)
+    return len(out)
+
+
 def main():
     donde = (f"(upper(descripcion) like '%TRANSACCIONES POR COMPRAS%' or upper(descripcion) like '%TRANSACCIONES POR RETIROS%') "
              f"and nombre_uca != '{EXCLUIDA}'")
@@ -166,6 +201,7 @@ def main():
         w.writerows(out)
     print(f"SFC tarjetas: {len(out)} meses, {out[0]['mes']} a {out[-1]['mes']}")
     print("SFC tarjetas por franquicia:", franquicias({r["mes"]: r for r in out}), "filas")
+    print("SFC crédito por emisor:", emisores_credito({r["mes"] for r in out}), "filas")
 
 
 if __name__ == "__main__":
