@@ -202,9 +202,13 @@ def parse_dice(page):
     corte = next(s for s in L if s.startswith("Fecha de corte"))
     m = re.search(r"(\d+) de (\w+) de (\d{4})", corte)
     fecha = dt.date(int(m.group(3)), MESES.index(m.group(2)) + 1, int(m.group(1)))
-    i = L.index("Total de llaves registradas")
-    vals = [s for s in L[i + 1:i + 14] if re.fullmatch(r"[\d.]+|\d,\d", s)]
-    # orden del reporte: llaves, medios de pago, clientes, llaves/medio, llaves/cliente, medios/cliente
+    # cada cifra va tras su etiqueta, que según el ancho de la página puede partirse en varias líneas
+    etiquetas = ["Total de llaves registradas", "Total de medios de pago vinculados", "Total de clientes con llaves",
+                 "Promedio de llaves por medio de", "Promedio de llaves por cliente", "Promedio de medios de pago por"]
+    vals = []
+    for e in etiquetas:
+        i = next(k for k, s in enumerate(L) if s.startswith(e))
+        vals.append(next(s for s in L[i + 1:i + 8] if re.fullmatch(r"[\d.]+|\d,\d", s)))
     prom = lambda s: float(s.replace(",", "."))
     return fecha, dict(llaves=num(vals[0]), medios_de_pago=num(vals[1]), clientes=num(vals[2]),
                        llaves_por_medio=prom(vals[3]), llaves_por_cliente=prom(vals[4]), medios_por_cliente=prom(vals[5]))
@@ -318,11 +322,11 @@ def guardar_dice(fecha, tot, comp):
 
 def update_dice(page, url):
     open_report(page, url)
-    try:  # el encabezado aparece antes que las cifras: espera a que las tres primeras estén pintadas
+    try:  # el encabezado aparece antes que las cifras: espera a que las seis estén pintadas
         page.wait_for_function(
             """() => { const L = document.body.innerText.split('\\n').map(s => s.trim()).filter(Boolean);
                       const i = L.indexOf('Total de llaves registradas');
-                      return i >= 0 && L.slice(i + 1, i + 14).filter(s => /^[\\d.]+$/.test(s)).length >= 3; }""",
+                      return i >= 0 && L.slice(i + 1, i + 30).filter(s => /^([\\d.]+|\\d,\\d)$/.test(s)).length >= 6; }""",
             timeout=60_000)
         fecha, tot = parse_dice(page)
         comp = read_composicion(page)
