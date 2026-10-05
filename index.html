@@ -226,6 +226,18 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + Bre-B) del mes, desde ene-2025; antes de oct-2025 Bre-B no existía. Muestra cuánto pesa Bre-B si se pone junto a las franquicias.</p>
     </div>
   </div>
+  <div class="g2">
+    <div class="card">
+      <h3>Peso en las transacciones combinadas (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-peso"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + transacciones de Bre-B) del mes. En crédito la franquicia es oficial; el débito va completo porque la SFC no reparte su número de transacciones por franquicia.</p>
+    </div>
+    <div class="card">
+      <h3>Crecimiento anual de las transacciones con tarjeta (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Mismo mes frente al mismo mes del año anterior: el último año (con Bre-B) contra el año previo.</p>
+    </div>
+  </div>
   <div class="card" style="margin-top:8px">
     <h3 id="vs-tbl-h"></h3>
     <div class="tbl-wrap">
@@ -245,6 +257,16 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       </table>
     </div>
     <p class="fn" id="ced-fn"></p>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <h3 id="ced-t-h">¿Quién cede más participación? Por número de transacciones</h3>
+    <div class="tbl-wrap">
+      <table style="min-width:860px">
+        <thead><tr><th>Segmento</th><th>Peso antes de Bre-B</th><th>Peso hoy</th><th>Cambio del peso</th><th>Transacciones, vs. un año antes</th><th>Un año antes, vs. dos</th><th>Cuota entre tarjetas</th></tr></thead>
+        <tbody id="ced-t-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="ced-t-fn"></p>
   </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
 
@@ -468,6 +490,28 @@ function draw() {
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
 
+  // Por número de transacciones
+  const txC = (m, k) => (BF[m] && BF[m][k] && BF[m][k].num) || 0, txD = m => (KT(m) ? KT(m).debito_compras_num : 0);
+  function KT(m) { return TARJ.find(r => r.mes === m); }
+  const txBre = m => { const b = MONTHS.find(x => x.fecha.slice(0, 7) === m); return b ? b.txn : 0; };
+  const txSeg = m => [txC(m, 'credito_VISA'), txC(m, 'credito_MASTERCARD'), txC(m, 'credito_AMEX') + txC(m, 'credito_DINERS') + txC(m, 'credito_OTRAS'), txD(m), txBre(m)];
+  const pesoT = VS.map(r => { const v = txSeg(r.mes), t = v.reduce((a, b) => a + b, 0); return v.map(x => +(x / t * 100).toFixed(1)); });
+  const pesT = (label, color, i) => ({ label, data: pesoT.map(x => x[i]), backgroundColor: color + 'bb', borderColor: color, borderWidth: 1 });
+  charts.push(new Chart($('c-vt-peso'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
+      pesT('Visa crédito', blue, 0), pesT('Mastercard crédito', amber, 1), pesT('Amex, Diners y otras', tick, 2), pesT('Débito (todas)', violet, 3), pesT('Bre-B', green, 4)] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
+      scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
+  const mH = VS[VS.length - 1].mes, sh = (m, d) => { const [y, mo] = m.split('-').map(Number), t = y * 12 + mo - 1 + d; return Math.floor(t / 12) + '-' + String(t % 12 + 1).padStart(2, '0'); };
+  const crec = (a, b) => txSeg(b).slice(0, 4).map((x, i) => (x / txSeg(a)[i] - 1) * 100);
+  const gA = crec(sh(mH, -24), sh(mH, -12)), gB = crec(sh(mH, -12), mH);
+  const tot4 = m => txSeg(m).slice(0, 4).reduce((a, b) => a + b, 0);
+  const gAt = (tot4(sh(mH, -12)) / tot4(sh(mH, -24)) - 1) * 100, gBt = (tot4(mH) / tot4(sh(mH, -12)) - 1) * 100;
+  charts.push(new Chart($('c-vt-crec'), { type: 'bar', data: { labels: ['Visa crédito', 'Mastercard crédito', 'Amex, Diners y otras', 'Débito (todas)', 'Total tarjetas'], datasets: [
+      { label: mlabel(sh(mH, -24) + '-01') + ' → ' + mlabel(sh(mH, -12) + '-01') + ' (antes de Bre-B)', data: [...gA, gAt].map(x => +x.toFixed(1)), backgroundColor: violet + '66', borderColor: violet, borderWidth: 1, borderRadius: 3 },
+      { label: mlabel(sh(mH, -12) + '-01') + ' → ' + mlabel(mH + '-01') + ' (con Bre-B)', data: [...gB, gBt].map(x => +x.toFixed(1)), backgroundColor: violet + 'ee', borderColor: violet, borderWidth: 1, borderRadius: 3 }] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (c.parsed.y >= 0 ? '+' : '') + nf(c.parsed.y, 1) + '%' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick, font: { size: 9.5 } } }, y: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
+
   // Tarjetas y llaves
   const KL = klData(), klLabel = m => (KL.bre[m] ? KL.bre[m].label : mlabel(m + '-01')), lastM = KL.meses[KL.meses.length - 1];
   const solo = v => KL.meses.map(m => (m === lastM ? v : null));
@@ -582,6 +626,26 @@ function statics() {
   $('ced-fn').innerHTML = `<span class="tag d">derivado</span> Casi todo lo que «cede» es dilución: Bre-B pasó a pesar ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor combinado, así que cada segmento pierde alrededor de la mitad de su peso aunque siga creciendo. En puntos porcentuales cede más el segmento más grande (Mastercard débito); en términos relativos ceden casi igual. `
     + `Para ver si alguien pierde de verdad, hay que mirar el valor y la cuota entre tarjetas: las compras con tarjeta crecieron ${f1(gAnt)}% entre ${mlabel(mAno2 + '-01')} y ${mlabel(mAno + '-01')}, y ${f1(gHoy)}% entre ${mlabel(mAno + '-01')} y ${lastTarj.label} (el ritmo se redujo a la mitad; la tabla no prueba que Bre-B sea la causa). `
     + `Ninguna franquicia de crédito baja en valor, salvo Amex, Diners y otras. Cuidado con el débito por franquicia: es una estimación basada en ingresos por tarifa interbancaria y puede moverse si cambian las tarifas sin que cambie el volumen; la lectura más sólida es la de crédito (oficial) y la de los totales por producto.`;
+  const txm = m => { const c = k => (BFc[m] && BFc[m][k] && BFc[m][k].num) || 0, r = KT2(m);
+    return { vc: c('credito_VISA'), mc: c('credito_MASTERCARD'), ot: c('credito_AMEX') + c('credito_DINERS') + c('credito_OTRAS'), db: r ? r.debito_compras_num : 0 }; };
+  function KT2(m) { return TARJ.find(x => x.mes === m); }
+  const breT = m => { const b = MONTHS.find(x => x.fecha.slice(0, 7) === m); return b ? b.txn : 0; };
+  const TF = [['Visa crédito', x => x.vc, false], ['Mastercard crédito', x => x.mc, false], ['Amex, Diners y otras', x => x.ot, false], ['Débito, todas las franquicias', x => x.db, true],
+              ['Crédito, todas las franquicias', x => x.vc + x.mc + x.ot, true], ['Total tarjetas', x => x.vc + x.mc + x.ot + x.db, true]];
+  const totT = m => TF[5][1](txm(m)) + breT(m), cardsT = m => TF[5][1](txm(m));
+  $('ced-t-tbody').innerHTML = TF.map(([n, f, bold]) => {
+    const w0 = f(txm(mAntes)) / totT(mAntes) * 100, w1 = f(txm(mHoy)) / totT(mHoy) * 100, g1 = (f(txm(mHoy)) / f(txm(mAno)) - 1) * 100, g0 = (f(txm(mAno)) / f(txm(mAno2)) - 1) * 100;
+    const c0 = f(txm(mAno)) / cardsT(mAno) * 100, c1 = f(txm(mHoy)) / cardsT(mHoy) * 100;
+    return `<tr><td style="${bold ? 'font-weight:600' : 'padding-left:22px'}">${n}</td><td class="n">${f1(w0)}%</td><td class="n">${f1(w1)}%</td><td class="n" ${col(w1 - w0)}>${sg(w1 - w0)} pp (${sg((w1 / w0 - 1) * 100)}%)</td>`
+      + `<td class="n" ${col(g1)}>${sg(g1)}%</td><td class="n" ${col(g0)}>${sg(g0)}%</td><td class="n">${f1(c0)}% → ${f1(c1)}%</td></tr>`;
+  }).join('') + `<tr><td style="font-weight:600;color:var(--green)">Bre-B</td><td class="n">0,0%</td><td class="n">${f1(breT(mHoy) / totT(mHoy) * 100)}%</td><td class="n" ${col(1)}>${sg(breT(mHoy) / totT(mHoy) * 100)} pp</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>`;
+  const tkt = (m, k) => BFc[m][k].cop / BFc[m][k].num;
+  $('ced-t-h').textContent = `¿Quién cede más participación? Por número de transacciones, ${mlabel(mAntes + '-01')} frente a ${lastTarj.label}`;
+  $('ced-t-fn').innerHTML = `<span class="tag d">derivado</span> Bre-B pesa ${f1(breT(mHoy) / totT(mHoy) * 100)}% de las transacciones combinadas, menos que su ${f1(breV(mHoy) / tot(mHoy) * 100)}% en valor, porque su ticket ($${nf(MONTHS.find(x => x.fecha.slice(0, 7) === mHoy).ticket, 0)}) es más alto que el promedio de las compras con tarjeta ($${nf(vTot(mHoy) / cardsT(mHoy), 0)}). `
+    + `De nuevo la mayor parte de la caída del peso es dilución; en puntos cede más el débito por ser el más grande, y en términos relativos las menores (Amex, Diners y otras). La señal real está en el crecimiento: las transacciones con tarjeta crecieron ${f1(((cardsT(mHoy) / cardsT(mAno)) - 1) * 100)}% en el último año frente a ${f1(((cardsT(mAno) / cardsT(mAno2)) - 1) * 100)}% el año previo. `
+    + `En crédito, que es oficial por franquicia, Mastercard crece más que Visa (${sg((txm(mHoy).mc / txm(mAno).mc - 1) * 100)}% frente a ${sg((txm(mHoy).vc / txm(mAno).vc - 1) * 100)}%) y su ticket baja ($${nf(tkt(mAno, 'credito_MASTERCARD'), 0)} → $${nf(tkt(mHoy, 'credito_MASTERCARD'), 0)}), mientras el de Visa se mantiene ($${nf(tkt(mAno, 'credito_VISA'), 0)} → $${nf(tkt(mHoy, 'credito_VISA'), 0)}). `
+    + `Ojo con el efecto de base: Mastercard crédito venía de ${sg((txm(mAno).mc / txm(mAno2).mc - 1) * 100)}% el año previo, un salto atípico, así que parte de su desaceleración es aritmética. `
+    + `No hay transacciones de débito por franquicia en la fuente, así que Visa y Mastercard no se pueden sumar en este cuadro.`;
   const KLd = klData(), tj = lastTarj.t, vigT = tj.credito_vigentes + tj.debito_vigentes, DT = DICE.totales, mesFull = MONTHS[MONTHS.length - 1];
   const nf1 = n => Number(n).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const klFila = (nombre, cant, corte, veces, uso, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`

@@ -10,7 +10,7 @@ Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-in
 - **Volumen operacional**: transacciones diarias en el MOL (desde el 6-oct-2025) y por mes.
 - **Adopción**: entidades participantes por tipo, origen de las operaciones, montos y tipo de operación.
 - **Directorio de llaves (DICE)**: llaves registradas por mes y usuarios; personas naturales vs jurídicas.
-- **Bre-B frente a las tarjetas**: transacciones y valor por mes de Bre-B contra las compras con tarjeta de crédito y débito (SFC), Bre-B como porcentaje de ellas, el desglose por producto (crédito / débito) y franquicia (Visa, Mastercard, Amex, Diners, otras) con el peso de Bre-B frente a cada una, una gráfica del peso de cada franquicia y producto frente a Bre-B mes a mes desde ene-2025 con su tabla de quién cede más (separando dilución de pérdida real), y **tarjetas vigentes contra llaves** (parque de instrumentos, y transacciones al mes por instrumento).
+- **Bre-B frente a las tarjetas**: transacciones y valor por mes de Bre-B contra las compras con tarjeta de crédito y débito (SFC), Bre-B como porcentaje de ellas, el desglose por producto (crédito / débito) y franquicia (Visa, Mastercard, Amex, Diners, otras) con el peso de Bre-B frente a cada una, una gráfica del peso de cada franquicia y producto frente a Bre-B mes a mes desde ene-2025 con su tabla de quién cede más, en valor y en número de transacciones (separando dilución de pérdida real), y **tarjetas vigentes contra llaves** (parque de instrumentos, y transacciones al mes por instrumento).
 - **Contexto**: transferencias vs tarjetas, crecimiento previo, PIX.
 - **Cortes y fuentes**: tabla con cada corte oficial y sus valores derivados.
 
