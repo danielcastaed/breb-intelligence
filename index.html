@@ -229,7 +229,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
 
   <section class="tab" id="tab-tarjetas">
     <div class="subtabs" id="subtabs">
-      <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/transacciones" data-s="transacciones">Transacciones</a><a href="#tarjetas/cede" data-s="cede">Quién cede más</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
+      <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/cede" data-s="cede">Quién cede más</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
     </div>
     <div class="sub" data-sub="panorama">
     <p class="lec" id="lec-panorama"></p>
@@ -250,7 +250,19 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
       <p class="fn"><span class="tag d">derivado</span> Bre-B del mes ÷ compras con tarjeta del mismo mes.</p>
     </div>
   </div>
-  <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
+    <div class="g2">
+    <div class="card">
+      <h3>Peso en las transacciones combinadas (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-peso"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + transacciones de Bre-B) del mes. En crédito la franquicia es oficial; el débito va completo porque la SFC no reparte su número de transacciones por franquicia.</p>
+    </div>
+    <div class="card">
+      <h3>Crecimiento acumulado de las transacciones con tarjeta (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Suma de meses frente a la suma del mismo periodo del año anterior: desde el lanzamiento (con Bre-B) y el periodo equivalente previo.</p>
+    </div>
+  </div>
+<div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
     </div>
     <div class="sub" data-sub="franquicias">
     <p class="lec" id="lec-franquicias"></p>
@@ -275,22 +287,6 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
       </table>
     </div>
     <p class="fn" id="vs-franq-fn"></p>
-  </div>
-  
-    </div>
-    <div class="sub" data-sub="transacciones">
-    <p class="lec" id="lec-transacciones"></p>
-  <div class="g2">
-    <div class="card">
-      <h3>Peso en las transacciones combinadas (%)</h3>
-      <div class="chart tall"><canvas id="c-vt-peso"></canvas></div>
-      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + transacciones de Bre-B) del mes. En crédito la franquicia es oficial; el débito va completo porque la SFC no reparte su número de transacciones por franquicia.</p>
-    </div>
-    <div class="card">
-      <h3>Crecimiento acumulado de las transacciones con tarjeta (%)</h3>
-      <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
-      <p class="fn"><span class="tag d">derivado</span> Suma de meses frente a la suma del mismo periodo del año anterior: desde el lanzamiento (con Bre-B) y el periodo equivalente previo.</p>
-    </div>
   </div>
   
     </div>
@@ -478,7 +474,7 @@ function klData() {
 }
 
 // Navegación por pestañas (#resumen, #tarjetas/lento, ...) y notas largas plegadas
-const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'transacciones', 'cede', 'emisores', 'lento', 'llaves'];
+const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'cede', 'emisores', 'lento', 'llaves'];
 let tabActual = null;
 function ir() {
   const [t0, s0] = (location.hash.slice(1) || 'resumen').split('/'), t = TABS.includes(t0) ? t0 : 'resumen', sub = SUBS.includes(s0) ? s0 : 'panorama';
@@ -851,9 +847,8 @@ function statics() {
   // Lecturas de cada subvista y mensajes clave del Resumen
   const lPan = `En ${vL.label}, el último mes con datos de la SFC, Bre-B equivale a <b>${nf(vL.rN, 0)}%</b> de las compras con tarjeta en número de transacciones y a <b>${nf(vL.rV, 0)}%</b> en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%).`;
   const lLen = `<b>No se ve que las tarjetas crezcan más lento desde Bre-B:</b> ${sg(LR[0].b)}% en transacciones (${sg(LR[0].a)}% en el periodo equivalente previo) y ${sg(LR[4].b)}% en valor (${sg(LR[4].a)}%), acumulado ${vent(mesesW)}.`;
-  $('lec-panorama').innerHTML = lPan;
+  $('lec-panorama').innerHTML = lPan + ` Bre-B pesa <b>${f1(breT(mHoy) / totT(mHoy) * 100)}%</b> de las transacciones combinadas y ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor, porque su ticket es más alto que el de las tarjetas.`;
   $('lec-franquicias').innerHTML = `En ${vL.label}, Bre-B movió <b>${f1(bre.valor / sumK(['credito_VISA', 'debito_VISA']))} veces</b> el valor de Visa y <b>${f1(bre.valor / sumK(['credito_MASTERCARD', 'debito_MASTERCARD']))} veces</b> el de Mastercard (crédito + débito; el débito por franquicia es estimado). Casi toda la pérdida de peso de las tarjetas es dilución, no sustitución.`;
-  $('lec-transacciones').innerHTML = `Bre-B pesa <b>${f1(breT(mHoy) / totT(mHoy) * 100)}%</b> de las transacciones combinadas y ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor, porque su ticket es más alto que el de las tarjetas. En puntos cede más el débito, por ser el segmento más grande.`;
   $('lec-emisores').innerHTML = `<b>${eMC.nombre}</b> aporta ${f1(eMC.aporte)}% del aumento de Mastercard crédito y <b>${eV.nombre}</b> ${f1(eV.aporte)}% del de Visa; sin ellos, las dos franquicias crecen ${sg(eMC.gx)}% y ${sg(eV.gx)}%.`;
   const dPP = FILAS.filter(f => !f[2]).map(([n, ks]) => { const w0 = segV(mAntes, ks) / tot(mAntes) * 100, w1 = segV(mHoy, ks) / tot(mHoy) * 100; return [n.replace(/ <span.*$/, ''), w1 - w0, (w1 / w0 - 1) * 100]; });
   const mayorPP = [...dPP].sort((a, b) => a[1] - b[1])[0], mayorRel = [...dPP].sort((a, b) => a[2] - b[2])[0];
