@@ -94,7 +94,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   <div id="err"></div>
 
   <div class="notice">
-    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras; <span class="tag d">digitalizado</span> = leído de un gráfico oficial y validado contra sus totales.
+    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras.
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -137,9 +137,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
   </div>
   <div class="card" style="margin-top:8px">
-    <h3>Operaciones diarias liquidadas en el MOL (millones) · 6-oct-2025 a 31-ene-2026</h3>
+    <h3>Transacciones diarias en el MOL (millones)</h3>
     <div class="chart tall"><canvas id="c-daily"></canvas></div>
-    <p class="fn"><span class="tag d">digitalizado</span> del Gráfico 7 del documento técnico de BanRep, validado contra el reporte oficial: octubre 64,2 M (64,4 M), noviembre 88,9 M (89,1 M), diciembre 113,9 M (114,1 M), enero 102,6 M (102,8 M). El reporte MOL tiene la serie diaria completa hasta hoy; su lectura automática está pendiente (ver README).</p>
+    <p class="fn" id="daily-fn"></p>
   </div>
 
   <div class="sec"><span>Adopción</span><i></i></div>
@@ -306,8 +306,8 @@ function draw() {
       scales: { x: catX, y: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
   charts.push(new Chart($('c-daily'), { type: 'bar',
     data: { labels: DAILY.map(d => d.fecha), datasets: [{ data: DAILY.map(d => d.v), backgroundColor: green + 'aa', borderWidth: 0, borderRadius: 1, barPercentage: .9, categoryPercentage: 1 }] },
-    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: it => fmtDate(DAILY[it[0].dataIndex].fecha), label: c => nf(c.parsed.y, 2) + ' M operaciones' } } },
-      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: true, maxTicksLimit: 10, callback: v => fmtDate(DAILY[v].fecha).slice(0, -5) } }, y: yAxis(v => nf(v, 0)) } }) }));
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: it => fmtDate(DAILY[it[0].dataIndex].fecha), label: c => nf(DAILY[c.dataIndex].n, 0) + ' transacciones' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: true, maxTicksLimit: 10, callback: v => fmtDate(DAILY[v].fecha) } }, y: yAxis(v => nf(v, 0)) } }) }));
 
   // Adopción
   const D = DIST.cortes[0], totN = D.filas.reduce((s, r) => s + r[1], 0), totV = D.filas.reduce((s, r) => s + r[2], 0);
@@ -367,6 +367,8 @@ function statics() {
   $('acc-fn').innerHTML = `<span class="tag o">oficial</span> ${ACC.fuente}, del ${fmtDate(ACC.desde)} al ${fmtDate(ACC.corte)}. El QR mueve más operaciones pequeñas (ticket de $${nf(q.ticket_cop, 0)}); la llave, menos pero de mayor valor.`;
   $('p2p').innerHTML = `<li>${CTX.p2p.texto}<span class="s">${link(CTX.p2p.url, CTX.p2p.fuente)}<span class="tag">${CTX.p2p.tipo}</span></span></li>`;
   const T = DICE.tipos_de_llave;
+  const dMax = DAILY.reduce((a, b) => (b.n > a.n ? b : a)), dSum = DAILY.reduce((a, b) => a + b.n, 0);
+  $('daily-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}: ${nf(DAILY.length, 0)} días hasta ${fmtDate(DAILY[DAILY.length - 1].fecha)}; la suma (${nf(dSum, 0)}) reproduce el total acumulado del reporte. <span class="tag d">derivado</span> Récord: ${nf(dMax.v, 1)} M el ${fmtDate(dMax.fecha)}. Los valles son domingos y festivos (25-dic: 2,0 M; 1-ene: 1,8 M).`;
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -411,7 +413,7 @@ async function init() {
       load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true)]);
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
-    DAILY = daily.map(r => ({ fecha: r.fecha, v: parseFloat(r.operaciones_millones) }));
+    DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
     KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
     if (CUTS.length < 3) throw new Error('Datos insuficientes');

@@ -114,6 +114,42 @@ def month_ends(until):
         y, m = first_next.year, first_next.month
 
 
+LEER_BARRAS = """el => {
+    const bars = [...el.querySelectorAll('rect.column')];
+    const ax = [...el.querySelectorAll('svg text')].map(t => { const m = t.textContent.match(/(\\d{2})\\/(\\d{2})\\/(\\d{4})$/); return m ? `${m[3]}-${m[2]}-${m[1]}` : null; }).filter(Boolean);
+    return bars.length === ax.length ? bars.map((b, i) => [ax[i], +b.getAttribute('aria-label')]) : [];
+}"""
+
+
+def read_diario(page, last, total_txn):
+    """Transacciones por día: el gráfico de barras muestra ~23 días y se desplaza en horizontal.
+    Cada barra trae el valor exacto en su aria-label; la fecha sale del eje. Valida contra el total acumulado."""
+    chart = page.locator("visual-modern", has_text=re.compile(r"Número de transacciones \(millones\)")).first
+    chart.scroll_into_view_if_needed()
+    box = chart.bounding_box()
+    page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.mouse.wheel(-200_000, 0)
+    page.wait_for_timeout(1000)
+    acc, estancado = {}, 0
+    for _ in range(150):
+        antes = len(acc)
+        acc.update({f: v for f, v in chart.evaluate(LEER_BARRAS)})
+        if last.isoformat() in acc:
+            break
+        estancado = estancado + 1 if len(acc) == antes else 0
+        if estancado >= 3:
+            break
+        page.mouse.wheel(300, 0)
+        page.wait_for_timeout(900)
+    fechas = sorted(acc)
+    f = lambda x: dt.date.fromisoformat(x)
+    assert fechas and f(fechas[0]) == LANZAMIENTO and f(fechas[-1]) == last, f"serie diaria incompleta: {fechas[:1]}..{fechas[-1:]}"
+    assert all((f(b) - f(a)).days == 1 for a, b in zip(fechas, fechas[1:])), "la serie diaria tiene huecos"
+    assert sum(acc.values()) == total_txn, f"la serie diaria suma {sum(acc.values())}, el total oficial es {total_txn}"
+    write_csv(DATA / "breb_diario_mol.csv", ["fecha", "transacciones"], [dict(fecha=d, transacciones=acc[d]) for d in fechas])
+    return len(fechas)
+
+
 def update_mol(page, url, backfill):
     path = DATA / "breb_mol_cortes.csv"
     rows = read_csv(path)
@@ -157,6 +193,7 @@ def update_mol(page, url, backfill):
         w.writerows(rows)
     dist["cortes"].sort(key=lambda c: c["fecha"], reverse=True)  # el más reciente primero (lo usa el dashboard)
     dist_path.write_text(json.dumps(dist, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("MOL, días en la serie diaria:", read_diario(page, last, txn))  # al final: si falla, los cortes ya quedaron escritos
     return added
 
 
