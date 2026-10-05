@@ -31,6 +31,9 @@ jobs:
           BREB_MOL_URL: ${{ secrets.BREB_MOL_URL }}
           BREB_DICE_URL: ${{ secrets.BREB_DICE_URL }}
         run: python scripts/fetch_banrep.py ${{ inputs.backfill && '--backfill' || '' }}
+      - name: Compras con tarjeta (SFC, datos abiertos)
+        if: always()
+        run: python scripts/fetch_sfc_tarjetas.py
       - name: Publicar cambios
         if: always()
         run: |

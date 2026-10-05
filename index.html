@@ -94,7 +94,7 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   <div id="err"></div>
 
   <div class="notice">
-    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras.
+    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026) y las compras con tarjeta de la SFC (datos.gov.co). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras.
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -196,6 +196,26 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     <p class="fn" id="naj-fn"></p>
   </div>
 
+  <div class="sec"><span>Bre-B frente a las tarjetas</span><i></i></div>
+  <div class="g3">
+    <div class="card">
+      <h3>Transacciones por mes (millones)</h3>
+      <div class="chart"><canvas id="c-vs-txn"></canvas></div>
+      <p class="fn">Barras: compras con tarjeta de crédito y débito. Línea: Bre-B. *Octubre cuenta desde el 6.</p>
+    </div>
+    <div class="card">
+      <h3>Valor por mes (billones COP)</h3>
+      <div class="chart"><canvas id="c-vs-val"></canvas></div>
+      <p class="fn">Mismas series, en pesos.</p>
+    </div>
+    <div class="card">
+      <h3>Bre-B como % de las compras con tarjeta</h3>
+      <div class="chart"><canvas id="c-vs-ratio"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Bre-B del mes ÷ compras con tarjeta del mismo mes.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
+
   <div class="sec"><span>Contexto</span><i></i></div>
   <div class="card">
     <ul class="facts" id="contexto"></ul>
@@ -248,7 +268,7 @@ function parseCSV(txt) {
 }
 const load = async (p, json) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error('No se pudo cargar ' + p + ' (' + r.status + ')'); return json ? r.json() : parseCSV(await r.text()); };
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {};
+let charts = [], CUTS = [], MONTHS = [], DAILY = [], KEYS = [], CTX = {}, DICE = {}, DIST = {}, ACC = {}, TARJ = [];
 
 function line(label, pts, color, fill) {
   return { label, data: pts, borderColor: color, backgroundColor: color + '22', fill: !!fill, tension: .25,
@@ -264,6 +284,15 @@ function derive() {
     MONTHS.push({ fecha: b.fecha, label: mlabel(b.fecha) + (i === 1 ? '*' : ''), txn: b.txn - a.txn, valor: b.valor - a.valor, dias: d,
                   diario: (b.txn - a.txn) / d, ticket: (b.valor - a.valor) / (b.txn - a.txn) });
   }
+}
+
+// Compras con tarjeta (SFC) y Bre-B, mes a mes desde ene-2025; Bre-B existe desde oct-2025
+function vsData() {
+  const bre = Object.fromEntries(MONTHS.map(m => [m.fecha.slice(0, 7), m]));
+  return TARJ.filter(t => t.mes >= '2025-01').map(t => {
+    const b = bre[t.mes], n = t.credito_compras_num + t.debito_compras_num, v = t.credito_compras_cop + t.debito_compras_cop;
+    return { mes: t.mes, label: b ? b.label : mlabel(t.mes + '-01'), t, n, v, b, rN: b ? b.txn / n * 100 : null, rV: b ? b.valor / v * 100 : null };
+  });
 }
 
 function draw() {
@@ -327,6 +356,24 @@ function draw() {
     data: { labels: O.partes.map(p => p[0]), datasets: [{ data: O.partes.map(p => p[1]), backgroundColor: [green + 'cc', blue + 'cc'], borderColor: css('--s1'), borderWidth: 2 }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.label + ': ' + c.parsed + '%' } } } }) }));
 
+  // Bre-B frente a las tarjetas
+  const VS = vsData();
+  const vsOpts = (fmt, extra = {}) => base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y),
+      afterBody: it => { const r = VS[it[0].dataIndex]; return it[0].datasetIndex === 0 ? extra.detalle(r) : ''; } } } }, scales: { x: catX, y: yAxis(v => nf(v, 0)) } });
+  const vsSeries = (fn, fnB, dec) => [
+    { type: 'bar', label: 'Tarjetas (crédito + débito)', data: VS.map(r => +fn(r).toFixed(dec)), backgroundColor: violet + '88', borderColor: violet, borderWidth: 1, borderRadius: 3, order: 2 },
+    { ...line('Bre-B', VS.map(r => (r.b ? +fnB(r).toFixed(dec) : null)), green, false), type: 'line', order: 1 }];
+  charts.push(new Chart($('c-vs-txn'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: vsSeries(r => r.n / 1e6, r => r.b.txn / 1e6, 1) },
+    options: vsOpts(v => nf(v, 1) + ' M', { detalle: r => `Crédito: ${nf(r.t.credito_compras_num / 1e6, 1)} M · Débito: ${nf(r.t.debito_compras_num / 1e6, 1)} M` }) }));
+  charts.push(new Chart($('c-vs-val'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: vsSeries(r => r.v / 1e12, r => r.b.valor / 1e12, 2) },
+    options: vsOpts(v => '$' + nf(v, 2) + ' B', { detalle: r => `Crédito: $${nf(r.t.credito_compras_cop / 1e12, 2)} B · Débito: $${nf(r.t.debito_compras_cop / 1e12, 2)} B` }) }));
+  const VR = VS.filter(r => r.b);
+  charts.push(new Chart($('c-vs-ratio'), { type: 'line', data: { labels: VR.map(r => r.label), datasets: [
+      line('En transacciones', VR.map(r => +r.rN.toFixed(0)), green, false), line('En valor', VR.map(r => +r.rV.toFixed(0)), blue, false),
+      { label: 'Igual a tarjetas', data: VR.map(() => 100), borderColor: tick, borderDash: [4, 4], borderWidth: 1, pointRadius: 0, fill: false }] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 0) + '%' } } },
+      scales: { x: catX, y: { beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
+
   // DICE
   charts.push(new Chart($('c-keys'), { type: 'line',
     data: { datasets: [line('Llaves (M)', KEYS.map(k => ({ x: k.day, y: k.v })), blue, false)] },
@@ -369,6 +416,14 @@ function statics() {
   const T = DICE.tipos_de_llave;
   const dMax = DAILY.reduce((a, b) => (b.n > a.n ? b : a)), dSum = DAILY.reduce((a, b) => a + b.n, 0);
   $('daily-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}: ${nf(DAILY.length, 0)} días hasta ${fmtDate(DAILY[DAILY.length - 1].fecha)}; la suma (${nf(dSum, 0)}) reproduce el total acumulado del reporte. <span class="tag d">derivado</span> Récord: ${nf(dMax.v, 1)} M el ${fmtDate(dMax.fecha)}. Los valles son domingos y festivos (25-dic: 2,0 M; 1-ene: 1,8 M).`;
+  const VS = vsData(), VB = VS.filter(r => r.b), vL = VB[VB.length - 1], vF = VB[0], lastTarj = VS[VS.length - 1];
+  const supera = MONTHS.filter(m => m.fecha.slice(0, 7) > lastTarj.mes && m.txn > lastTarj.n).map(m => m.label + ' (' + nf(m.txn / 1e6, 0) + ' M)');
+  $('vs-fn').innerHTML = `<span class="tag d">derivado</span> En ${vL.label}, el último mes con datos de la SFC, Bre-B equivale a ${nf(vL.rN, 0)}% de las compras con tarjeta en número de transacciones y a ${nf(vL.rV, 0)}% en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%). `
+    + `Ticket promedio de ${vL.label}: Bre-B $${nf(vL.b.ticket, 0)}, crédito $${nf(vL.t.credito_compras_cop / vL.t.credito_compras_num, 0)}, débito $${nf(vL.t.debito_compras_cop / vL.t.debito_compras_num, 0)}. `
+    + (supera.length ? `Después de ${lastTarj.label}, Bre-B movió ${supera.join(' y ')}, por encima de las ${nf(lastTarj.n / 1e6, 0)} M compras con tarjeta de ${lastTarj.label}. ` : '')
+    + `<br><span class="tag o">oficial</span> Tarjetas: compras con tarjeta de crédito (nacionales) y débito que reportan los establecimientos de crédito a la SFC, ${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos «Tarjetas de crédito y débito»')}; sin retiros ni compras en el exterior. La SFC publica con rezago (último mes: ${lastTarj.label}). `
+    + `Se usan las cifras de los emisores, que cuentan cada tarjeta una vez; las administradoras de sistemas de pago (Credibanco, Redeban, redes de Visa y Mastercard) reportan lo que procesa su red y en 2025 sumaron entre 1,4 y 1,6 veces esas cifras, porque una misma compra puede contarse en la red y en el adquirente, así que no se suman. `
+    + `No es una comparación uno a uno: Bre-B incluye transferencias entre personas y pagos a comercios, y parte de su volumen no sale de una compra con tarjeta.`;
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -402,20 +457,21 @@ function table() {
     'El promedio diario sube de 2,5 M de transacciones en octubre a 7,7 M en septiembre; el valor mensual, de $9,4 a $30,2 billones. El ticket promedio acumulado baja de $160 mil (dic–ene) a $147 mil: cada vez hay más transacciones pequeñas.',
     'Bre-B no creó el volumen de la nada: opera sobre redes de transferencias inmediatas que ya existían (promedio mensual de jul–oct 2025 cercano a 108 M según el Gráfico 5 de BanRep) y las interopera.',
     'El reporte DICE cuenta llaves activas y bloqueadas; entre enero y marzo los puntos de la serie combinan esa base con la del documento técnico, de ahí una diferencia menor (98,8 vs 99,0 M en enero). Los meses sin etiqueta en el gráfico del reporte no se estiman.',
-    'Pendiente: la serie diaria completa más allá de enero. La lectura mensual de los reportes es automática (ver README).',
+    'La lectura de los reportes de BanRep y de las compras con tarjeta de la SFC es automática y mensual (ver README).',
   ].map(t => `<li>${t}</li>`).join('');
 }
 
 async function init() {
   try {
-    const [cuts, daily, keys, ctx, dice, dist, acc] = await Promise.all([
+    const [cuts, daily, keys, ctx, dice, dist, acc, tarj] = await Promise.all([
       load('data/breb_mol_cortes.csv'), load('data/breb_diario_mol.csv'), load('data/breb_llaves_dice.csv'),
-      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true)]);
+      load('data/breb_contexto.json', true), load('data/breb_dice.json', true), load('data/breb_distribucion_monto.json', true), load('data/breb_acceso.json', true), load('data/tarjetas_sfc_mensual.csv')]);
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
     DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
     KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
+    TARJ = tarj.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, k === 'mes' ? v : +v])));
     if (CUTS.length < 3) throw new Error('Datos insuficientes');
     derive();
     $('asof').textContent = 'Último corte MOL: ' + fmtDate(CUTS[CUTS.length - 1].fecha);
