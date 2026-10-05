@@ -238,6 +238,30 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
   </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
 
+  <div class="sec"><span>Tarjetas y llaves</span><i></i></div>
+  <div class="g2" style="margin-top:0">
+    <div class="card">
+      <h3>Tarjetas vigentes y llaves de Bre-B (millones)</h3>
+      <div class="chart tall"><canvas id="c-kl-stock"></canvas></div>
+      <p class="fn">Barras: tarjetas de crédito y débito vigentes al cierre de cada mes. Línea: llaves registradas en Bre-B. Puntos: medios de pago vinculados y clientes con llaves, al último corte.</p>
+    </div>
+    <div class="card">
+      <h3>Transacciones al mes por instrumento</h3>
+      <div class="chart tall"><canvas id="c-kl-uso"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Compras con tarjeta ÷ tarjetas vigentes, y transacciones de Bre-B ÷ llaves registradas, en los meses con dato de llaves. *Octubre de Bre-B cuenta desde el 6.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <h3 id="kl-tbl-h">Tarjetas y llaves: último corte de cada fuente</h3>
+    <div class="tbl-wrap">
+      <table style="min-width:760px">
+        <thead><tr><th>Instrumento</th><th>Cantidad (M)</th><th>Corte</th><th>Frente a las tarjetas</th><th>Transacciones al mes por instrumento</th></tr></thead>
+        <tbody id="kl-tbody"></tbody>
+      </table>
+    </div>
+    <p class="fn" id="kl-fn"></p>
+  </div>
+
   <div class="sec"><span>Contexto</span><i></i></div>
   <div class="card">
     <ul class="facts" id="contexto"></ul>
@@ -322,6 +346,17 @@ function vsFranq() {
   const by = {};
   TARJF.forEach(r => { (by[r.mes] = by[r.mes] || {})[r.producto + '_' + r.franquicia] = r; });
   return by;
+}
+
+// Tarjetas vigentes y llaves de Bre-B, mes a mes desde ene-2025 hasta el último mes con llaves
+function klData() {
+  const lastKey = KEYS.map(k => k.mes).sort().pop(), meses = [];
+  for (let y = 2025, m = 1; ; m++) {
+    if (m > 12) { m = 1; y++; }
+    const k = y + '-' + String(m).padStart(2, '0'); meses.push(k); if (k >= lastKey) break;
+  }
+  return { meses, t: Object.fromEntries(TARJ.map(r => [r.mes, r])), kv: Object.fromEntries(KEYS.map(k => [k.mes, k.v])),
+           bre: Object.fromEntries(MONTHS.map(m => [m.fecha.slice(0, 7), m])) };
 }
 
 function draw() {
@@ -423,6 +458,25 @@ function draw() {
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
 
+  // Tarjetas y llaves
+  const KL = klData(), klLabel = m => (KL.bre[m] ? KL.bre[m].label : mlabel(m + '-01')), lastM = KL.meses[KL.meses.length - 1];
+  const solo = v => KL.meses.map(m => (m === lastM ? v : null));
+  const klBar = (label, key, alpha) => ({ type: 'bar', label, data: KL.meses.map(m => (KL.t[m] ? +(KL.t[m][key] / 1e6).toFixed(1) : null)), backgroundColor: violet + alpha, borderColor: violet, borderWidth: 1, order: 3, stack: 'tarjetas' });
+  const punto = (label, v, color, stack) => ({ type: 'line', label, data: solo(+(v / 1e6).toFixed(1)), showLine: false, borderColor: color, backgroundColor: color, pointRadius: 7, pointStyle: 'rectRot', order: 1, stack });
+  charts.push(new Chart($('c-kl-stock'), { type: 'bar', data: { labels: KL.meses.map(m => mlabel(m + '-01')), datasets: [
+      klBar('Tarjetas débito', 'debito_vigentes', '88'), klBar('Tarjetas crédito', 'credito_vigentes', '44'),
+      { ...line('Llaves registradas', KL.meses.map(m => (KL.kv[m] != null ? KL.kv[m] : null)), green, false), type: 'line', spanGaps: true, order: 1, stack: 'llaves' },
+      punto('Medios de pago vinculados', DICE.totales.medios_de_pago, blue, 'medios'), punto('Clientes con llaves', DICE.totales.clientes, amber, 'clientes')] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.parsed.y == null ? '' : c.dataset.label + ': ' + nf(c.parsed.y, 1) + ' M' } } },
+      scales: { x: { ...catX, stacked: true }, y: { ...yAxis(v => nf(v, 0)), stacked: true } } }) }));
+  const mC = KL.meses.filter(m => KL.t[m]);
+  const porTarj = m => (KL.t[m].credito_compras_num + KL.t[m].debito_compras_num) / (KL.t[m].credito_vigentes + KL.t[m].debito_vigentes);
+  charts.push(new Chart($('c-kl-uso'), { type: 'line', data: { labels: mC.map(klLabel), datasets: [
+      line('Compras por tarjeta vigente', mC.map(m => +porTarj(m).toFixed(2)), violet, false),
+      { ...line('Transacciones de Bre-B por llave', mC.map(m => (KL.kv[m] != null && KL.bre[m] ? +(KL.bre[m].txn / (KL.kv[m] * 1e6)).toFixed(2) : null)), green, false), spanGaps: true }] },
+    options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.parsed.y == null ? '' : c.dataset.label + ': ' + nf(c.parsed.y, 2) + ' al mes' } } },
+      scales: { x: catX, y: yAxis(v => nf(v, 1)) } }) }));
+
   // DICE
   charts.push(new Chart($('c-keys'), { type: 'line',
     data: { datasets: [line('Llaves (M)', KEYS.map(k => ({ x: k.day, y: k.v })), blue, false)] },
@@ -492,8 +546,25 @@ function statics() {
     fila('Amex, Diners y otras', sumK(['credito_AMEX', 'credito_DINERS', 'credito_OTRAS']), null, { pad: true, noRatio: true }),
     `<tr><td style="font-weight:600;color:var(--green)">Bre-B (${vL.label})</td><td class="n">${nf(bre.valor / 1e12, 2)}</td><td class="n">${nf(bre.valor / totCop * 100, 1)}%</td><td class="n">${nf(bre.txn / 1e6, 1)}</td><td class="n">$${nf(bre.ticket, 0)}</td><td class="n">—</td></tr>`,
   ].join('');
-  $('vs-franq-fn').innerHTML = `<span class="tag o">oficial</span> Crédito por franquicia: lo que reporta la SFC (compras nacionales). <span class="tag d">estimado</span> Débito por franquicia: la SFC no lo reporta; se reparte el valor de cada emisor según sus ingresos por tarifa interbancaria (TII) de Visa y de Mastercard, con excepciones manuales (Scotiabank Colpatria, Falabella, Mibanco y Nu: 100% Mastercard; JFK: 100% Visa, confirmado por Visa Colombia) y Mastercard por defecto si el emisor no reporta TII. A jul-2026, cerca del 95% del valor de débito sale del reparto por TII, 4% de las excepciones y 1% cae por defecto. `
+  $('vs-franq-fn').innerHTML = `<span class="tag o">oficial</span> Crédito por franquicia: lo que reporta la SFC (compras nacionales). <span class="tag d">estimado</span> Débito por franquicia: la SFC no lo reporta; se reparte el valor de cada emisor según sus ingresos por tarifa interbancaria (TII) de Visa y de Mastercard, con excepciones manuales (Scotiabank Colpatria, Falabella, Mibanco y Nu: 100% Mastercard; JFK: 100% Visa) y Mastercard por defecto si el emisor no reporta TII. A jul-2026, cerca del 95% del valor de débito sale del reparto por TII, 4% de las excepciones y 1% cae por defecto. Es una estimación propia con datos públicos; puede diferir de otras que usen información directa de los emisores. `
     + `Las filas de débito por franquicia y los totales por franquicia no llevan transacciones ni ticket porque no hay un reparto equivalente del número de transacciones. «Bre-B equivale a» = valor de Bre-B del mes ÷ valor de esa fila; no es una cuota de mercado, porque Bre-B también mueve transferencias entre personas.`;
+  const KLd = klData(), tj = lastTarj.t, vigT = tj.credito_vigentes + tj.debito_vigentes, DT = DICE.totales, mesFull = MONTHS[MONTHS.length - 1];
+  const nf1 = n => Number(n).toLocaleString('es-CO', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const klFila = (nombre, cant, corte, veces, uso, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
+    + `<td class="n">${nf1(cant / 1e6)}</td><td>${corte}</td><td class="n">${veces == null ? '—' : nf1(veces) + ' veces'}</td><td class="n">${uso == null ? '—' : nf1(uso)}</td></tr>`;
+  const cTarj = 'jul 26 (SFC)'.replace('jul 26', lastTarj.label), cDice = fmtDate(DICE.corte) + ' (DICE)', usoB = mesFull.txn / 1e6;
+  $('kl-tbody').innerHTML = [
+    klFila('Tarjetas vigentes', vigT, cTarj, null, lastTarj.n / vigT, { bold: true }),
+    klFila('Débito', tj.debito_vigentes, cTarj, null, tj.debito_compras_num / tj.debito_vigentes, { pad: true }),
+    klFila('Crédito', tj.credito_vigentes, cTarj, null, tj.credito_compras_num / tj.credito_vigentes, { pad: true }),
+    klFila('Llaves registradas (Bre-B)', DT.llaves, cDice, DT.llaves / vigT, usoB * 1e6 / DT.llaves, { bold: true, color: 'var(--green)' }),
+    klFila('Medios de pago vinculados a una llave', DT.medios_de_pago, cDice, DT.medios_de_pago / vigT, usoB * 1e6 / DT.medios_de_pago, { pad: true }),
+    klFila('Clientes con llaves', DT.clientes, cDice, null, usoB * 1e6 / DT.clientes, { pad: true }),
+  ].join('');
+  const kJ = KLd.kv[lastTarj.mes];
+  $('kl-fn').innerHTML = `<span class="tag d">derivado</span> «Frente a las tarjetas» = cantidad de Bre-B ÷ tarjetas vigentes del último mes de la SFC (${lastTarj.label}). Las transacciones de Bre-B por instrumento usan el último mes completo (${mesFull.label}) sobre el stock del último corte, así que son aproximadas; en ${lastTarj.label} Bre-B hizo ${nf(KLd.bre[lastTarj.mes].txn / (kJ * 1e6), 1)} transacciones por llave al mes frente a ${nf(lastTarj.n / vigT, 1)} compras por tarjeta (en el gráfico). `
+    + `<span class="tag o">oficial</span> Tarjetas: tarjetas de crédito y débito vigentes a la fecha de corte que reportan los establecimientos de crédito a la SFC (${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos')}); cuenta tarjetas, no personas, y la SFC no publica cuántos tarjetahabientes distintos hay. Llaves, medios de pago y clientes: reporte DICE de BanRep (incluye llaves activas y bloqueadas). `
+    + `No son lo mismo: una llave es un alias que apunta a un medio de pago (una cuenta o un depósito), cada cliente tiene en promedio ${nf(DT.llaves_por_cliente, 1)} llaves y ${nf(DT.medios_por_cliente, 1)} medios de pago, y una tarjeta es un instrumento físico o digital de pago. Por eso la lectura más cercana es medios de pago vinculados contra tarjetas, y llaves como medida de adopción.`;
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -539,7 +610,7 @@ async function init() {
     CUTS = cuts.map(r => ({ fecha: r.fecha, tipo: r.tipo, day: days(r.fecha), txn: +r.txn_acumuladas, valor: +r.valor_acumulado_cop, ticket: +r.ticket_promedio_cop, nota: r.nota }))
                .sort((a, b) => a.fecha.localeCompare(b.fecha));
     DAILY = daily.map(r => ({ fecha: r.fecha, n: parseInt(r.transacciones, 10), v: parseInt(r.transacciones, 10) / 1e6 }));
-    KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones) }));
+    KEYS = keys.map(r => ({ day: days(r.fecha), v: parseFloat(r.llaves_millones), mes: r.fecha.slice(0, 7) }));
     CTX = ctx; DICE = dice; DIST = dist; ACC = acc;
     TARJF = tarjf.map(r => ({ mes: r.mes, producto: r.producto, franquicia: r.franquicia, cop: +r.compras_cop, num: r.compras_num === '' ? null : +r.compras_num }));
     TARJ = tarj.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, k === 'mes' ? v : +v])));

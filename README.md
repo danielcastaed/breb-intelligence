@@ -10,7 +10,7 @@ Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-in
 - **Volumen operacional**: transacciones diarias en el MOL (desde el 6-oct-2025) y por mes.
 - **Adopción**: entidades participantes por tipo, origen de las operaciones, montos y tipo de operación.
 - **Directorio de llaves (DICE)**: llaves registradas por mes y usuarios; personas naturales vs jurídicas.
-- **Bre-B frente a las tarjetas**: transacciones y valor por mes de Bre-B contra las compras con tarjeta de crédito y débito (SFC), Bre-B como porcentaje de ellas, y el desglose por producto (crédito / débito) y franquicia (Visa, Mastercard, Amex, Diners, otras) con el peso de Bre-B frente a cada una.
+- **Bre-B frente a las tarjetas**: transacciones y valor por mes de Bre-B contra las compras con tarjeta de crédito y débito (SFC), Bre-B como porcentaje de ellas, el desglose por producto (crédito / débito) y franquicia (Visa, Mastercard, Amex, Diners, otras) con el peso de Bre-B frente a cada una, y **tarjetas vigentes contra llaves** (parque de instrumentos, y transacciones al mes por instrumento).
 - **Contexto**: transferencias vs tarjetas, crecimiento previo, PIX.
 - **Cortes y fuentes**: tabla con cada corte oficial y sus valores derivados.
 
@@ -26,7 +26,7 @@ Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-in
 | `breb_dice_historico.csv` | Totales del DICE en cada captura | Reporte DICE |
 | `breb_llaves_dice.csv` | Llaves por mes: jul-2025 a ene-2026 (documento técnico) y puntos etiquetados del reporte DICE | Documento técnico (Gráfico 6) y reporte DICE |
 | `breb_diario_mol.csv` | Transacciones por día, desde el 6-oct-2025 hasta el último corte (`fecha, transacciones`, enteros exactos) | Gráfico de evolución del reporte MOL (valor en el `aria-label` de cada barra, fecha del eje) |
-| `tarjetas_sfc_mensual.csv` | Compras con tarjeta de crédito (nacionales) y débito, y retiros con débito, por mes desde ene-2015: número y monto en COP. Base de emisores; sin administradoras de sistemas de pago | Datos abiertos de la SFC, conjunto [Tarjetas de crédito y débito](https://www.datos.gov.co/d/h2jg-r3zg) (`scripts/fetch_sfc_tarjetas.py`) |
+| `tarjetas_sfc_mensual.csv` | Compras con tarjeta de crédito (nacionales) y débito, y retiros con débito, por mes desde ene-2015: número y monto en COP, más tarjetas vigentes a la fecha de corte (solo la línea de total, sin las subcategorías contactless / sin chip). Base de emisores; sin administradoras de sistemas de pago | Datos abiertos de la SFC, conjunto [Tarjetas de crédito y débito](https://www.datos.gov.co/d/h2jg-r3zg) (`scripts/fetch_sfc_tarjetas.py`) |
 | `tarjetas_sfc_franquicia.csv` | Compras por producto y franquicia, por mes. Crédito: directo de la SFC (valor y número). Débito: valor **estimado** por franquicia con la llave de ingresos por tarifa interbancaria (TII) de Visa y Mastercard, con las excepciones manuales del análisis de tarjetas (Scotiabank Colpatria, Falabella, Mibanco y Nu 100 % Mastercard; JFK 100 % Visa) | Datos abiertos de la SFC (`scripts/fetch_sfc_tarjetas.py`) |
 | `breb_contexto.json` | Entidades participantes, origen de operaciones, contexto | Documento técnico de BanRep (feb 2026) |
 

@@ -33,7 +33,7 @@ OUT_FRANQ = DATA / "tarjetas_sfc_franquicia.csv"
 FRANQ_CREDITO = {"CREDIBANCO-VISA": "VISA", "MASTERCARD": "MASTERCARD", "AMERICAN EXPRESS": "AMEX", "DINERS": "DINERS",
                  "OTRAS TARJETAS DE CREDITO": "OTRAS"}
 BANCOS_100_MC = {"SCOTIABANK COLPATRIA S.A.", "BANCO FALABELLA S.A.", "MIBANCO S.A.", "NU FINANCIERA S.A."}
-BANCOS_100_VISA = {"JFK COOPERATIVA FINANCIERA"}  # confirmado por Visa Colombia (2026-09-28)
+BANCOS_100_VISA = {"JFK COOPERATIVA FINANCIERA"}  # excepción manual: casi no reporta TII Visa
 EXCLUIDA = "ADMINISTRADORAS DE SISTEMAS DE PAGO DE BAJO VALOR"
 CAMPOS = {  # descripción de la SFC (espacios normalizados) -> columna
     "Número de transacciones por compras a nivel nacional con tarjeta de crédito": "credito_compras_num",
@@ -43,7 +43,11 @@ CAMPOS = {  # descripción de la SFC (espacios normalizados) -> columna
     "Número de transacciones por retiros con tarjetas débito": "debito_retiros_num",
     "Monto de transacciones por retiros con tarjetas débito": "debito_retiros_cop",
 }
-COLUMNAS = ["mes", *CAMPOS.values(), "entidades"]
+VIGENTES = {  # solo la línea de total; las de contactless / sin chip son subconjuntos y no se suman
+    "Número total de tarjetas de crédito vigentes a la fecha de corte": "credito_vigentes",
+    "Número total de tarjetas débito vigentes a la fecha de corte": "debito_vigentes",
+}
+COLUMNAS = ["mes", *CAMPOS.values(), *VIGENTES.values(), "entidades"]
 
 
 def consulta(params):
@@ -119,6 +123,15 @@ def main():
                      "$group": "fechacorte", "$limit": "50000"})
     entidades = {e["fechacorte"][:7]: int(e["n"]) for e in ents}
 
+    vig = consulta({"$select": "fechacorte,descripcion,sum(total_tarjetas) as v",
+                    "$where": f"nombre_uca != '{EXCLUIDA}' and (descripcion like 'Número total de tarjetas de crédito vigentes%a la fecha de corte' or descripcion like 'Número total de tarjetas débito%vigentes%a la fecha de corte')",
+                    "$group": "fechacorte,descripcion", "$limit": "50000"})
+    vigentes = defaultdict(lambda: defaultdict(float))
+    for r in vig:
+        col = VIGENTES.get(re.sub(r"\s+", " ", r["descripcion"]).strip())
+        if col:
+            vigentes[r["fechacorte"][:7]][col] += float(r["v"])
+
     meses = defaultdict(lambda: defaultdict(float))
     for r in filas:
         col = CAMPOS.get(re.sub(r"\s+", " ", r["descripcion"]).strip())
@@ -128,9 +141,10 @@ def main():
     out = []
     for m in sorted(meses):
         d = meses[m]
-        if set(d) != set(CAMPOS.values()):
+        if set(d) != set(CAMPOS.values()) or set(vigentes[m]) != set(VIGENTES.values()):
             continue  # mes con líneas faltantes
-        out.append({"mes": m, **{c: int(round(d[c])) for c in CAMPOS.values()}, "entidades": entidades.get(m, 0)})
+        out.append({"mes": m, **{c: int(round(d[c])) for c in CAMPOS.values()},
+                    **{c: int(round(vigentes[m][c])) for c in VIGENTES.values()}, "entidades": entidades.get(m, 0)})
 
     # validaciones: sin huecos, tickets plausibles y último mes completo
     for a, b in zip(out, out[1:]):
