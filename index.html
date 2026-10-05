@@ -92,6 +92,7 @@ nav.tabs a.on{color:var(--text);border-bottom-color:var(--green);font-weight:500
 .lec:empty{display:none}
 .lec b{font-weight:600}
 .claves{margin-bottom:8px}
+.dl{font-family:var(--mono);font-size:11px}.dl.up{color:var(--green)}.dl.dn{color:var(--pink)}
 .claves ul{list-style:none;margin:0;padding:0}
 .claves li{display:flex;gap:12px;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
 .claves li:last-child{border-bottom:none}
@@ -105,6 +106,27 @@ details.fnd[open] summary::before{content:'▾ '}
 details.fnd summary:hover{color:var(--text2)}
 details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
 .tab>.sec:first-child{margin-top:4px}
+.filtros{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+.f-cuerpo{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.f-grupo{display:flex;align-items:center;gap:6px;transition:opacity .15s}
+.f-grupo label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:500}
+.f-grupo i{font-style:normal;color:var(--text3);font-size:12px}
+.f-grupo select,.msel>button{background:var(--s2);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:4px 8px;font:inherit;font-size:12.5px;cursor:pointer;max-width:170px}
+.seg{display:inline-flex;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
+.seg button{background:var(--s2);border:0;border-right:1px solid var(--border);color:var(--text2);padding:4px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--s3)}
+.seg button.on{background:var(--text);color:var(--bg);font-weight:500}
+.f-grupo.off{opacity:.35;pointer-events:none}
+.f-aviso{font-size:11.5px;color:var(--text3);margin-top:8px}
+.f-aviso:empty{display:none}
+.msel{position:relative}
+.msel-drop{display:none;position:absolute;top:100%;left:0;z-index:20;margin-top:4px;background:var(--s1);border:1px solid var(--border2);border-radius:8px;padding:6px;min-width:230px;max-height:300px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.msel.open .msel-drop{display:block}
+.msel-drop label{display:flex;align-items:center;gap:8px;padding:4px 6px;font-size:12.5px;color:var(--text);text-transform:none;letter-spacing:0;cursor:pointer;border-radius:4px}
+.msel-drop label:hover{background:var(--s2)}
+#f-toggle{display:none}
+@media (max-width:760px){#f-toggle{display:inline-block}.f-cuerpo{display:none;margin-top:10px}.filtros.abierto .f-cuerpo{display:flex}}
 @media (max-width:900px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr 1fr}.g21 .card:first-child{grid-column:1/-1}}
 @media (max-width:560px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.kpi-v{font-size:17px}.kpis .kpi:last-child{grid-column:1/-1}header,main,footer{padding-left:16px;padding-right:16px}}
 </style>
@@ -124,9 +146,29 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
 <main>
   <div id="err"></div>
 
+  <div class="filtros" id="filtros">
+    <button class="btn" id="f-toggle" type="button">☰ Filtros</button>
+    <div class="f-cuerpo" id="f-cuerpo">
+      <div class="f-grupo" data-f="periodo"><label>Período</label>
+        <select id="f-desde" aria-label="Desde"></select><i>→</i><select id="f-hasta" aria-label="Hasta"></select>
+        <span class="seg" id="f-presets"><button type="button" data-p="todo">Todo</button><button type="button" data-p="6">6 m</button><button type="button" data-p="3">3 m</button></span>
+      </div>
+      <div class="f-grupo" data-f="tipo"><label>Tipo</label>
+        <span class="seg" id="f-tipo"><button type="button" data-v="credito">Crédito</button><button type="button" data-v="debito">Débito</button><button type="button" data-v="total" class="on">Total</button></span>
+      </div>
+      <div class="f-grupo" data-f="franq"><label>Franquicia</label>
+        <select id="f-franq" aria-label="Franquicia"><option value="todas">Todas</option><option value="VISA">Visa</option><option value="MASTERCARD">Mastercard</option><option value="OTRAS">Amex, Diners y otras</option></select>
+      </div>
+      <div class="f-grupo" data-f="banco"><label>Banco</label>
+        <span class="msel"><button type="button" id="f-banco-btn">Todos los bancos</button><div class="msel-drop" id="f-banco-drop"></div></span>
+      </div>
+      <button class="btn" id="f-reset" type="button">Restablecer</button>
+    </div>
+    <div class="f-aviso" id="f-aviso"></div>
+  </div>
+
   <section class="tab" id="tab-resumen">
   <div class="kpis" id="kpis"></div>
-    <div class="card claves"><h3>Lo que dicen las cifras</h3><ul id="claves"></ul></div>
   <div class="g3">
     <div class="card">
       <h3>Transacciones acumuladas (millones)</h3>
@@ -144,6 +186,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
       <p class="fn"><span class="tag d">derivado</span> Transacciones del mes ÷ días del mes (octubre desde el día 6). Septiembre cierra cerca de 7,7 M por día.</p>
     </div>
   </div>
+      <div class="card claves" style="margin-top:8px"><h3>Lo que dicen las cifras</h3><ul id="claves"></ul></div>
   </section>
 
   <section class="tab" id="tab-volumen">
@@ -266,7 +309,7 @@ details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
     <div class="card">
       <h3>Transacciones por mes (millones)</h3>
       <div class="chart"><canvas id="c-vs-txn"></canvas></div>
-      <p class="fn">Barras: compras con tarjeta de crédito y débito. Línea: Bre-B. *Octubre cuenta desde el 6.</p>
+      <p class="fn" id="vs-bar-fn"></p>
     </div>
     <div class="card">
       <h3>Valor por mes (billones COP)</h3>
@@ -464,6 +507,103 @@ function line(label, pts, color, fill) {
            borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color, pointBorderColor: color, pointBorderWidth: 2 };
 }
 
+// ===== Filtros globales (misma lógica que el dashboard de Visa: barra arriba; lo que no aplica a la vista se atenúa) =====
+const FLT = { desde: '2025-01', hasta: '2026-10', tipo: 'total', franq: 'todas', bancos: [] };
+const enRango = m => m >= FLT.desde && m <= FLT.hasta;                        // m = 'YYYY-MM'
+const shMes = (m, d) => { const [y, mo] = m.split('-').map(Number), t = y * 12 + mo - 1 + d; return Math.floor(t / 12) + '-' + String(t % 12 + 1).padStart(2, '0'); };
+const rangoMeses = (a, b) => { const out = []; for (let m = a; m <= b; m = shMes(m, 1)) out.push(m); return out; };
+const lblMes = m => mlabel(m + '-01');
+const FRANQ_NOM = { VISA: 'Visa', MASTERCARD: 'Mastercard', OTRAS: 'Amex, Diners y otras' };
+const etiquetaSel = () => ({ total: 'crédito + débito', credito: 'crédito', debito: 'débito' }[FLT.tipo]) + (FLT.franq === 'todas' ? '' : ' · ' + FRANQ_NOM[FLT.franq]);
+
+// Compras con tarjeta de un mes según Tipo y Franquicia. El débito no tiene franquicia en número de transacciones.
+function tarjSel(t, bf) {
+  const F = FLT.franq, g = k => bf[k] || { num: 0, cop: 0 };
+  const cr = F === 'todas' ? { n: t.credito_compras_num, v: t.credito_compras_cop }
+    : F === 'OTRAS' ? { n: g('credito_AMEX').num + g('credito_DINERS').num + g('credito_OTRAS').num, v: g('credito_AMEX').cop + g('credito_DINERS').cop + g('credito_OTRAS').cop }
+    : { n: g('credito_' + F).num, v: g('credito_' + F).cop };
+  const de = F === 'todas' ? { n: t.debito_compras_num, v: t.debito_compras_cop } : F === 'OTRAS' ? { n: 0, v: 0 } : { n: null, v: g('debito_' + F).cop };
+  const useC = FLT.tipo !== 'debito', useD = FLT.tipo !== 'credito';
+  return { cr, de, n: (useC ? cr.n : 0) + (useD ? (de.n || 0) : 0), v: (useC ? cr.v : 0) + (useD ? de.v : 0), nParcial: useD && de.n == null };
+}
+
+// Acumulado de Bre-B al cierre del mes m (o al último corte, si m es el mes en curso)
+function acumA(m) {
+  if (m < '2025-10') return { txn: 0, valor: 0, day: 0 };
+  const c = CUTS.filter(x => x.tipo !== 'referencia' && x.tipo !== 'inicio' && x.fecha.slice(0, 7) <= m).pop();
+  return c || { txn: 0, valor: 0, day: 0 };
+}
+
+// Distribución por rango de monto del período: diferencia entre dos cortes acumulados. Solo hay cortes guardados para algunas fechas.
+function distPeriodo() {
+  const cs = [...DIST.cortes].sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const fin = cs.filter(c => c.fecha.slice(0, 7) <= FLT.hasta).pop() || cs[cs.length - 1];
+  const mBase = shMes(FLT.desde, -1), base = FLT.desde <= '2025-10' ? null : cs.find(c => c.fecha.slice(0, 7) === mBase && c.fecha.slice(0, 7) < fin.fecha.slice(0, 7));
+  if (FLT.desde <= '2025-10' || base) {
+    return { fecha: fin.fecha, ok: true, parcial: fin.fecha.slice(0, 7) < FLT.hasta && fin.fecha.slice(0, 7) < '2026-10',
+      filas: fin.filas.map((r, i) => [r[0], r[1] - (base ? base.filas[i][1] : 0), r[2] - (base ? base.filas[i][2] : 0)]) };
+  }
+  return { fecha: fin.fecha, ok: false, filas: fin.filas };       // sin corte base: se muestra el acumulado desde el lanzamiento
+}
+
+const APLICA = { resumen: ['periodo'], volumen: ['periodo'], 'adopcion/general': ['periodo'], 'adopcion/bancos': ['banco'], llaves: ['periodo'],
+  'tarjetas/panorama': ['periodo', 'tipo', 'franq'], 'tarjetas/franquicias': ['periodo', 'tipo', 'franq'], 'tarjetas/cede': [], 'tarjetas/emisores': [], 'tarjetas/lento': [],
+  'tarjetas/llaves': ['periodo', 'tipo'], datos: ['periodo'] };
+const AVISO = {
+  'adopcion/general': 'El período aplica a la distribución por monto (si hay cortes mensuales guardados); entidades, origen y QR vs llave son cifras de un solo corte.',
+  'adopcion/bancos': 'El filtro de banco aplica a esta vista. Las cifras de prensa y la lista de participantes son de una sola fecha.',
+  llaves: 'El período aplica a la serie de llaves; tipos de llave, medios de pago y clientes son del último corte del DICE.',
+  'tarjetas/panorama': 'Con una franquicia elegida, las transacciones de débito no se muestran: la SFC no las reparte por franquicia.',
+  'tarjetas/franquicias': 'Con una franquicia elegida, el valor de débito es estimado y sus transacciones no se muestran (la SFC no las reparte por franquicia).',
+  'tarjetas/cede': 'Esta vista compara ventanas fijas (desde el lanzamiento frente al mismo periodo de los años anteriores): los filtros no aplican.',
+  'tarjetas/emisores': 'Esta vista compara ventanas fijas (desde el lanzamiento frente al mismo periodo del año anterior): los filtros no aplican.',
+  'tarjetas/lento': 'Esta vista compara ventanas fijas (desde el lanzamiento frente al mismo periodo de los años anteriores): los filtros no aplican.',
+  'tarjetas/llaves': 'Tipo aplica a las tarjetas; las llaves no se pueden separar entre crédito y débito.',
+};
+let vistaActual = 'resumen';
+const AVISO_EXTRA = {};
+function aplicabilidad(clave) {
+  if (clave) vistaActual = clave;
+  const ok = APLICA[vistaActual] || [];
+  document.querySelectorAll('.f-grupo').forEach(g => g.classList.toggle('off', !ok.includes(g.dataset.f)));
+  $('f-aviso').textContent = [AVISO[vistaActual], AVISO_EXTRA[vistaActual]].filter(Boolean).join(' ');
+}
+
+function sincronizarFiltros() {
+  $('f-desde').value = FLT.desde; $('f-hasta').value = FLT.hasta; $('f-franq').value = FLT.franq;
+  document.querySelectorAll('#f-tipo button').forEach(b => b.classList.toggle('on', b.dataset.v === FLT.tipo));
+  const ult = FLT_ULTIMO, tr = n => (FLT.hasta === ult && FLT.desde === shMes(ult, -(n - 1)));
+  document.querySelectorAll('#f-presets button').forEach(b => b.classList.toggle('on', b.dataset.p === 'todo' ? (FLT.desde === '2025-01' && FLT.hasta === ult) : tr(+b.dataset.p)));
+  $('f-banco-btn').textContent = FLT.bancos.length ? (FLT.bancos.length === 1 ? nomEnt(FLT.bancos[0]) : FLT.bancos.length + ' bancos') : 'Todos los bancos';
+  document.querySelectorAll('#f-banco-drop input[data-b]').forEach(i => { i.checked = FLT.bancos.includes(i.dataset.b); });
+  const todos = $('f-banco-all'); if (todos) todos.checked = !FLT.bancos.length;
+}
+let FLT_ULTIMO = '2026-10';
+function montarFiltros() {
+  const ult = FLT_ULTIMO = CUTS[CUTS.length - 1].fecha.slice(0, 7), parcial = CUTS[CUTS.length - 1].tipo === 'ultimo';
+  FLT.hasta = ult;
+  const opts = rangoMeses('2025-01', ult).map(m => `<option value="${m}">${lblMes(m)}${m === ult && parcial ? ' (parcial)' : ''}</option>`).join('');
+  $('f-desde').innerHTML = opts; $('f-hasta').innerHTML = opts;
+  $('f-banco-drop').innerHTML = `<label><input type="checkbox" id="f-banco-all" checked> <b>Todos</b></label>` + ENTSFC.map(e => `<label><input type="checkbox" data-b="${e.entidad.replace(/"/g, '&quot;')}"> ${nomEnt(e.entidad)}</label>`).join('');
+  const cambio = () => { if (FLT.desde > FLT.hasta) FLT.hasta = FLT.desde; sincronizarFiltros(); refrescar(); };
+  $('f-desde').onchange = e => { FLT.desde = e.target.value; cambio(); };
+  $('f-hasta').onchange = e => { FLT.hasta = e.target.value; if (FLT.hasta < FLT.desde) FLT.desde = FLT.hasta; cambio(); };
+  $('f-franq').onchange = e => { FLT.franq = e.target.value; cambio(); };
+  document.querySelectorAll('#f-tipo button').forEach(b => { b.onclick = () => { FLT.tipo = b.dataset.v; cambio(); }; });
+  document.querySelectorAll('#f-presets button').forEach(b => { b.onclick = () => { FLT.hasta = ult; FLT.desde = b.dataset.p === 'todo' ? '2025-01' : shMes(ult, -(+b.dataset.p - 1)); cambio(); }; });
+  $('f-reset').onclick = () => { Object.assign(FLT, { desde: '2025-01', hasta: ult, tipo: 'total', franq: 'todas', bancos: [] }); cambio(); };
+  $('f-banco-btn').onclick = e => { e.stopPropagation(); $('f-banco-btn').parentElement.classList.toggle('open'); };
+  document.addEventListener('click', e => { if (!e.target.closest('.msel')) $('f-banco-btn').parentElement.classList.remove('open'); });
+  $('f-banco-drop').onchange = e => {
+    if (e.target.id === 'f-banco-all') FLT.bancos = [];
+    else FLT.bancos = [...document.querySelectorAll('#f-banco-drop input[data-b]:checked')].map(i => i.dataset.b);
+    cambio();
+  };
+  $('f-toggle').onclick = () => $('filtros').classList.toggle('abierto');
+  sincronizarFiltros();
+}
+function refrescar() { kpis(); table(); statics(); plegarNotas(); if (CUTS.length) draw(); }
+
 function derive() {
   // meses = cortes de fin de mes; el último corte (parcial) no cuenta como mes
   const ends = CUTS.filter(c => c.tipo === 'inicio' || c.tipo === 'mensual');
@@ -476,11 +616,19 @@ function derive() {
 }
 
 // Compras con tarjeta (SFC) y Bre-B, mes a mes desde ene-2025; Bre-B existe desde oct-2025
-function vsData() {
+function vsData(opts = {}) {
   const bre = Object.fromEntries(MONTHS.map(m => [m.fecha.slice(0, 7), m]));
-  return TARJ.filter(t => t.mes >= '2025-01').map(t => {
-    const b = bre[t.mes], n = t.credito_compras_num + t.debito_compras_num, v = t.credito_compras_cop + t.debito_compras_cop;
-    return { mes: t.mes, label: b ? b.label : mlabel(t.mes + '-01'), t, n, v, b, rN: b ? b.txn / n * 100 : null, rV: b ? b.valor / v * 100 : null };
+  if (opts.raw) {   // sin filtros: lo que usan los análisis de ventana fija
+    return TARJ.filter(t => t.mes >= '2025-01').map(t => {
+      const b = bre[t.mes], n = t.credito_compras_num + t.debito_compras_num, v = t.credito_compras_cop + t.debito_compras_cop;
+      return { mes: t.mes, label: b ? b.label : mlabel(t.mes + '-01'), t, n, v, b, rN: b ? b.txn / n * 100 : null, rV: b ? b.valor / v * 100 : null };
+    });
+  }
+  const ultB = MONTHS[MONTHS.length - 1].fecha.slice(0, 7), hasta = FLT.hasta < ultB ? FLT.hasta : ultB, BFm = vsFranq();
+  return rangoMeses(FLT.desde < '2025-01' ? '2025-01' : FLT.desde, hasta).map(m => {
+    const t = TARJ.find(r => r.mes === m) || null, b = bre[m] || null, s = t ? tarjSel(t, BFm[m] || {}) : null;
+    return { mes: m, label: b ? b.label : lblMes(m), t, b, cr: s && s.cr, de: s && s.de, n: s ? s.n : null, v: s ? s.v : null, nParcial: s ? s.nParcial : false,
+             rN: b && s && s.n && !s.nParcial ? b.txn / s.n * 100 : null, rV: b && s && s.v ? b.valor / s.v * 100 : null };
   });
 }
 
@@ -493,12 +641,9 @@ function vsFranq() {
 
 // Tarjetas vigentes y llaves de Bre-B, mes a mes desde ene-2025 hasta el último mes con llaves
 function klData() {
-  const lastKey = KEYS.map(k => k.mes).sort().pop(), meses = [];
-  for (let y = 2025, m = 1; ; m++) {
-    if (m > 12) { m = 1; y++; }
-    const k = y + '-' + String(m).padStart(2, '0'); meses.push(k); if (k >= lastKey) break;
-  }
-  return { meses, t: Object.fromEntries(TARJ.map(r => [r.mes, r])), kv: Object.fromEntries(KEYS.map(k => [k.mes, k.v])),
+  const lastKey = KEYS.map(k => k.mes).sort().pop();
+  const meses = rangoMeses(FLT.desde < '2025-01' ? '2025-01' : FLT.desde, FLT.hasta < lastKey ? FLT.hasta : lastKey);
+  return { meses, lastKey, t: Object.fromEntries(TARJ.map(r => [r.mes, r])), kv: Object.fromEntries(KEYS.map(k => [k.mes, k.v])),
            bre: Object.fromEntries(MONTHS.map(m => [m.fecha.slice(0, 7), m])) };
 }
 
@@ -512,6 +657,7 @@ function ir() {
   document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.t === t));
   document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.dataset.tab === t && e.dataset.sub === sub));
   document.querySelectorAll('.subtabs a').forEach(a => a.classList.toggle('on', a.closest('.subtabs').dataset.tab === t && a.dataset.s === sub));
+  aplicabilidad(sub ? t + '/' + sub : t);
   if (t !== tabActual) window.scrollTo(0, 0);
   tabActual = t;
   if (CUTS.length) draw();   // los gráficos se crean con la vista visible: en un contenedor oculto nacen con tamaño cero
@@ -545,36 +691,37 @@ function draw() {
   const catX = { grid: { display: false }, ticks: { color: tick, maxRotation: 60, minRotation: 60, autoSkip: false, font: { size: 9.5 } } };
 
   // Evolución
-  const serie = CUTS.filter(c => c.tipo !== 'referencia');
+  const MF = MONTHS.filter(m => enRango(m.fecha.slice(0, 7))), DF = DAILY.filter(d => enRango(d.fecha.slice(0, 7)));
+  const serie = CUTS.filter(c => c.tipo !== 'referencia' && enRango(c.fecha.slice(0, 7)));
   charts.push(new Chart($('c-txn'), { type: 'line',
     data: { datasets: [line('Txn acumuladas (M)', serie.map(c => ({ x: c.day, y: c.txn / 1e6 })), green, true)] },
-    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M txn' } } }, scales: { x: xAxis(), y: yAxis(v => nf(v, 0)) } }) }));
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M txn' } } }, scales: { x: xAxis(serie.length ? Math.max(0, serie[0].day - 8) : 0), y: yAxis(v => nf(v, 0)) } }) }));
   charts.push(new Chart($('c-val'), { type: 'line',
     data: { datasets: [line('Valor acumulado (B COP)', serie.map(c => ({ x: c.day, y: c.valor / 1e12 })), blue, true)] },
-    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => '$' + nf(c.parsed.y, 1) + ' billones' } } }, scales: { x: xAxis(), y: yAxis(v => nf(v, 0)) } }) }));
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => '$' + nf(c.parsed.y, 1) + ' billones' } } }, scales: { x: xAxis(serie.length ? Math.max(0, serie[0].day - 8) : 0), y: yAxis(v => nf(v, 0)) } }) }));
   charts.push(new Chart($('c-rate'), { type: 'bar',
-    data: { labels: MONTHS.map(m => m.label), datasets: [barDs(MONTHS.map(m => +(m.diario / 1e6).toFixed(2)), green)] },
+    data: { labels: MF.map(m => m.label), datasets: [barDs(MF.map(m => +(m.diario / 1e6).toFixed(2)), green)] },
     options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => nf(c.parsed.y, 2) + ' M txn/día' } } }, scales: { x: catX, y: yAxis(v => nf(v, 0)) } }) }));
 
   // Volumen operacional
   charts.push(new Chart($('c-month'), { type: 'bar',
-    data: { labels: MONTHS.map(m => m.label), datasets: [barDs(MONTHS.map(m => +(m.txn / 1e6).toFixed(1)), green)] },
+    data: { labels: MF.map(m => m.label), datasets: [barDs(MF.map(m => +(m.txn / 1e6).toFixed(1)), green)] },
     options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => nf(c.parsed.y, 1) + ' M txn' } } }, scales: { x: catX, y: yAxis(v => nf(v, 0)) } }) }));
   charts.push(new Chart($('c-vmonth'), { type: 'bar',
-    data: { labels: MONTHS.map(m => m.label), datasets: [barDs(MONTHS.map(m => +(m.valor / 1e12).toFixed(2)), blue)] },
+    data: { labels: MF.map(m => m.label), datasets: [barDs(MF.map(m => +(m.valor / 1e12).toFixed(2)), blue)] },
     options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => '$' + nf(c.parsed.y, 2) + ' billones' } } }, scales: { x: catX, y: yAxis(v => nf(v, 0)) } }) }));
-  const mom = MONTHS.slice(2).map((m, i) => ({ lbl: m.label, v: (m.valor / MONTHS[i + 1].valor - 1) * 100 }));
+  const mom = MONTHS.slice(2).map((m, i) => ({ mes: m.fecha.slice(0, 7), lbl: m.label, v: (m.valor / MONTHS[i + 1].valor - 1) * 100 })).filter(x => enRango(x.mes));
   charts.push(new Chart($('c-mom'), { type: 'bar',
     data: { labels: mom.map(m => m.lbl), datasets: [{ data: mom.map(m => +m.v.toFixed(1)), backgroundColor: mom.map(m => (m.v >= 0 ? green : pink) + 'aa'), borderRadius: 4 }] },
     options: base({ plugins: { ...noLegend, tooltip: { callbacks: { label: c => (c.parsed.y >= 0 ? '+' : '') + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: catX, y: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
   charts.push(new Chart($('c-daily'), { type: 'bar',
-    data: { labels: DAILY.map(d => d.fecha), datasets: [{ data: DAILY.map(d => d.v), backgroundColor: green + 'aa', borderWidth: 0, borderRadius: 1, barPercentage: .9, categoryPercentage: 1 }] },
-    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: it => fmtDate(DAILY[it[0].dataIndex].fecha), label: c => nf(DAILY[c.dataIndex].n, 0) + ' transacciones' } } },
-      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: true, maxTicksLimit: 10, callback: v => fmtDate(DAILY[v].fecha) } }, y: yAxis(v => nf(v, 0)) } }) }));
+    data: { labels: DF.map(d => d.fecha), datasets: [{ data: DF.map(d => d.v), backgroundColor: green + 'aa', borderWidth: 0, borderRadius: 1, barPercentage: .9, categoryPercentage: 1 }] },
+    options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: it => fmtDate(DF[it[0].dataIndex].fecha), label: c => nf(DF[c.dataIndex].n, 0) + ' transacciones' } } },
+      scales: { x: { grid: { display: false }, ticks: { color: tick, maxRotation: 0, autoSkip: true, maxTicksLimit: 10, callback: v => (DF[v] ? fmtDate(DF[v].fecha) : '') } }, y: yAxis(v => nf(v, 0)) } }) }));
 
   // Adopción
-  const D = DIST.cortes[0], totN = D.filas.reduce((s, r) => s + r[1], 0), totV = D.filas.reduce((s, r) => s + r[2], 0);
+  const D = distPeriodo(), totN = D.filas.reduce((s, r) => s + r[1], 0) || 1, totV = D.filas.reduce((s, r) => s + r[2], 0) || 1;
   charts.push(new Chart($('c-dist'), { type: 'bar',
     data: { labels: D.filas.map(r => '$' + r[0]), datasets: [
       { label: '% de transacciones', data: D.filas.map(r => +(r[1] / totN * 100).toFixed(1)), backgroundColor: green + 'bb', borderRadius: 3 },
@@ -596,36 +743,38 @@ function draw() {
   const vsOpts = (fmt, extra = {}) => base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.parsed.y),
       afterBody: it => { const r = VS[it[0].dataIndex]; return it[0].datasetIndex === 0 ? extra.detalle(r) : ''; } } } }, scales: { x: catX, y: yAxis(v => nf(v, 0)) } });
   const vsSeries = (fn, fnB, dec) => [
-    { type: 'bar', label: 'Tarjetas (crédito + débito)', data: VS.map(r => +fn(r).toFixed(dec)), backgroundColor: violet + '88', borderColor: violet, borderWidth: 1, borderRadius: 3, order: 2 },
+    { type: 'bar', label: 'Tarjetas (' + etiquetaSel() + ')', data: VS.map(r => (r.n == null ? null : +fn(r).toFixed(dec))), backgroundColor: violet + '88', borderColor: violet, borderWidth: 1, borderRadius: 3, order: 2 },
     { ...line('Bre-B', VS.map(r => (r.b ? +fnB(r).toFixed(dec) : null)), green, false), type: 'line', order: 1 }];
   charts.push(new Chart($('c-vs-txn'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: vsSeries(r => r.n / 1e6, r => r.b.txn / 1e6, 1) },
-    options: vsOpts(v => nf(v, 1) + ' M', { detalle: r => `Crédito: ${nf(r.t.credito_compras_num / 1e6, 1)} M · Débito: ${nf(r.t.debito_compras_num / 1e6, 1)} M` }) }));
+    options: vsOpts(v => nf(v, 1) + ' M', { detalle: r => (r.cr ? `Crédito: ${nf(r.cr.n / 1e6, 1)} M · Débito: ${r.de.n == null ? '—' : nf(r.de.n / 1e6, 1) + ' M'}` : '') }) }));
   charts.push(new Chart($('c-vs-val'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: vsSeries(r => r.v / 1e12, r => r.b.valor / 1e12, 2) },
-    options: vsOpts(v => '$' + nf(v, 2) + ' B', { detalle: r => `Crédito: $${nf(r.t.credito_compras_cop / 1e12, 2)} B · Débito: $${nf(r.t.debito_compras_cop / 1e12, 2)} B` }) }));
-  const VR = VS.filter(r => r.b);
+    options: vsOpts(v => '$' + nf(v, 2) + ' B', { detalle: r => (r.cr ? `Crédito: $${nf(r.cr.v / 1e12, 2)} B · Débito: $${nf(r.de.v / 1e12, 2)} B` : '') }) }));
+  const VR = VS.filter(r => r.b && (r.rN != null || r.rV != null));
   charts.push(new Chart($('c-vs-ratio'), { type: 'line', data: { labels: VR.map(r => r.label), datasets: [
-      line('En transacciones', VR.map(r => +r.rN.toFixed(0)), green, false), line('En valor', VR.map(r => +r.rV.toFixed(0)), blue, false),
+      line('En transacciones', VR.map(r => (r.rN == null ? null : +r.rN.toFixed(0))), green, false), line('En valor', VR.map(r => (r.rV == null ? null : +r.rV.toFixed(0))), blue, false),
       { label: 'Igual a tarjetas', data: VR.map(() => 100), borderColor: tick, borderDash: [4, 4], borderWidth: 1, pointRadius: 0, fill: false }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 0) + '%' } } },
       scales: { x: catX, y: { beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
 
   // Por producto y franquicia
   const BF = vsFranq(), gf = (m, k) => (BF[m] && BF[m][k] ? BF[m][k].cop : 0);
-  const stk = (label, color, alpha, fnv) => ({ type: 'bar', label, data: VS.map(r => +(fnv(r.mes) / 1e12).toFixed(2)), backgroundColor: color + alpha, borderColor: color, borderWidth: 1, order: 2, stack: 'tarjetas' });
-  charts.push(new Chart($('c-vs-franq'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
-      stk('Visa crédito', blue, 'cc', m => gf(m, 'credito_VISA')), stk('Visa débito (est.)', blue, '55', m => gf(m, 'debito_VISA')),
-      stk('Mastercard crédito', amber, 'cc', m => gf(m, 'credito_MASTERCARD')), stk('Mastercard débito (est.)', amber, '55', m => gf(m, 'debito_MASTERCARD')),
-      stk('Amex, Diners y otras', tick, '88', m => gf(m, 'credito_AMEX') + gf(m, 'credito_DINERS') + gf(m, 'credito_OTRAS')),
+  const SEGS = [['Visa crédito', blue, 'cc', ['credito_VISA'], 'credito', 'VISA'], ['Visa débito (est.)', blue, '55', ['debito_VISA'], 'debito', 'VISA'],
+    ['Mastercard crédito', amber, 'cc', ['credito_MASTERCARD'], 'credito', 'MASTERCARD'], ['Mastercard débito (est.)', amber, '55', ['debito_MASTERCARD'], 'debito', 'MASTERCARD'],
+    ['Amex, Diners y otras', tick, '88', ['credito_AMEX', 'credito_DINERS', 'credito_OTRAS'], 'credito', 'OTRAS']];
+  const incl = sg_ => (FLT.tipo === 'total' || FLT.tipo === sg_[4]) && (FLT.franq === 'todas' || FLT.franq === sg_[5]);
+  const segVal = (m, sg_) => sg_[3].reduce((a, k) => a + gf(m, k), 0);
+  const stk = sg_ => ({ type: 'bar', label: sg_[0], data: VS.map(r => (r.t ? +(segVal(r.mes, sg_) / 1e12).toFixed(2) : null)), backgroundColor: sg_[1] + sg_[2], borderColor: sg_[1], borderWidth: 1, order: 2, stack: 'tarjetas' });
+  charts.push(new Chart($('c-vs-franq'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [...SEGS.filter(incl).map(stk),
       { ...line('Bre-B', VS.map(r => (r.b ? +(r.b.valor / 1e12).toFixed(2) : null)), green, false), type: 'line', order: 1 }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': $' + nf(c.parsed.y, 2) + ' B' } } },
       scales: { x: { ...catX, stacked: true }, y: { ...yAxis(v => nf(v, 0)), stacked: true } } }) }));
-  const pesoDe = r => { const f = k => gf(r.mes, k), bv = r.b ? r.b.valor : 0, tot = r.v + bv; return [
-    (f('credito_VISA') + f('debito_VISA')) / tot, (f('credito_MASTERCARD') + f('debito_MASTERCARD')) / tot,
-    (f('credito_AMEX') + f('credito_DINERS') + f('credito_OTRAS')) / tot, bv / tot].map(x => +(x * 100).toFixed(1)); };
+  const GRUPOS = [['Visa', blue, 'VISA'], ['Mastercard', amber, 'MASTERCARD'], ['Amex, Diners y otras', tick, 'OTRAS']];
+  const pesoDe = r => { if (!r.t) return null; const partes = GRUPOS.map(g => SEGS.filter(sg_ => incl(sg_) && sg_[5] === g[2]).reduce((a, sg_) => a + segVal(r.mes, sg_), 0)), bv = r.b ? r.b.valor : 0, tt = partes.reduce((a, b) => a + b, 0) + bv;
+    return tt ? [...partes, bv].map(x => +(x / tt * 100).toFixed(1)) : null; };
   const peso = VS.map(pesoDe);
-  const pes = (label, color, i) => ({ label, data: peso.map(x => x[i]), backgroundColor: color + 'bb', borderColor: color, borderWidth: 1 });
+  const pes = (g, i) => ({ label: g[0], data: peso.map(x => (x ? x[i] : null)), backgroundColor: g[1] + 'bb', borderColor: g[1], borderWidth: 1 });
   charts.push(new Chart($('c-vs-peso'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
-      pes('Visa', blue, 0), pes('Mastercard', amber, 1), pes('Amex, Diners y otras', tick, 2), pes('Bre-B', green, 3)] },
+      ...GRUPOS.map((g, i) => [g, i]).filter(([g]) => SEGS.some(sg_ => incl(sg_) && sg_[5] === g[2])).map(([g, i]) => pes(g, i)), pes(['Bre-B', green], 3)] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
 
@@ -634,13 +783,15 @@ function draw() {
   function KT(m) { return TARJ.find(r => r.mes === m); }
   const txBre = m => { const b = MONTHS.find(x => x.fecha.slice(0, 7) === m); return b ? b.txn : 0; };
   const txSeg = m => [txC(m, 'credito_VISA'), txC(m, 'credito_MASTERCARD'), txC(m, 'credito_AMEX') + txC(m, 'credito_DINERS') + txC(m, 'credito_OTRAS'), txD(m), txBre(m)];
-  const pesoT = VS.map(r => { const v = txSeg(r.mes), t = v.reduce((a, b) => a + b, 0); return v.map(x => +(x / t * 100).toFixed(1)); });
-  const pesT = (label, color, i) => ({ label, data: pesoT.map(x => x[i]), backgroundColor: color + 'bb', borderColor: color, borderWidth: 1 });
-  charts.push(new Chart($('c-vt-peso'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [
-      pesT('Visa crédito', blue, 0), pesT('Mastercard crédito', amber, 1), pesT('Amex, Diners y otras', tick, 2), pesT('Débito (todas)', violet, 3), pesT('Bre-B', green, 4)] },
+  const SEGT = [['Visa crédito', blue, 0, 'credito', 'VISA'], ['Mastercard crédito', amber, 1, 'credito', 'MASTERCARD'], ['Amex, Diners y otras', tick, 2, 'credito', 'OTRAS'], ['Débito (todas)', violet, 3, 'debito', 'todas']];
+  const inclT = sg_ => (FLT.tipo === 'total' || FLT.tipo === sg_[3]) && (FLT.franq === 'todas' || (sg_[3] === 'credito' && FLT.franq === sg_[4]));
+  const pesoT = VS.map(r => { if (!r.t) return null; const v = txSeg(r.mes), partes = SEGT.map(sg_ => (inclT(sg_) ? v[sg_[2]] : 0)), tt = partes.reduce((a, b) => a + b, 0) + v[4]; return tt ? [...partes, v[4]].map(x => +(x / tt * 100).toFixed(1)) : null; });
+  const pesT = sg_ => ({ label: sg_[0], data: pesoT.map(x => (x ? x[sg_[2]] : null)), backgroundColor: sg_[1] + 'bb', borderColor: sg_[1], borderWidth: 1 });
+  charts.push(new Chart($('c-vt-peso'), { type: 'bar', data: { labels: VS.map(r => r.label), datasets: [...SEGT.filter(inclT).map(pesT),
+      { label: 'Bre-B', data: pesoT.map(x => (x ? x[4] : null)), backgroundColor: green + 'bb', borderColor: green, borderWidth: 1 }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + nf(c.parsed.y, 1) + '%' } } },
       scales: { x: { ...catX, stacked: true }, y: { stacked: true, max: 100, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => v + '%' } } } }) }));
-  const mH = VS[VS.length - 1].mes, sh = (m, d) => { const [y, mo] = m.split('-').map(Number), t = y * 12 + mo - 1 + d; return Math.floor(t / 12) + '-' + String(t % 12 + 1).padStart(2, '0'); };
+  const mH = TARJ[TARJ.length - 1].mes, sh = (m, d) => { const [y, mo] = m.split('-').map(Number), t = y * 12 + mo - 1 + d; return Math.floor(t / 12) + '-' + String(t % 12 + 1).padStart(2, '0'); };
   const nWd = (+mH.slice(0, 4) - 2025) * 12 + (+mH.slice(5, 7) - 10) + 1, mW = Array.from({ length: nWd }, (_, i) => sh(mH, -(nWd - 1 - i))), mW1 = mW.map(m => sh(m, -12)), mW2 = mW.map(m => sh(m, -24));
   const swin = (ms, i) => ms.reduce((a, m) => a + txSeg(m)[i], 0), swin4 = ms => [0, 1, 2, 3].reduce((a, i) => a + swin(ms, i), 0);
   const crecW = (a, b) => [0, 1, 2, 3].map(i => (swin(b, i) / swin(a, i) - 1) * 100);
@@ -666,11 +817,11 @@ function draw() {
 
   // Bancos y entidades
   if ($('c-bk-prensa')) {
-    const bk = PRENSA.bancos.filter(b => b.txn_millones != null).sort((a, b) => b.txn_millones - a.txn_millones), sis = PRENSA.sistema.transacciones_millones;
+    const selB = x => !FLT.bancos.length || FLT.bancos.includes(x), bk = PRENSA.bancos.filter(b => b.txn_millones != null && selB(b.sfc)).sort((a, b) => b.txn_millones - a.txn_millones), sis = PRENSA.sistema.transacciones_millones;
     charts.push(new Chart($('c-bk-prensa'), { type: 'bar', data: { labels: bk.map(b => b.banco), datasets: [{ data: bk.map(b => b.txn_millones), backgroundColor: green + 'aa', borderColor: green, borderWidth: 1, borderRadius: 3 }] },
       options: base({ indexAxis: 'y', plugins: { ...noLegend, tooltip: { callbacks: { label: c => { const b = bk[c.dataIndex]; return nf(b.txn_millones, 1) + ' M transacciones (' + nf(b.txn_millones / sis * 100, 1) + '% del sistema)' + (b.valor_billones != null ? ' · $' + nf(b.valor_billones, 1) + ' billones' : ''); } } } },
         scales: { x: { grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: v => nf(v, 0) } }, y: { grid: { display: false }, ticks: { color: tick } } } }) }));
-    const top = ENTSFC.slice(0, 12), enLista = e => PART.entidades.some(p => p.sfc === e.entidad), cl = (a, b) => top.map(e => (enLista(e) ? a : b));
+    const top = ENTSFC.filter(e => selB(e.entidad)).slice(0, 12), enLista = e => PART.entidades.some(p => p.sfc === e.entidad), cl = (a, b) => top.map(e => (enLista(e) ? a : b));
     charts.push(new Chart($('c-bk-tarj'), { type: 'bar', data: { labels: top.map(e => nomEnt(e.entidad) + (enLista(e) ? '' : ' *')), datasets: [
         { label: 'Tarjetas débito', data: top.map(e => +(e.debito_vigentes / 1e6).toFixed(2)), backgroundColor: cl(violet + 'bb', pink + 'bb'), borderColor: cl(violet, pink), borderWidth: 1 },
         { label: 'Tarjetas crédito', data: top.map(e => +(e.credito_vigentes / 1e6).toFixed(2)), backgroundColor: cl(violet + '55', pink + '55'), borderColor: cl(violet, pink), borderWidth: 1 }] },
@@ -680,28 +831,28 @@ function draw() {
 
   // Tarjetas y llaves
   const KL = klData(), klLabel = m => (KL.bre[m] ? KL.bre[m].label : mlabel(m + '-01')), lastM = KL.meses[KL.meses.length - 1];
-  const solo = v => KL.meses.map(m => (m === lastM ? v : null));
+  const solo = v => KL.meses.map(m => (m === KL.lastKey ? v : null));
   const klBar = (label, key, alpha) => ({ type: 'bar', label, data: KL.meses.map(m => (KL.t[m] ? +(KL.t[m][key] / 1e6).toFixed(1) : null)), backgroundColor: violet + alpha, borderColor: violet, borderWidth: 1, order: 3, stack: 'tarjetas' });
   const punto = (label, v, color, stack) => ({ type: 'line', label, data: solo(+(v / 1e6).toFixed(1)), showLine: false, borderColor: color, backgroundColor: color, pointRadius: 7, pointStyle: 'rectRot', order: 1, stack });
   charts.push(new Chart($('c-kl-stock'), { type: 'bar', data: { labels: KL.meses.map(m => mlabel(m + '-01')), datasets: [
-      klBar('Tarjetas débito', 'debito_vigentes', '88'), klBar('Tarjetas crédito', 'credito_vigentes', '44'),
+      ...(FLT.tipo !== 'credito' ? [klBar('Tarjetas débito', 'debito_vigentes', '88')] : []), ...(FLT.tipo !== 'debito' ? [klBar('Tarjetas crédito', 'credito_vigentes', '44')] : []),
       { ...line('Llaves registradas', KL.meses.map(m => (KL.kv[m] != null ? KL.kv[m] : null)), green, false), type: 'line', spanGaps: true, order: 1, stack: 'llaves' },
       punto('Medios de pago vinculados', DICE.totales.medios_de_pago, blue, 'medios'), punto('Clientes con llaves', DICE.totales.clientes, amber, 'clientes')] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.parsed.y == null ? '' : c.dataset.label + ': ' + nf(c.parsed.y, 1) + ' M' } } },
       scales: { x: { ...catX, stacked: true }, y: { ...yAxis(v => nf(v, 0)), stacked: true } } }) }));
   const mC = KL.meses.filter(m => KL.t[m]);
-  const porTarj = m => (KL.t[m].credito_compras_num + KL.t[m].debito_compras_num) / (KL.t[m].credito_vigentes + KL.t[m].debito_vigentes);
+  const porTarj = m => { const t = KL.t[m], c = FLT.tipo !== 'debito', d = FLT.tipo !== 'credito'; return ((c ? t.credito_compras_num : 0) + (d ? t.debito_compras_num : 0)) / ((c ? t.credito_vigentes : 0) + (d ? t.debito_vigentes : 0)); };
   charts.push(new Chart($('c-kl-uso'), { type: 'line', data: { labels: mC.map(klLabel), datasets: [
-      line('Compras por tarjeta vigente', mC.map(m => +porTarj(m).toFixed(2)), violet, false),
+      line('Compras por tarjeta vigente (' + { total: 'crédito + débito', credito: 'crédito', debito: 'débito' }[FLT.tipo] + ')', mC.map(m => +porTarj(m).toFixed(2)), violet, false),
       { ...line('Transacciones de Bre-B por llave', mC.map(m => (KL.kv[m] != null && KL.bre[m] ? +(KL.bre[m].txn / (KL.kv[m] * 1e6)).toFixed(2) : null)), green, false), spanGaps: true }] },
     options: base({ plugins: { legend, tooltip: { callbacks: { label: c => c.parsed.y == null ? '' : c.dataset.label + ': ' + nf(c.parsed.y, 2) + ' al mes' } } },
       scales: { x: catX, y: yAxis(v => nf(v, 1)) } }) }));
 
   // DICE
   charts.push(new Chart($('c-keys'), { type: 'line',
-    data: { datasets: [line('Llaves (M)', KEYS.map(k => ({ x: k.day, y: k.v })), blue, false)] },
+    data: { datasets: [line('Llaves (M)', KEYS.filter(k => enRango(k.mes)).map(k => ({ x: k.day, y: k.v })), blue, false)] },
     options: base({ plugins: { ...noLegend, tooltip: { callbacks: { title: tipTitle, label: c => nf(c.parsed.y, 1) + ' M llaves' } } },
-      scales: { x: xAxis(Math.min(...KEYS.map(k => k.day)) - 5), y: yAxis(v => nf(v, 0)) } }) }));
+      scales: { x: xAxis(KEYS.some(k => enRango(k.mes)) ? Math.min(...KEYS.filter(k => enRango(k.mes)).map(k => k.day)) - 5 : 0), y: yAxis(v => nf(v, 0)) } }) }));
   const pal = [blue, green, violet, amber, pink];
   charts.push(new Chart($('c-tipo'), { type: 'doughnut',
     data: { labels: DICE.tipos_de_llave.map(t => t[0]), datasets: [{ data: DICE.tipos_de_llave.map(t => t[2]), backgroundColor: pal.map(c => c + 'cc'), borderColor: css('--s1'), borderWidth: 2 }] },
@@ -719,13 +870,16 @@ function draw() {
 }
 
 function statics() {
-  const E = CTX.entidades, O = CTX.origen, D = DIST.cortes[0];
-  const totN = D.filas.reduce((s, r) => s + r[1], 0);
+  const E = CTX.entidades, O = CTX.origen, D = distPeriodo();
+  const totN = D.filas.reduce((s, r) => s + r[1], 0) || 1;
   const link = (u, t) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
-  $('dist-title').textContent = 'Distribución por rango de monto · acumulado al ' + fmtDate(D.fecha);
+  $('dist-title').textContent = 'Distribución por rango de monto · ' + (D.ok && FLT.desde > '2025-10' ? lblMes(FLT.desde) + ' a ' + fmtDate(D.fecha) : 'acumulado al ' + fmtDate(D.fecha));
   const c1050 = D.filas[2][1] / totN * 100, bajo50 = D.filas.slice(0, 3).reduce((s, r) => s + r[1], 0) / totN * 100;
-  const totV = D.filas.reduce((s, r) => s + r[2], 0), may1m = D.filas[6][2] / totV * 100;
+  const totV = D.filas.reduce((s, r) => s + r[2], 0) || 1, may1m = D.filas[6][2] / totV * 100;
   $('dist-fn').innerHTML = `<span class="tag o">oficial</span> ${link(DIST.fuente_url || 'https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}. ${nf(bajo50, 1)}% de las transacciones son de menos de $50.000 (${nf(c1050, 1)}% entre $10.000 y $50.000), pero las de más de $1 millón son solo ${nf(D.filas[6][1] / totN * 100, 1)}% de las transacciones y ${nf(may1m, 1)}% del valor.`;
+  AVISO_EXTRA['adopcion/general'] = D.ok ? '' : `⚠ La distribución por monto no se filtra: no hay corte guardado de ${lblMes(shMes(FLT.desde, -1))}; se muestra el acumulado al ${fmtDate(D.fecha)}.`; aplicabilidad();
+  if (!D.ok) $('dist-fn').innerHTML += ` <span class="tag d">aviso</span> No hay un corte guardado para ${lblMes(shMes(FLT.desde, -1))}, así que se muestra el acumulado desde el lanzamiento y el filtro de período no se aplica a este gráfico. Los cortes mensuales se guardan con el workflow en modo <i>backfill</i>.`;
+  else if (D.parcial) $('dist-fn').innerHTML += ` <span class="tag d">aviso</span> No hay corte guardado al cierre de ${lblMes(FLT.hasta)}; se usa el último disponible (${fmtDate(D.fecha)}).`;
   $('ent-title').textContent = 'Entidades participantes · ' + E.total + ' (' + E.corte.toLowerCase() + ')';
   $('ent-fn').innerHTML = `<span class="tag o">${E.tipo}</span> ${link(E.url, E.fuente)}.`;
   $('origen-fn').innerHTML = `${O.corte}. <span class="tag o">${O.tipo}</span> ${link(O.url, O.fuente)}.`;
@@ -737,24 +891,28 @@ function statics() {
   $('acc-fn').innerHTML = `<span class="tag o">oficial</span> ${ACC.fuente}, del ${fmtDate(ACC.desde)} al ${fmtDate(ACC.corte)}. El QR mueve más operaciones pequeñas (ticket de $${nf(q.ticket_cop, 0)}); la llave, menos pero de mayor valor.`;
   $('p2p').innerHTML = `<li>${CTX.p2p.texto}<span class="s">${link(CTX.p2p.url, CTX.p2p.fuente)}<span class="tag">${CTX.p2p.tipo}</span></span></li>`;
   const T = DICE.tipos_de_llave;
-  const dMax = DAILY.reduce((a, b) => (b.n > a.n ? b : a)), dSum = DAILY.reduce((a, b) => a + b.n, 0);
-  $('daily-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}: ${nf(DAILY.length, 0)} días hasta ${fmtDate(DAILY[DAILY.length - 1].fecha)}; la suma (${nf(dSum, 0)}) reproduce el total acumulado del reporte. <span class="tag d">derivado</span> Récord: ${nf(dMax.v, 1)} M el ${fmtDate(dMax.fecha)}. Los valles son domingos y festivos (25-dic: 2,0 M; 1-ene: 1,8 M).`;
-  const VS = vsData(), VB = VS.filter(r => r.b), vL = VB[VB.length - 1], vF = VB[0], lastTarj = VS[VS.length - 1];
+  const DF2 = DAILY.filter(d => enRango(d.fecha.slice(0, 7))), dMax = DAILY.reduce((a, b) => (b.n > a.n ? b : a)), dSum = DF2.reduce((a, b) => a + b.n, 0), dMaxP = DF2.length ? DF2.reduce((a, b) => (b.n > a.n ? b : a)) : null;
+  $('daily-fn').innerHTML = !DF2.length ? 'Sin días de Bre-B en el período.' : (DF2.length === DAILY.length
+    ? `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}: ${nf(DAILY.length, 0)} días hasta ${fmtDate(DAILY[DAILY.length - 1].fecha)}; la suma (${nf(dSum, 0)}) reproduce el total acumulado del reporte. <span class="tag d">derivado</span> Récord: ${nf(dMax.v, 1)} M el ${fmtDate(dMax.fecha)}. Los valles son domingos y festivos (25-dic: 2,0 M; 1-ene: 1,8 M).`
+    : `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-mol', 'Reporte MOL de BanRep')}: ${nf(DF2.length, 0)} días (${fmtDate(DF2[0].fecha)} a ${fmtDate(DF2[DF2.length - 1].fecha)}), ${nf(dSum, 0)} transacciones. <span class="tag d">derivado</span> Récord del período: ${nf(dMaxP.v, 1)} M el ${fmtDate(dMaxP.fecha)}.`);
+  const VS = vsData({ raw: true }), VB = VS.filter(r => r.b), lastTarj = VS[VS.length - 1], vL = [...VB].reverse().find(r => r.mes <= FLT.hasta) || VB[0], vF = VB.find(r => r.mes >= FLT.desde) || VB[0];
+  const hayParcial = FLT.franq !== 'todas' && FLT.tipo !== 'credito', sinSFC = vsData().filter(r => r.b && !r.t).length;
+  $('vs-bar-fn').innerHTML = `Barras: compras con tarjeta (${etiquetaSel()}). Línea: Bre-B. *Octubre cuenta desde el 6.` + (hayParcial ? ' Las transacciones de débito no se incluyen: la SFC no las reparte por franquicia (el valor de débito por franquicia es estimado).' : '') + (sinSFC ? ` ${sinSFC} mes(es) de Bre-B aún sin datos de la SFC.` : '');
   const supera = MONTHS.filter(m => m.fecha.slice(0, 7) > lastTarj.mes && m.txn > lastTarj.n).map(m => m.label + ' (' + nf(m.txn / 1e6, 0) + ' M)');
-  $('vs-fn').innerHTML = `<span class="tag d">derivado</span> En ${vL.label}, el último mes con datos de la SFC, Bre-B equivale a ${nf(vL.rN, 0)}% de las compras con tarjeta en número de transacciones y a ${nf(vL.rV, 0)}% en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%). `
+  $('vs-fn').innerHTML = `<span class="tag d">derivado</span> En ${vL.label}, ${vL.mes === lastTarj.mes ? 'el último mes con datos de la SFC' : 'el cierre del período'}, Bre-B equivale a ${nf(vL.rN, 0)}% de las compras con tarjeta en número de transacciones y a ${nf(vL.rV, 0)}% en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%). `
     + `Ticket promedio de ${vL.label}: Bre-B $${nf(vL.b.ticket, 0)}, crédito $${nf(vL.t.credito_compras_cop / vL.t.credito_compras_num, 0)}, débito $${nf(vL.t.debito_compras_cop / vL.t.debito_compras_num, 0)}. `
     + (supera.length ? `Después de ${lastTarj.label}, Bre-B movió ${supera.join(' y ')}, por encima de las ${nf(lastTarj.n / 1e6, 0)} M compras con tarjeta de ${lastTarj.label}. ` : '')
     + `<br><span class="tag o">oficial</span> Tarjetas: compras con tarjeta de crédito (nacionales) y débito que reportan los establecimientos de crédito a la SFC, ${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos «Tarjetas de crédito y débito»')}; sin retiros ni compras en el exterior. La SFC publica con rezago (último mes: ${lastTarj.label}). `
     + `Se usan las cifras de los emisores, que cuentan cada tarjeta una vez; las administradoras de sistemas de pago (Credibanco, Redeban, redes de Visa y Mastercard) reportan lo que procesa su red y en 2025 sumaron entre 1,4 y 1,6 veces esas cifras, porque una misma compra puede contarse en la red y en el adquirente, así que no se suman. `
     + `No es una comparación uno a uno: Bre-B incluye transferencias entre personas y pagos a comercios, y parte de su volumen no sale de una compra con tarjeta.`;
-  const BFm = vsFranq()[lastTarj.mes] || {}, gk = k => BFm[k] || { cop: 0, num: null }, sumK = ks => ks.reduce((a, k) => a + gk(k).cop, 0);
+  const BFm = vsFranq()[vL.mes] || {}, gk = k => BFm[k] || { cop: 0, num: null }, sumK = ks => ks.reduce((a, k) => a + gk(k).cop, 0);
   const TJ = vL.t, bre = vL.b, totCop = vL.v, totNum = vL.n;
   const fila = (nombre, cop, num, extra = {}) => `<tr><td style="${extra.bold ? 'font-weight:600' : ''}${extra.pad ? ';padding-left:22px' : ''}${extra.color ? ';color:' + extra.color : ''}">${nombre}</td>`
     + `<td class="n">${nf(cop / 1e12, 2)}</td><td class="n">${nf(cop / totCop * 100, 1)}%</td><td class="n">${num == null ? '—' : nf(num / 1e6, 1)}</td>`
     + `<td class="n">${num == null ? '—' : '$' + nf(cop / num, 0)}</td><td class="n">${extra.noRatio ? '—' : nf(bre.valor / cop, 1) + ' veces'}</td></tr>`;
   const cr = (nombre, k, noRatio) => fila(nombre, gk(k).cop, gk(k).num, { pad: true, noRatio });
   const crTot = sumK(['credito_VISA', 'credito_MASTERCARD', 'credito_AMEX', 'credito_DINERS', 'credito_OTRAS']);
-  $('vs-tbl-h').textContent = `Compras con tarjeta y Bre-B en ${lastTarj.label}, por producto y franquicia`;
+  $('vs-tbl-h').textContent = `Compras con tarjeta y Bre-B en ${vL.label}${vL.mes === lastTarj.mes ? ' (último mes de la SFC)' : ''}, por producto y franquicia`;
   $('vs-tbody').innerHTML = [
     fila('Crédito', crTot, TJ.credito_compras_num, { bold: true }),
     cr('Visa', 'credito_VISA'), cr('Mastercard', 'credito_MASTERCARD'), cr('American Express', 'credito_AMEX', true), cr('Diners', 'credito_DINERS', true), cr('Otras tarjetas de crédito', 'credito_OTRAS', true),
@@ -895,7 +1053,7 @@ function statics() {
     + `<span class="tag o">oficial</span> Tarjetas: tarjetas de crédito y débito vigentes a la fecha de corte que reportan los establecimientos de crédito a la SFC (${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos')}); cuenta tarjetas, no personas, y la SFC no publica cuántos tarjetahabientes distintos hay. Llaves, medios de pago y clientes: reporte DICE de BanRep (incluye llaves activas y bloqueadas). `
     + `No son lo mismo: una llave es un alias que apunta a un medio de pago (una cuenta o un depósito), cada cliente tiene en promedio ${nf(DT.llaves_por_cliente, 1)} llaves y ${nf(DT.medios_por_cliente, 1)} medios de pago, y una tarjeta es un instrumento físico o digital de pago. Por eso la lectura más cercana es medios de pago vinculados contra tarjetas, y llaves como medida de adopción.`;
   // Lecturas de cada subvista y mensajes clave del Resumen
-  const lPan = `En ${vL.label}, el último mes con datos de la SFC, Bre-B equivale a <b>${nf(vL.rN, 0)}%</b> de las compras con tarjeta en número de transacciones y a <b>${nf(vL.rV, 0)}%</b> en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%).`;
+  const lPan = `En ${vL.label}, ${vL.mes === lastTarj.mes ? 'el último mes con datos de la SFC' : 'el cierre del período'}, Bre-B equivale a <b>${nf(vL.rN, 0)}%</b> de las compras con tarjeta en número de transacciones y a <b>${nf(vL.rV, 0)}%</b> en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%).`;
   const lLen = `<b>No se ve que las tarjetas crezcan más lento desde Bre-B:</b> ${sg(LR[0].b)}% en transacciones (${sg(LR[0].a)}% en el periodo equivalente previo) y ${sg(LR[4].b)}% en valor (${sg(LR[4].a)}%), acumulado ${vent(mesesW)}.`;
   $('lec-panorama').innerHTML = lPan + ` Bre-B pesa <b>${f1(breT(mHoy) / totT(mHoy) * 100)}%</b> de las transacciones combinadas y ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor, porque su ticket es más alto que el de las tarjetas.`;
   $('lec-franquicias').innerHTML = `En ${vL.label}, Bre-B movió <b>${f1(bre.valor / sumK(['credito_VISA', 'debito_VISA']))} veces</b> el valor de Visa y <b>${f1(bre.valor / sumK(['credito_MASTERCARD', 'debito_MASTERCARD']))} veces</b> el de Mastercard (crédito + débito; el débito por franquicia es estimado). Casi toda la pérdida de peso de las tarjetas es dilución, no sustitución.`;
@@ -921,7 +1079,7 @@ function statics() {
   $('lec-bancos').innerHTML = `En la lista oficial de BanRep (${fmtDate(PART.corte)}) figuran <b>${nEnt} entidades</b> y ${PART.sistemas.length} sistemas de pago (eran ${CTX.entidades.total} entidades en ${CTX.entidades.corte.toLowerCase()}). De las ${ENTSFC.length} entidades que reportan tarjetas a la SFC, ${ENTSFC.length - fuera.length} aparecen en la lista y cubren el <b>${f1(cob('debito_vigentes'))}%</b> de las tarjetas débito y el <b>${f1(cob('credito_vigentes'))}%</b> de las de crédito`
     + (fuera.length ? `; no aparecen ${fuera.slice(0, 3).map(e => nomEnt(e.entidad)).join(', ')}${fuera.length > 3 ? ' y otras' : ''}` : '') + `. La única cifra por banco disponible (${fmtDate(PRENSA.corte)}, prensa) mostraba a Bancolombia, Davivienda y Banco de Bogotá con el <b>${f1(top3 / sisT * 100)}%</b> de las transacciones del sistema.`;
   $('bk-h').textContent = `Entidades que reportan tarjetas a la SFC (${mlabel(ENTSFC[0].mes + '-01')}) y su presencia en Bre-B`;
-  $('bk-tbody').innerHTML = ENTSFC.map(e => { const p = prensaDe(e), si = enLista(e);
+  $('bk-tbody').innerHTML = ENTSFC.filter(e => !FLT.bancos.length || FLT.bancos.includes(e.entidad)).map(e => { const p = prensaDe(e), si = enLista(e);
     return `<tr><td>${nomEnt(e.entidad)}</td><td>${e.tipo}</td><td ${si ? '' : 'style="color:var(--pink)"'}>${si ? 'Sí' : 'No aparece'}</td>`
       + `<td class="n">${f1(e.debito_vigentes / 1e6)}</td><td class="n">${f1(e.credito_vigentes / 1e6)}</td><td class="n">${f1((e.credito_compras_cop + e.debito_compras_cop) / 1e9)}</td>`
       + `<td class="n">${p.txn_millones != null ? f1(p.txn_millones) : '—'}</td><td class="n">${p.valor_billones != null ? f1(p.valor_billones) : '—'}</td></tr>`; }).join('');
@@ -941,20 +1099,27 @@ function statics() {
 }
 
 function kpis() {
-  const last = CUTS[CUTS.length - 1];
+  const ult = CUTS[CUTS.length - 1], ultM = ult.fecha.slice(0, 7), ini = FLT.desde < '2025-10' ? '2025-10' : FLT.desde, fin = FLT.hasta;
+  const a = acumA(fin), b = acumA(shMes(ini, -1)), nm = fin >= ini ? rangoMeses(ini, fin).length : 0;
+  const cur = { txn: a.txn - b.txn, valor: a.valor - b.valor, dias: a.day - b.day };
+  let prev = null;
+  if (nm && shMes(ini, -nm) >= '2025-10') { const pa = acumA(shMes(ini, -1)), pb = acumA(shMes(ini, -nm - 1)); prev = { txn: pa.txn - pb.txn, valor: pa.valor - pb.valor, dias: pa.day - pb.day }; }
+  const completo = !(fin === ultM && ult.tipo === 'ultimo');   // con un mes en curso, los totales no son comparables con un periodo completo
+  const dl = (x, y) => (prev && y ? ` · <span class="dl ${x >= y ? 'up' : 'dn'}">${x >= y ? '+' : '−'}${nf(Math.abs((x / y - 1) * 100), 1)}%</span> vs. periodo anterior` : '');
+  const per = nm ? lblMes(ini) + '–' + lblMes(fin) : 'sin datos de Bre-B en el período';
+  const llaves = KEYS.filter(k => k.mes <= fin).pop(), ok = cur.txn > 0;
   const items = [
-    ['Transacciones acumuladas', nf(last.txn / 1e9, 2), 'mil M', fmtDate(last.fecha)],
-    ['Valor acumulado', '$' + nf(last.valor / 1e12, 0), 'B COP', fmtDate(last.fecha)],
-    ['Ticket promedio', '$' + nf(last.ticket, 0), 'COP', fmtDate(last.fecha)],
-    ['Llaves registradas', nf(DICE.totales.llaves / 1e6, 1), 'M', fmtDate(DICE.corte)],
-    ['Clientes con llaves', nf(DICE.totales.clientes / 1e6, 1), 'M', fmtDate(DICE.corte)],
+    ['Transacciones', ok ? (cur.txn >= 1e9 ? nf(cur.txn / 1e9, 2) : nf(cur.txn / 1e6, 0)) : '—', ok ? (cur.txn >= 1e9 ? 'mil M' : 'M') : '', per + (completo && ok ? dl(cur.txn, prev && prev.txn) : '')],
+    ['Valor', ok ? '$' + nf(cur.valor / 1e12, 1) : '—', ok ? 'B COP' : '', per + (completo && ok ? dl(cur.valor, prev && prev.valor) : '')],
+    ['Ticket promedio', ok ? '$' + nf(cur.valor / cur.txn, 0) : '—', ok ? 'COP' : '', per + (ok ? dl(cur.valor / cur.txn, prev && prev.valor / prev.txn) : '')],
+    ['Promedio diario', ok && cur.dias > 0 ? nf(cur.txn / cur.dias / 1e6, 1) : '—', ok ? 'M txn/día' : '', per + (ok ? dl(cur.txn / cur.dias, prev && prev.txn / prev.dias) : '')],
+    ['Llaves registradas', llaves ? nf(llaves.v, 1) : '—', llaves ? 'M' : '', llaves ? 'al cierre de ' + lblMes(llaves.mes) + (fin >= DICE.corte.slice(0, 7) ? ' · ' + nf(DICE.totales.clientes / 1e6, 1) + ' M clientes' : '') : 'sin dato en el período'],
   ];
-  $('kpis').innerHTML = items.map(([l, v, u, d]) => `<div class="kpi"><div class="kpi-l">${l}</div><div class="kpi-v">${v}<em>${u}</em></div><div class="kpi-s">corte ${d}</div></div>`).join('');
+  $('kpis').innerHTML = items.map(([l, v, u, sub]) => `<div class="kpi"><div class="kpi-l">${l}</div><div class="kpi-v">${v}<em>${u}</em></div><div class="kpi-s">${sub}</div></div>`).join('');
 }
-
 function table() {
   const byEnd = Object.fromEntries(MONTHS.map(m => [m.fecha, m]));
-  $('tbody').innerHTML = CUTS.filter(c => c.tipo !== 'inicio').map(c => {
+  $('tbody').innerHTML = CUTS.filter(c => c.tipo !== 'inicio' && enRango(c.fecha.slice(0, 7))).map(c => {
     const m = byEnd[c.fecha], ref = c.tipo === 'referencia';
     return `<tr class="${ref ? 'ref' : ''}">
       <td class="n">${fmtDate(c.fecha)}${ref ? '<span class="tag">referencia</span>' : ''}${c.tipo === 'ultimo' ? '<span class="tag o">último</span>' : ''}</td>
@@ -990,7 +1155,7 @@ async function init() {
     if (CUTS.length < 3) throw new Error('Datos insuficientes');
     derive();
     $('asof').textContent = 'Último corte MOL: ' + fmtDate(CUTS[CUTS.length - 1].fecha);
-    kpis(); table(); statics(); plegarNotas(); ir(); window.addEventListener('hashchange', ir);
+    montarFiltros(); kpis(); table(); statics(); plegarNotas(); ir(); window.addEventListener('hashchange', ir);
   } catch (e) {
     $('err').style.display = 'block'; $('err').textContent = 'Error: ' + e.message;
     $('asof').textContent = 'error';

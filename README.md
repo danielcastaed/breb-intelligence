@@ -4,6 +4,19 @@ Tracker de **Bre-B**, el sistema de pagos inmediatos interoperable del Banco de 
 
 Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-intelligence) (tarjetas, fuente SFC; [dashboard en vivo](https://danielcastaed.github.io/visa-intelligence/)); este dashboard enlaza al de tarjetas desde el pie y desde la sección de franquicias. Se mantiene aparte porque la fuente (BanRep), la cadencia y la estructura de datos son distintas.
 
+## Filtros
+
+Como en el dashboard de Visa, una barra de filtros arriba afecta toda la página, y los controles que no aplican a la vista se atenúan (con un aviso de qué sí aplica):
+
+| Filtro | Qué hace | Dónde aplica |
+|---|---|---|
+| **Período** (desde / hasta, más «Todo», «6 m», «3 m») | Recorta series, KPI (con variación frente al período anterior de igual largo), tabla de cortes y la distribución por monto | Resumen, Volumen, Adopción (general), Llaves, Tarjetas (panorama, franquicias, tarjetas y llaves), Datos |
+| **Tipo** (crédito / débito / total) | Selecciona qué compras con tarjeta se comparan con Bre-B | Tarjetas (panorama, franquicias, tarjetas y llaves) |
+| **Franquicia** (todas / Visa / Mastercard / Amex, Diners y otras) | Idem. Con una franquicia, las transacciones de débito no se muestran: la SFC no las reparte | Tarjetas (panorama, franquicias) |
+| **Banco** (selección múltiple) | Filtra las entidades | Adopción > Bancos y entidades |
+
+Las vistas «Quién cede más», «Emisores» y «¿Crecen más lento?» comparan ventanas fijas (desde el lanzamiento frente al mismo periodo de años anteriores) y no responden a los filtros. La distribución por monto solo se puede recortar por período si hay cortes mensuales guardados: ejecutar el workflow con la opción *backfill* los guarda todos.
+
 ## Cómo está organizado
 
 El dashboard es una sola página con pestañas (el enlace conserva la vista, por ejemplo `#tarjetas/lento`):
