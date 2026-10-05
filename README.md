@@ -4,6 +4,21 @@ Tracker de **Bre-B**, el sistema de pagos inmediatos interoperable del Banco de 
 
 Proyecto hermano de [visa-intelligence](https://github.com/danielcastaed/visa-intelligence) (tarjetas, fuente SFC; [dashboard en vivo](https://danielcastaed.github.io/visa-intelligence/)); este dashboard enlaza al de tarjetas desde el pie y desde la sección de franquicias. Se mantiene aparte porque la fuente (BanRep), la cadencia y la estructura de datos son distintas.
 
+## Cómo está organizado
+
+El dashboard es una sola página con pestañas (el enlace conserva la vista, por ejemplo `#tarjetas/lento`):
+
+| Pestaña | Contenido |
+|---|---|
+| **Resumen** | Cifras clave y cinco mensajes con enlace a su detalle |
+| **Volumen** | Transacciones y valor por mes, crecimiento, serie diaria |
+| **Adopción** | Rangos de monto, entidades, origen, QR vs llave |
+| **Llaves** | Directorio DICE: llaves por tipo, medios de pago, naturales y jurídicas |
+| **Tarjetas** | Seis subvistas: Panorama, Franquicias y productos, Transacciones, Emisores, ¿Crecen más lento?, Tarjetas y llaves; cada una abre con una línea de lectura |
+| **Datos y notas** | Fuentes, contexto, tabla de cortes y notas |
+
+Las notas largas de cada gráfico están plegadas en «Cómo leerlo y salvedades».
+
 ## Qué muestra
 
 - **Evolución**: transacciones y valor acumulados, ritmo diario implícito.

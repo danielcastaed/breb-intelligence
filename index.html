@@ -77,13 +77,44 @@ ul.facts .s{display:block;font-size:11px;color:var(--text3);margin-top:2px}
 .acc .v{font-family:var(--mono);font-variant-numeric:tabular-nums}
 footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
 #err{display:none;background:rgba(224,85,85,.1);border:1px solid rgba(224,85,85,.4);color:#e05555;border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px;margin-bottom:14px}
+header{flex-wrap:wrap;row-gap:6px}
+nav.tabs{order:3;width:100%;display:flex;gap:2px;overflow-x:auto;margin:0 -4px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a,.subtabs a{white-space:nowrap;color:var(--text2);font-size:13px;padding:7px 12px;border-radius:6px 6px 0 0;border-bottom:2px solid transparent}
+nav.tabs a:hover,.subtabs a:hover{color:var(--text);text-decoration:none;background:var(--s2)}
+nav.tabs a.on{color:var(--text);border-bottom-color:var(--green);font-weight:500}
+.tab{display:none}.tab.on{display:block}
+.sub{display:none}.sub.on{display:block}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 14px}
+.subtabs a{border:1px solid var(--border2);border-radius:16px;padding:4px 13px;font-size:12.5px}
+.subtabs a.on{background:var(--s3);color:var(--text);border-color:var(--text3)}
+.lec{font-size:15px;line-height:1.5;color:var(--text);background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.lec:empty{display:none}
+.lec b{font-weight:600}
+.claves{margin-bottom:8px}
+.claves ul{list-style:none;margin:0;padding:0}
+.claves li{display:flex;gap:12px;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
+.claves li:last-child{border-bottom:none}
+.claves a.ver{white-space:nowrap;font-size:12px;color:var(--text3)}
+.claves a.ver:hover{color:var(--blue)}
+details.fnd{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+details.fnd summary{cursor:pointer;font-size:11.5px;color:var(--text3);list-style:none;user-select:none}
+details.fnd summary::-webkit-details-marker{display:none}
+details.fnd summary::before{content:'▸ ';color:var(--text3)}
+details.fnd[open] summary::before{content:'▾ '}
+details.fnd summary:hover{color:var(--text2)}
+details.fnd p.fn{border-top:none;margin-top:6px;padding-top:0}
+.tab>.sec:first-child{margin-top:4px}
 @media (max-width:900px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr 1fr}.g21 .card:first-child{grid-column:1/-1}}
-@media (max-width:560px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr}header,main,footer{padding-left:16px;padding-right:16px}}
+@media (max-width:560px){.kpis,.g3,.g2,.g21{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.kpi-v{font-size:17px}.kpis .kpi:last-child{grid-column:1/-1}header,main,footer{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">Bre-B Intelligence <span>/ Colombia</span></div>
+  <nav class="tabs" id="tabs" aria-label="Secciones">
+    <a href="#resumen" data-t="resumen">Resumen</a><a href="#volumen" data-t="volumen">Volumen</a><a href="#adopcion" data-t="adopcion">Adopción</a><a href="#llaves" data-t="llaves">Llaves</a><a href="#tarjetas" data-t="tarjetas">Tarjetas</a><a href="#datos" data-t="datos">Datos y notas</a>
+  </nav>
   <div class="hdr-right">
     <span id="asof">cargando…</span>
     <button class="btn" id="theme" type="button">Claro</button>
@@ -93,13 +124,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
 <main>
   <div id="err"></div>
 
-  <div class="notice">
-    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026) y las compras con tarjeta de la SFC (datos.gov.co). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras.
-  </div>
-
+  <section class="tab" id="tab-resumen">
   <div class="kpis" id="kpis"></div>
-
-  <div class="sec"><span>Evolución</span><i></i></div>
+    <div class="card claves"><h3>Lo que dicen las cifras</h3><ul id="claves"></ul></div>
   <div class="g3">
     <div class="card">
       <h3>Transacciones acumuladas (millones)</h3>
@@ -117,8 +144,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <p class="fn"><span class="tag d">derivado</span> Transacciones del mes ÷ días del mes (octubre desde el día 6). Septiembre cierra cerca de 7,7 M por día.</p>
     </div>
   </div>
+  </section>
 
-  <div class="sec"><span>Volumen operacional</span><i></i></div>
+  <section class="tab" id="tab-volumen">
   <div class="g3">
     <div class="card">
       <h3>Transacciones por mes (millones)</h3>
@@ -141,8 +169,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     <div class="chart tall"><canvas id="c-daily"></canvas></div>
     <p class="fn" id="daily-fn"></p>
   </div>
+  </section>
 
-  <div class="sec"><span>Adopción</span><i></i></div>
+  <section class="tab" id="tab-adopcion">
   <div class="g3">
     <div class="card">
       <h3 id="dist-title">Distribución por rango de monto</h3>
@@ -171,8 +200,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <ul class="facts" id="p2p"></ul>
     </div>
   </div>
+  </section>
 
-  <div class="sec"><span>Directorio de llaves — DICE</span><i></i></div>
+  <section class="tab" id="tab-llaves">
   <div class="g3">
     <div class="card">
       <h3>Llaves registradas (millones)</h3>
@@ -195,8 +225,14 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     <div class="chart" style="height:150px"><canvas id="c-naj"></canvas></div>
     <p class="fn" id="naj-fn"></p>
   </div>
+  </section>
 
-  <div class="sec"><span>Bre-B frente a las tarjetas</span><i></i></div>
+  <section class="tab" id="tab-tarjetas">
+    <div class="subtabs" id="subtabs">
+      <a href="#tarjetas/panorama" data-s="panorama">Panorama</a><a href="#tarjetas/franquicias" data-s="franquicias">Franquicias y productos</a><a href="#tarjetas/transacciones" data-s="transacciones">Transacciones</a><a href="#tarjetas/emisores" data-s="emisores">Emisores</a><a href="#tarjetas/lento" data-s="lento">¿Crecen más lento?</a><a href="#tarjetas/llaves" data-s="llaves">Tarjetas y llaves</a>
+    </div>
+    <div class="sub" data-sub="panorama">
+    <p class="lec" id="lec-panorama"></p>
   <div class="g3">
     <div class="card">
       <h3>Transacciones por mes (millones)</h3>
@@ -214,6 +250,10 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <p class="fn"><span class="tag d">derivado</span> Bre-B del mes ÷ compras con tarjeta del mismo mes.</p>
     </div>
   </div>
+  <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
+    </div>
+    <div class="sub" data-sub="franquicias">
+    <p class="lec" id="lec-franquicias"></p>
   <div class="g2">
     <div class="card">
       <h3>Valor por mes, por producto y franquicia (billones COP)</h3>
@@ -224,18 +264,6 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       <h3>Peso en el valor combinado (%)</h3>
       <div class="chart tall"><canvas id="c-vs-peso"></canvas></div>
       <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + Bre-B) del mes, desde ene-2025; antes de oct-2025 Bre-B no existía. Muestra cuánto pesa Bre-B si se pone junto a las franquicias.</p>
-    </div>
-  </div>
-  <div class="g2">
-    <div class="card">
-      <h3>Peso en las transacciones combinadas (%)</h3>
-      <div class="chart tall"><canvas id="c-vt-peso"></canvas></div>
-      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + transacciones de Bre-B) del mes. En crédito la franquicia es oficial; el débito va completo porque la SFC no reparte su número de transacciones por franquicia.</p>
-    </div>
-    <div class="card">
-      <h3>Crecimiento acumulado de las transacciones con tarjeta (%)</h3>
-      <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
-      <p class="fn"><span class="tag d">derivado</span> Suma de meses frente a la suma del mismo periodo del año anterior: desde el lanzamiento (con Bre-B) y el periodo equivalente previo.</p>
     </div>
   </div>
   <div class="card" style="margin-top:8px">
@@ -258,6 +286,21 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
     <p class="fn" id="ced-fn"></p>
   </div>
+    </div>
+    <div class="sub" data-sub="transacciones">
+    <p class="lec" id="lec-transacciones"></p>
+  <div class="g2">
+    <div class="card">
+      <h3>Peso en las transacciones combinadas (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-peso"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Cada serie ÷ (compras con tarjeta + transacciones de Bre-B) del mes. En crédito la franquicia es oficial; el débito va completo porque la SFC no reparte su número de transacciones por franquicia.</p>
+    </div>
+    <div class="card">
+      <h3>Crecimiento acumulado de las transacciones con tarjeta (%)</h3>
+      <div class="chart tall"><canvas id="c-vt-crec"></canvas></div>
+      <p class="fn"><span class="tag d">derivado</span> Suma de meses frente a la suma del mismo periodo del año anterior: desde el lanzamiento (con Bre-B) y el periodo equivalente previo.</p>
+    </div>
+  </div>
   <div class="card" style="margin-top:8px">
     <h3 id="ced-t-h">¿Quién cede más participación? Por número de transacciones</h3>
     <div class="tbl-wrap">
@@ -268,6 +311,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
     <p class="fn" id="ced-t-fn"></p>
   </div>
+    </div>
+    <div class="sub" data-sub="emisores">
+    <p class="lec" id="lec-emisores"></p>
   <div class="card" style="margin-top:8px">
     <h3 id="em-h">¿Qué emisores mueven el crédito?</h3>
     <div class="tbl-wrap">
@@ -278,9 +324,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
     <p class="fn" id="em-fn"></p>
   </div>
-  <div class="card" style="margin-top:8px"><p class="fn" id="vs-fn"></p></div>
-
-  <div class="sec"><span>¿Las tarjetas crecen más lento por Bre-B?</span><i></i></div>
+    </div>
+    <div class="sub" data-sub="lento">
+    <p class="lec" id="lec-lento"></p>
   <div style="display:grid;gap:8px">
     <div class="card">
       <h3>Crecimiento anual, mes a mes (%)</h3>
@@ -298,8 +344,9 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
   </div>
   <div class="card" style="margin-top:8px"><p class="fn" id="lento-fn"></p></div>
-
-  <div class="sec"><span>Tarjetas y llaves</span><i></i></div>
+    </div>
+    <div class="sub" data-sub="llaves">
+    <p class="lec" id="lec-llaves"></p>
   <div class="g2" style="margin-top:0">
     <div class="card">
       <h3>Tarjetas vigentes y llaves de Bre-B (millones)</h3>
@@ -322,13 +369,18 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
     </div>
     <p class="fn" id="kl-fn"></p>
   </div>
+    </div>
+  </section>
 
-  <div class="sec"><span>Contexto</span><i></i></div>
+  <section class="tab" id="tab-datos">
+  <div class="notice">
+    <b>Fuente.</b> Cifras de los reportes públicos de BanRep (<a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>: MOL y DICE), leídos con fecha de corte exacta, más series y estructura del documento técnico de BanRep (feb 2026) y las compras con tarjeta de la SFC (datos.gov.co). Lo marcado <span class="tag d">derivado</span> se calcula aquí a partir de esas cifras.
+  </div>
+    <div class="sec"><span>Contexto</span><i></i></div>
   <div class="card">
     <ul class="facts" id="contexto"></ul>
   </div>
-
-  <div class="sec"><span>Cortes y fuentes</span><i></i></div>
+    <div class="sec"><span>Cortes y fuentes</span><i></i></div>
   <div class="card">
     <div class="tbl-wrap">
       <table>
@@ -340,11 +392,11 @@ footer{max-width:1180px;margin:0 auto;padding:14px 24px 30px;border-top:1px soli
       </table>
     </div>
   </div>
-
-  <div class="sec"><span>Notas</span><i></i></div>
+    <div class="sec"><span>Notas</span><i></i></div>
   <div class="card">
     <ul class="notes" id="notes"></ul>
   </div>
+  </section>
 </main>
 
 <footer>Fuente primaria: Banco de la República — <a href="https://www.banrep.gov.co/es/bre-b/indicadores">Indicadores Bre-B</a>. Datos en <code>data/</code>, cada archivo con su fuente. Dashboard hermano de tarjetas (participación de mercado Visa y Mastercard, SFC): <a href="https://danielcastaed.github.io/visa-intelligence/" target="_blank" rel="noopener">Visa Market Intelligence</a>.</footer>
@@ -420,10 +472,31 @@ function klData() {
            bre: Object.fromEntries(MONTHS.map(m => [m.fecha.slice(0, 7), m])) };
 }
 
+// Navegación por pestañas (#resumen, #tarjetas/lento, ...) y notas largas plegadas
+const TABS = ['resumen', 'volumen', 'adopcion', 'llaves', 'tarjetas', 'datos'], SUBS = ['panorama', 'franquicias', 'transacciones', 'emisores', 'lento', 'llaves'];
+let tabActual = null;
+function ir() {
+  const [t0, s0] = (location.hash.slice(1) || 'resumen').split('/'), t = TABS.includes(t0) ? t0 : 'resumen', sub = SUBS.includes(s0) ? s0 : 'panorama';
+  document.querySelectorAll('.tab').forEach(e => e.classList.toggle('on', e.id === 'tab-' + t));
+  document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.t === t));
+  document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.dataset.sub === sub));
+  document.querySelectorAll('#subtabs a').forEach(a => a.classList.toggle('on', a.dataset.s === sub));
+  if (t !== tabActual) window.scrollTo(0, 0);
+  tabActual = t;
+  if (CUTS.length) draw();   // los gráficos se crean con la vista visible: en un contenedor oculto nacen con tamaño cero
+}
+function plegarNotas() {
+  document.querySelectorAll('p.fn').forEach(p => {
+    if (p.parentElement.tagName === 'DETAILS' || p.textContent.length < 280) return;
+    const d = document.createElement('details'); d.className = 'fnd'; d.innerHTML = '<summary>Cómo leerlo y salvedades</summary>';
+    p.parentNode.insertBefore(d, p); d.appendChild(p);
+  });
+}
+
 function draw() {
   charts.forEach(c => c.destroy()); charts = [];
   const green = css('--green'), blue = css('--blue'), amber = css('--amber'), violet = css('--violet'), pink = css('--pink'), grid = css('--grid'), tick = css('--text3');
-  Chart.defaults.color = tick; Chart.defaults.font.family = "'DM Sans',system-ui"; Chart.defaults.font.size = 11;
+  Chart.defaults.animation = false; Chart.defaults.color = tick; Chart.defaults.font.family = "'DM Sans',system-ui"; Chart.defaults.font.size = 11;
   const xAxis = (min = 0) => ({ type: 'linear', min, grid: { color: grid }, border: { display: false },
     ticks: { color: tick, maxTicksLimit: 7, callback: v => { const d = new Date(LAUNCH.getTime() + v * 864e5); return MES[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2); } } });
   const yAxis = cb => ({ beginAtZero: true, grid: { color: grid }, border: { display: false }, ticks: { color: tick, callback: cb } });
@@ -770,6 +843,22 @@ function statics() {
   $('kl-fn').innerHTML = `<span class="tag d">derivado</span> «Frente a las tarjetas» = cantidad de Bre-B ÷ tarjetas vigentes del último mes de la SFC (${lastTarj.label}). Las transacciones de Bre-B por instrumento usan el último mes completo (${mesFull.label}) sobre el stock del último corte, así que son aproximadas; en ${lastTarj.label} Bre-B hizo ${nf(KLd.bre[lastTarj.mes].txn / (kJ * 1e6), 1)} transacciones por llave al mes frente a ${nf(lastTarj.n / vigT, 1)} compras por tarjeta (en el gráfico). `
     + `<span class="tag o">oficial</span> Tarjetas: tarjetas de crédito y débito vigentes a la fecha de corte que reportan los establecimientos de crédito a la SFC (${link('https://www.datos.gov.co/d/h2jg-r3zg', 'datos abiertos')}); cuenta tarjetas, no personas, y la SFC no publica cuántos tarjetahabientes distintos hay. Llaves, medios de pago y clientes: reporte DICE de BanRep (incluye llaves activas y bloqueadas). `
     + `No son lo mismo: una llave es un alias que apunta a un medio de pago (una cuenta o un depósito), cada cliente tiene en promedio ${nf(DT.llaves_por_cliente, 1)} llaves y ${nf(DT.medios_por_cliente, 1)} medios de pago, y una tarjeta es un instrumento físico o digital de pago. Por eso la lectura más cercana es medios de pago vinculados contra tarjetas, y llaves como medida de adopción.`;
+  // Lecturas de cada subvista y mensajes clave del Resumen
+  const lPan = `En ${vL.label}, el último mes con datos de la SFC, Bre-B equivale a <b>${nf(vL.rN, 0)}%</b> de las compras con tarjeta en número de transacciones y a <b>${nf(vL.rV, 0)}%</b> en valor (en ${vF.label} era ${nf(vF.rN, 0)}% y ${nf(vF.rV, 0)}%).`;
+  const lLen = `<b>No se ve que las tarjetas crezcan más lento desde Bre-B:</b> ${sg(LR[0].b)}% en transacciones (${sg(LR[0].a)}% en el periodo equivalente previo) y ${sg(LR[4].b)}% en valor (${sg(LR[4].a)}%), acumulado ${vent(mesesW)}.`;
+  $('lec-panorama').innerHTML = lPan;
+  $('lec-franquicias').innerHTML = `En ${vL.label}, Bre-B movió <b>${f1(bre.valor / sumK(['credito_VISA', 'debito_VISA']))} veces</b> el valor de Visa y <b>${f1(bre.valor / sumK(['credito_MASTERCARD', 'debito_MASTERCARD']))} veces</b> el de Mastercard (crédito + débito; el débito por franquicia es estimado). Casi toda la pérdida de peso de las tarjetas es dilución, no sustitución.`;
+  $('lec-transacciones').innerHTML = `Bre-B pesa <b>${f1(breT(mHoy) / totT(mHoy) * 100)}%</b> de las transacciones combinadas y ${f1(breV(mHoy) / tot(mHoy) * 100)}% del valor, porque su ticket es más alto que el de las tarjetas. En puntos cede más el débito, por ser el segmento más grande.`;
+  $('lec-emisores').innerHTML = `<b>${eMC.nombre}</b> aporta ${f1(eMC.aporte)}% del aumento de Mastercard crédito y <b>${eV.nombre}</b> ${f1(eV.aporte)}% del de Visa; sin ellos, las dos franquicias crecen ${sg(eMC.gx)}% y ${sg(eV.gx)}%.`;
+  $('lec-lento').innerHTML = lLen;
+  $('lec-llaves').innerHTML = `Hay <b>${f1(DT.llaves / vigT)} llaves por cada tarjeta vigente</b>. Al mes, una tarjeta hace ${f1(lastTarj.n / vigT)} compras y una llave de Bre-B ${f1(KLd.bre[lastTarj.mes].txn / (kJ * 1e6))} transacciones (${lastTarj.label}).`;
+  const ult = CUTS[CUTS.length - 1], mUlt = MONTHS[MONTHS.length - 1];
+  $('claves').innerHTML = [
+    [`<b>${nf(ult.txn / 1e6, 0)} M</b> de transacciones y <b>$${nf(ult.valor / 1e12, 1)} billones</b> liquidados desde el lanzamiento (corte ${fmtDate(ult.fecha)}); ticket promedio $${nf(ult.ticket, 0)}.`, '#volumen'],
+    [`El ritmo sigue subiendo: ${mUlt.label} cerró con <b>${nf(mUlt.diario / 1e6, 1)} M transacciones por día</b>; el récord diario es ${nf(dMax.v, 1)} M (${fmtDate(dMax.fecha)}).`, '#volumen'],
+    [`<b>${nf(DICE.totales.llaves / 1e6, 1)} M llaves</b> registradas, ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M medios de pago vinculados y ${nf(DICE.totales.clientes / 1e6, 1)} M clientes; la más común es ${DICE.tipos_de_llave[0][0].toLowerCase()} (${nf(DICE.tipos_de_llave[0][2], 0)}%).`, '#llaves'],
+    [lPan, '#tarjetas/panorama'], [lLen, '#tarjetas/lento'],
+  ].map(([t, h]) => `<li><span>${t}</span><a class="ver" href="${h}">Ver →</a></li>`).join('');
   $('tipo-fn').innerHTML = `<span class="tag o">oficial</span> ${link('https://www.banrep.gov.co/es/bre-b/indicadores-dice', 'Reporte DICE de BanRep')}, ${fmtDate(DICE.corte)}. Las alfanuméricas (${nf(T[0][2], 0)}%) superan al celular (${nf(T[1][2], 0)}%) por el registro masivo previo al lanzamiento.`;
   $('medios-fn').innerHTML = `<span class="tag o">oficial</span> ${DICE.medios_de_pago_nota} ${nf(DICE.totales.medios_de_pago / 1e6, 1)} M de medios de pago; ${nf(DICE.totales.llaves_por_medio, 1)} llaves por medio y ${nf(DICE.totales.medios_por_cliente, 1)} medios por cliente.`;
   $('naj-fn').innerHTML = `<span class="tag o">oficial</span> DICE, ${fmtDate(DICE.corte)}: ${nf(DICE.clientes.naturales[0], 1)} M clientes naturales y ${nf(DICE.clientes.juridicas[0], 1)} M jurídicos; ${nf(DICE.llaves_por_tipo_de_cliente.naturales[0], 1)} M llaves de naturales y ${nf(DICE.llaves_por_tipo_de_cliente.juridicas[0], 1)} M de jurídicas. ${nf(DICE.totales.llaves_por_cliente, 1)} llaves por cliente en promedio.`;
@@ -823,7 +912,7 @@ async function init() {
     if (CUTS.length < 3) throw new Error('Datos insuficientes');
     derive();
     $('asof').textContent = 'Último corte MOL: ' + fmtDate(CUTS[CUTS.length - 1].fecha);
-    kpis(); table(); statics(); draw();
+    kpis(); table(); statics(); plegarNotas(); ir(); window.addEventListener('hashchange', ir);
   } catch (e) {
     $('err').style.display = 'block'; $('err').textContent = 'Error: ' + e.message;
     $('asof').textContent = 'error';
