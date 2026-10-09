@@ -2,7 +2,7 @@ name: Actualizar datos de BanRep
 
 on:
   schedule:
-    - cron: "0 12 2 * *"   # día 2 de cada mes, 7:00 a. m. en Colombia (cierra el mes anterior)
+    - cron: "0 12 * * 1"   # cada lunes, 7:00 a. m. en Colombia (trae el último corte de BanRep y cierra el mes anterior si falta)
   workflow_dispatch:
     inputs:
       backfill:
@@ -12,6 +12,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -42,6 +46,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data
             git commit -m "data: actualiza cortes de BanRep ($(date -u +%Y-%m-%d))"
+            git pull --rebase --autostash
             git push
           else
             echo "Sin cambios en los datos."

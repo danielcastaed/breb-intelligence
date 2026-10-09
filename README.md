@@ -4,7 +4,7 @@ Tracker de **Bre-B**, el sistema de pagos inmediatos interoperable del Banco de 
 
 **Dashboard:** https://danielcastaed.github.io/breb-intelligence/ · Proyecto hermano: [visa-intelligence](https://github.com/danielcastaed/visa-intelligence) (tarjetas, fuente SFC; [dashboard](https://danielcastaed.github.io/visa-intelligence/)), al que este dashboard enlaza desde el pie y desde la vista de franquicias. Se mantiene aparte porque la fuente (BanRep), la cadencia y la estructura de datos son distintas.
 
-Es una página estática (`index.html`, Chart.js, tema oscuro/claro) que lee los archivos de `data/`. Los datos se actualizan solos cada mes con GitHub Actions.
+Es una página estática (`index.html`, Chart.js, tema oscuro/claro) que lee los archivos de `data/`. Los datos se actualizan solos cada semana (lunes) con GitHub Actions.
 
 ## Cómo se usa
 
@@ -95,11 +95,13 @@ El script exige y el dashboard muestra, en cada corrida:
 
 ## Actualización automática
 
-BanRep incrusta sus reportes de Power BI en páginas con captcha, pero **los reportes en sí son públicos y se abren sin captcha** en `app.powerbi.com`. El workflow `update-data.yml` corre el **día 2 de cada mes** y tiene tres pasos:
+BanRep incrusta sus reportes de Power BI en páginas con captcha, pero **los reportes en sí son públicos y se abren sin captcha** en `app.powerbi.com`. El workflow `update-data.yml` corre **cada lunes a las 7:00 a. m. (hora de Colombia)** y tiene tres pasos:
 
 1. `scripts/fetch_banrep.py` (Playwright) lee el reporte MOL (cortes, distribución, serie diaria recorriendo el gráfico) y el DICE (totales y las tres composiciones).
 2. `scripts/fetch_sfc_tarjetas.py` (solo biblioteca estándar, sin credenciales) baja las compras con tarjeta de la SFC y reescribe todo el histórico, porque la SFC corrige meses anteriores; descarta el último mes si lo reportan muy pocas entidades.
 3. Hace commit de lo que cambió; GitHub Pages se republica solo. Si un paso falla, lo que ya se leyó se publica igual y el job queda en rojo.
+
+**Qué cambia cada semana:** el último corte de BanRep (el «parcial» del mes en curso) se reemplaza por el más reciente, la serie diaria se extiende, el DICE suma un punto de llaves por fecha de captura y, cuando se cierra un mes, se guarda su corte definitivo. La SFC solo cambia cuando publica un mes nuevo (hacia mediados de cada mes). Si no hay nada nuevo, no se hace commit. GitHub avisa por correo si una corrida falla.
 
 **Secrets** (una vez, en *Settings → Secrets and variables → Actions*). Deben ser la URL del reporte **completo**, no la de la portada:
 
