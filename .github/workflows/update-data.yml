@@ -3,6 +3,12 @@ name: Actualizar datos de BanRep
 on:
   schedule:
     - cron: "0 12 * * 1"   # cada lunes, 7:00 a. m. en Colombia (trae el último corte de BanRep y cierra el mes anterior si falta)
+  push:                    # un cambio al workflow o a los scripts también corre la actualización, sin lanzarla a mano
+    branches: [main]
+    paths:
+      - ".github/workflows/update-data.yml"
+      - "scripts/fetch_banrep.py"
+      - "scripts/fetch_sfc_tarjetas.py"
   workflow_dispatch:
     inputs:
       backfill:
