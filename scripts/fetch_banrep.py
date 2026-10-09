@@ -26,6 +26,7 @@ MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto
          "septiembre", "octubre", "noviembre", "diciembre"]
 RANGOS = ["1 - 1.000", "1.000 - 10.000", "10.000 - 50.000", "50.000 - 100.000",
           "100.000 - 500.000", "500.000 - 1.000.000", "Mayor a 1.000.000"]
+FUENTE_DICE = "Reporte DICE de BanRep (Power BI público: indicadores-dice)"
 FUENTE_MOL = "Reporte MOL de BanRep (Power BI público: indicadores-mol)"
 LANZAMIENTO = dt.date(2025, 10, 6)
 
@@ -314,6 +315,18 @@ def guardar_dice(fecha, tot, comp):
                          llaves_por_cliente=tot["llaves_por_cliente"]))
         rows.sort(key=lambda r: r["fecha"])
         write_csv(path, ["fecha", "llaves", "medios_de_pago", "clientes", "llaves_por_cliente"], rows)
+
+    # serie de llaves que usa el dashboard: se conservan los puntos de fin de mes y solo el último corte "suelto"
+    path = DATA / "breb_llaves_dice.csv"
+    rows = read_csv_or_empty(path)
+    fin_de_mes = lambda iso: (dt.date.fromisoformat(iso) + dt.timedelta(days=1)).month != dt.date.fromisoformat(iso).month
+    captura = lambda r: r["nota"].startswith("Total de llaves registradas, corte")
+    if f >= max(r["fecha"] for r in rows):
+        rows = [r for r in rows if r["fecha"] != f and not (captura(r) and not fin_de_mes(r["fecha"]))]
+        rows.append(dict(fecha=f, llaves_millones=round(int(tot["llaves"]) / 1e6, 6), fuente=FUENTE_DICE,
+                         nota=f"Total de llaves registradas, corte {fecha.day}-{MESES[fecha.month - 1][:3]}-{fecha.year}"))
+        rows.sort(key=lambda r: r["fecha"])
+        write_csv(path, ["fecha", "llaves_millones", "fuente", "nota"], rows)
 
     path = DATA / "breb_dice_composicion.csv"
     rows = [r for r in read_csv_or_empty(path) if r["fecha"] != f]
