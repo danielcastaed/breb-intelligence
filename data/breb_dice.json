@@ -1,11 +1,11 @@
 {
  "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
- "corte": "2026-10-08",
+ "corte": "2026-10-11",
  "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
  "totales": {
-  "llaves": 116722548,
-  "medios_de_pago": 74027052,
-  "clientes": 36148108,
+  "llaves": 116941686,
+  "medios_de_pago": 74146295,
+  "clientes": 36169926,
   "llaves_por_medio": 1.6,
   "llaves_por_cliente": 3.2,
   "medios_por_cliente": 2.0
@@ -13,59 +13,59 @@
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   64.26,
+   64.38,
    55.06,
-   64262318
+   64382430
   ],
   [
    "Celular",
-   22.52,
-   19.29,
-   22520427
+   22.55,
+   19.28,
+   22546575
   ],
   [
    "Documento de identidad",
-   15.2,
+   15.23,
    13.02,
-   15199187
+   15230987
   ],
   [
    "Correo electrónico",
-   10.25,
-   8.78,
-   10252180
+   10.28,
+   8.79,
+   10282529
   ],
   [
    "Código de comercio",
-   4.49,
+   4.5,
    3.85,
-   4488436
+   4499165
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   39.91,
-   53.91,
-   39905801
+   40.0,
+   53.95,
+   39999318
   ],
   [
    "Depósito de bajo monto",
-   33.26,
-   44.92,
-   33256203
+   33.28,
+   44.88,
+   33277702
   ],
   [
    "Cuenta corriente",
    0.45,
    0.61,
-   450762
+   451006
   ],
   [
    "Depósitos ordinarios",
-   0.41,
+   0.42,
    0.56,
-   414285
+   418268
   ],
   [
    "Depósito bajo monto inclusivo",
@@ -77,26 +77,26 @@
  "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.26,
-   89.23,
-   32255706
+   32.27,
+   89.21,
+   32267310
   ],
   "juridicas": [
-   3.89,
-   10.77,
-   3892402
+   3.9,
+   10.79,
+   3902616
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   110.35,
-   94.54,
-   110348319
+   110.51,
+   94.5,
+   110509593
   ],
   "juridicas": [
-   6.37,
-   5.46,
-   6374229
+   6.43,
+   5.5,
+   6432093
   ]
  }
 }
