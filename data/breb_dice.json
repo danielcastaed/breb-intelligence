@@ -1,71 +1,71 @@
 {
  "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
- "corte": "2026-10-11",
+ "corte": "2026-10-18",
  "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
  "totales": {
-  "llaves": 116941686,
-  "medios_de_pago": 74146295,
-  "clientes": 36169926,
+  "llaves": 117519545,
+  "medios_de_pago": 74446896,
+  "clientes": 36221534,
   "llaves_por_medio": 1.6,
   "llaves_por_cliente": 3.2,
-  "medios_por_cliente": 2.0
+  "medios_por_cliente": 2.1
  },
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   64.38,
-   55.06,
-   64382430
+   64.72,
+   55.07,
+   64719202
   ],
   [
    "Celular",
-   22.55,
-   19.28,
-   22546575
+   22.61,
+   19.24,
+   22611189
   ],
   [
    "Documento de identidad",
-   15.23,
-   13.02,
-   15230987
+   15.31,
+   13.03,
+   15310735
   ],
   [
    "Correo electrónico",
-   10.28,
-   8.79,
-   10282529
+   10.36,
+   8.81,
+   10355381
   ],
   [
    "Código de comercio",
-   4.5,
+   4.52,
    3.85,
-   4499165
+   4523038
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   40.0,
-   53.95,
-   39999318
+   40.23,
+   54.04,
+   40230840
   ],
   [
    "Depósito de bajo monto",
-   33.28,
-   44.88,
-   33277702
+   33.33,
+   44.78,
+   33333769
   ],
   [
    "Cuenta corriente",
    0.45,
    0.61,
-   451006
+   451753
   ],
   [
    "Depósitos ordinarios",
-   0.42,
-   0.56,
-   418268
+   0.43,
+   0.58,
+   430533
   ],
   [
    "Depósito bajo monto inclusivo",
@@ -77,26 +77,26 @@
  "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.27,
-   89.21,
-   32267310
+   32.3,
+   89.16,
+   32295008
   ],
   "juridicas": [
-   3.9,
-   10.79,
-   3902616
+   3.93,
+   10.84,
+   3926526
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   110.51,
-   94.5,
-   110509593
+   110.94,
+   94.4,
+   110942588
   ],
   "juridicas": [
-   6.43,
-   5.5,
-   6432093
+   6.58,
+   5.6,
+   6576957
   ]
  }
 }
