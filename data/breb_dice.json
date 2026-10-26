@@ -1,102 +1,102 @@
 {
  "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
- "corte": "2026-10-18",
+ "corte": "2026-10-25",
  "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
  "totales": {
-  "llaves": 117519545,
-  "medios_de_pago": 74446896,
-  "clientes": 36221534,
+  "llaves": 118145353,
+  "medios_de_pago": 74842111,
+  "clientes": 36282503,
   "llaves_por_medio": 1.6,
-  "llaves_por_cliente": 3.2,
+  "llaves_por_cliente": 3.3,
   "medios_por_cliente": 2.1
  },
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   64.72,
-   55.07,
-   64719202
+   65.08,
+   55.08,
+   65076528
   ],
   [
    "Celular",
-   22.61,
-   19.24,
-   22611189
+   22.68,
+   19.19,
+   22677384
   ],
   [
    "Documento de identidad",
-   15.31,
+   15.4,
    13.03,
-   15310735
+   15397466
   ],
   [
    "Correo electrónico",
-   10.36,
-   8.81,
-   10355381
+   10.44,
+   8.84,
+   10439042
   ],
   [
    "Código de comercio",
-   4.52,
-   3.85,
-   4523038
+   4.55,
+   3.86,
+   4554933
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   40.23,
-   54.04,
-   40230840
+   40.56,
+   54.19,
+   40556145
   ],
   [
    "Depósito de bajo monto",
-   33.33,
-   44.78,
-   33333769
+   33.39,
+   44.61,
+   33390275
   ],
   [
    "Cuenta corriente",
    0.45,
    0.61,
-   451753
+   453603
   ],
   [
    "Depósitos ordinarios",
-   0.43,
-   0.58,
-   430533
+   0.44,
+   0.59,
+   442086
   ],
   [
    "Depósito bajo monto inclusivo",
    0.0,
    0.0,
-   1
+   2
   ]
  ],
  "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.3,
-   89.16,
-   32295008
+   32.32,
+   89.09,
+   32324913
   ],
   "juridicas": [
-   3.93,
-   10.84,
-   3926526
+   3.96,
+   10.91,
+   3957590
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   110.94,
-   94.4,
-   110942588
+   111.42,
+   94.31,
+   111423372
   ],
   "juridicas": [
-   6.58,
-   5.6,
-   6576957
+   6.72,
+   5.69,
+   6721981
   ]
  }
 }
