@@ -1,11 +1,11 @@
 {
  "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
- "corte": "2026-10-25",
+ "corte": "2026-11-15",
  "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
  "totales": {
-  "llaves": 118145353,
-  "medios_de_pago": 74842111,
-  "clientes": 36282503,
+  "llaves": 119594976,
+  "medios_de_pago": 75353768,
+  "clientes": 36449040,
   "llaves_por_medio": 1.6,
   "llaves_por_cliente": 3.3,
   "medios_por_cliente": 2.1
@@ -13,59 +13,59 @@
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   65.08,
-   55.08,
-   65076528
+   65.74,
+   54.97,
+   65738127
   ],
   [
    "Celular",
-   22.68,
-   19.19,
-   22677384
+   22.85,
+   19.11,
+   22849466
   ],
   [
    "Documento de identidad",
-   15.4,
-   13.03,
-   15397466
+   15.66,
+   13.09,
+   15656103
   ],
   [
    "Correo electrónico",
-   10.44,
-   8.84,
-   10439042
+   10.69,
+   8.93,
+   10685325
   ],
   [
    "Código de comercio",
-   4.55,
-   3.86,
-   4554933
+   4.67,
+   3.9,
+   4665955
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   40.56,
-   54.19,
-   40556145
+   41.27,
+   54.77,
+   41274096
   ],
   [
    "Depósito de bajo monto",
-   33.39,
-   44.61,
-   33390275
-  ],
-  [
-   "Cuenta corriente",
-   0.45,
-   0.61,
-   453603
+   33.14,
+   43.98,
+   33138189
   ],
   [
    "Depósitos ordinarios",
-   0.44,
-   0.59,
-   442086
+   0.49,
+   0.64,
+   485257
+  ],
+  [
+   "Cuenta corriente",
+   0.46,
+   0.61,
+   456224
   ],
   [
    "Depósito bajo monto inclusivo",
@@ -77,26 +77,26 @@
  "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.32,
-   89.09,
-   32324913
+   32.38,
+   88.84,
+   32380908
   ],
   "juridicas": [
-   3.96,
-   10.91,
-   3957590
+   4.07,
+   11.16,
+   4068132
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   111.42,
-   94.31,
-   111423372
+   112.33,
+   93.92,
+   112329102
   ],
   "juridicas": [
-   6.72,
-   5.69,
-   6721981
+   7.27,
+   6.08,
+   7265874
   ]
  }
 }

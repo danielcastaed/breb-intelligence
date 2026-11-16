@@ -69,3 +69,17 @@ fecha,panel,categoria,cantidad,porcentaje
 2026-10-25,tipo_de_llave,Documento de identidad,15397466,13.03
 2026-10-25,tipo_de_llave,Correo electrónico,10439042,8.84
 2026-10-25,tipo_de_llave,Código de comercio,4554933,3.86
+2026-11-15,cliente,Persona Natural,32380908,88.84
+2026-11-15,cliente,Persona Jurídica,4068132,11.16
+2026-11-15,llaves_por_tipo_de_cliente,Persona Natural,112329102,93.92
+2026-11-15,llaves_por_tipo_de_cliente,Persona Jurídica,7265874,6.08
+2026-11-15,medio_de_pago,Cuenta de ahorros,41274096,54.77
+2026-11-15,medio_de_pago,Depósito de bajo monto,33138189,43.98
+2026-11-15,medio_de_pago,Depósitos ordinarios,485257,0.64
+2026-11-15,medio_de_pago,Cuenta corriente,456224,0.61
+2026-11-15,medio_de_pago,Depósito bajo monto inclusivo,2,0.0
+2026-11-15,tipo_de_llave,Alfanumérica,65738127,54.97
+2026-11-15,tipo_de_llave,Celular,22849466,19.11
+2026-11-15,tipo_de_llave,Documento de identidad,15656103,13.09
+2026-11-15,tipo_de_llave,Correo electrónico,10685325,8.93
+2026-11-15,tipo_de_llave,Código de comercio,4665955,3.9
