@@ -979,3 +979,10 @@ mes,producto,franquicia,compras_num,compras_cop,metodo
 2026-08,credito,VISA,28564807,4922373043769,directo
 2026-08,debito,MASTERCARD,,8934302453486,estimado_tii
 2026-08,debito,VISA,,3133157452828,estimado_tii
+2026-09,credito,AMEX,1531983,304939167314,directo
+2026-09,credito,DINERS,203764,84779228449,directo
+2026-09,credito,MASTERCARD,29331029,4990271420432,directo
+2026-09,credito,OTRAS,177454,54770114235,directo
+2026-09,credito,VISA,28446608,5034867206947,directo
+2026-09,debito,MASTERCARD,,8662690120282,estimado_tii
+2026-09,debito,VISA,,2796482429733,estimado_tii

@@ -1,11 +1,11 @@
 {
  "fuente": "Reporte DICE de BanRep (Power BI público: indicadores-dice)",
- "corte": "2026-11-15",
+ "corte": "2026-11-22",
  "nota": "Indicadores construidos con el total de llaves activas y bloqueadas (nota del propio reporte).",
  "totales": {
-  "llaves": 119594976,
-  "medios_de_pago": 75353768,
-  "clientes": 36449040,
+  "llaves": 119927973,
+  "medios_de_pago": 75474069,
+  "clientes": 36482535,
   "llaves_por_medio": 1.6,
   "llaves_por_cliente": 3.3,
   "medios_por_cliente": 2.1
@@ -13,59 +13,59 @@
  "tipos_de_llave": [
   [
    "Alfanumérica",
-   65.74,
-   54.97,
-   65738127
+   65.96,
+   55.0,
+   65956471
   ],
   [
    "Celular",
-   22.85,
-   19.11,
-   22849466
+   22.89,
+   19.09,
+   22889019
   ],
   [
    "Documento de identidad",
-   15.66,
-   13.09,
-   15656103
+   15.68,
+   13.07,
+   15679849
   ],
   [
    "Correo electrónico",
-   10.69,
+   10.71,
    8.93,
-   10685325
+   10710535
   ],
   [
    "Código de comercio",
-   4.67,
-   3.9,
-   4665955
+   4.69,
+   3.91,
+   4692099
   ]
  ],
  "medios_de_pago": [
   [
    "Cuenta de ahorros",
-   41.27,
-   54.77,
-   41274096
+   41.52,
+   55.01,
+   41516868
   ],
   [
    "Depósito de bajo monto",
-   33.14,
-   43.98,
-   33138189
+   32.99,
+   43.72,
+   32994969
   ],
   [
    "Depósitos ordinarios",
-   0.49,
-   0.64,
-   485257
+   0.51,
+   0.67,
+   505122
   ],
   [
    "Cuenta corriente",
    0.46,
    0.61,
-   456224
+   457108
   ],
   [
    "Depósito bajo monto inclusivo",
@@ -77,26 +77,26 @@
  "medios_de_pago_nota": "Categorías y cantidades tal como las publica el reporte (etiqueta de cada sector del gráfico).",
  "clientes": {
   "naturales": [
-   32.38,
-   88.84,
-   32380908
+   32.39,
+   88.78,
+   32389957
   ],
   "juridicas": [
-   4.07,
-   11.16,
-   4068132
+   4.09,
+   11.22,
+   4092578
   ]
  },
  "llaves_por_tipo_de_cliente": {
   "naturales": [
-   112.33,
-   93.92,
-   112329102
+   112.49,
+   93.79,
+   112486436
   ],
   "juridicas": [
-   7.27,
-   6.08,
-   7265874
+   7.44,
+   6.21,
+   7441537
   ]
  }
 }
